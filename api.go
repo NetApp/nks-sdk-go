@@ -10,16 +10,16 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-// Client references an api token and an http endpoint
-type Client struct {
+// APIClient references an api token and an http endpoint
+type APIClient struct {
 	token      string
 	endpoint   string
 	httpClient *http.Client
 }
 
 // NewClient returns a new api client
-func NewClient(token, endpoint string, client ...*http.Client) *Client {
-	c := &Client{
+func NewClient(token, endpoint string, client ...*http.Client) *APIClient {
+	c := &APIClient{
 		token:    token,
 		endpoint: endpoint,
 	}
@@ -31,14 +31,14 @@ func NewClient(token, endpoint string, client ...*http.Client) *Client {
 	return c
 }
 
-func (client *Client) runRequest(req *http.Request) ([]byte, error) {
+func (client *APIClient) runRequest(req *http.Request) ([]byte, error) {
 	req.Header.Set("Authorization", "Bearer "+client.token)
 	req.Header.Set("User-Agent", "Stackpoint Go SDK")
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.httpClient.Do(req)
 
-	if resp.StatusCode >= 400 {
+	if err == nil && resp.StatusCode >= 400 {
 		err = fmt.Errorf("Status code %d", resp.StatusCode)
 	}
 
@@ -49,7 +49,7 @@ func (client *Client) runRequest(req *http.Request) ([]byte, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-func (client *Client) get(path string) ([]byte, error) {
+func (client *APIClient) get(path string) ([]byte, error) {
 	req, err := http.NewRequest("GET", client.endpoint+path, nil)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,19 @@ func (client *Client) get(path string) ([]byte, error) {
 	return content, nil
 }
 
-func (client *Client) post(path string, dataObject interface{}) ([]byte, error) {
+func (client *APIClient) delete(path string) ([]byte, error) {
+	req, err := http.NewRequest("DELETE", client.endpoint+path, nil)
+	if err != nil {
+		return nil, err
+	}
+	content, err := client.runRequest(req)
+	if err != nil {
+		return nil, err
+	}
+	return content, nil
+}
+
+func (client *APIClient) post(path string, dataObject interface{}) ([]byte, error) {
 	data, err := json.Marshal(dataObject)
 	if err != nil {
 		return nil, err
@@ -77,7 +89,8 @@ func (client *Client) post(path string, dataObject interface{}) ([]byte, error) 
 	return content, nil
 }
 
-func (client *Client) GetOrganizations() ([]Organization, error) {
+// GetOrganizations retrieves data organizations that the client can access
+func (client *APIClient) GetOrganizations() ([]Organization, error) {
 	content, err := client.get("/orgs")
 	if err != nil {
 		return nil, err
@@ -90,7 +103,8 @@ func (client *Client) GetOrganizations() ([]Organization, error) {
 	return organizations, nil
 }
 
-func (client *Client) GetOrganization(organizationID int) (Organization, error) {
+// GetOrganization retrieves data for a single organization
+func (client *APIClient) GetOrganization(organizationID int) (Organization, error) {
 	path := fmt.Sprintf("/orgs/%d", organizationID)
 	content, err := client.get(path)
 	if err != nil {
@@ -104,12 +118,12 @@ func (client *Client) GetOrganization(organizationID int) (Organization, error) 
 	return organization, nil
 }
 
-func (client *Client) GetUser() (User, error) {
+func (client *APIClient) GetUser() (User, error) {
 	content, err := client.get("/rest-auth/user/")
 	if err != nil {
 		return User{}, err
 	}
-	log.Info(string(content))
+	log.Debug(string(content))
 	var user User
 	err = json.Unmarshal(content, &user)
 	if err != nil {
@@ -118,13 +132,13 @@ func (client *Client) GetUser() (User, error) {
 	return user, nil
 }
 
-func (client *Client) GetUserProfile(username string) (UserProfile, error) {
+func (client *APIClient) GetUserProfile(username string) (UserProfile, error) {
 	path := fmt.Sprintf("/userprofile/%s", username)
 	content, err := client.get(path)
 	if err != nil {
 		return UserProfile{}, err
 	}
-	log.Info(string(content))
+	log.Debug(string(content))
 	var profile UserProfile
 	err = json.Unmarshal(content, &profile)
 	if err != nil {
@@ -133,13 +147,13 @@ func (client *Client) GetUserProfile(username string) (UserProfile, error) {
 	return profile, nil
 }
 
-func (client *Client) GetClusters(organizationID int) ([]Cluster, error) {
+func (client *APIClient) GetClusters(organizationID int) ([]Cluster, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters", organizationID)
 	content, err := client.get(path)
 	if err != nil {
 		return nil, err
 	}
-	log.Info(string(content))
+	log.Debug(string(content))
 	var clusters []Cluster
 	err = json.Unmarshal(content, &clusters)
 	if err != nil {
@@ -148,13 +162,13 @@ func (client *Client) GetClusters(organizationID int) ([]Cluster, error) {
 	return clusters, nil
 }
 
-func (client *Client) GetCluster(organizationID, clusterID int) (Cluster, error) {
+func (client *APIClient) GetCluster(organizationID, clusterID int) (Cluster, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d", organizationID, clusterID)
 	content, err := client.get(path)
 	if err != nil {
 		return Cluster{}, err
 	}
-	log.Info(string(content))
+	log.Debug(string(content))
 	var cluster Cluster
 	err = json.Unmarshal(content, &cluster)
 	if err != nil {
@@ -163,13 +177,13 @@ func (client *Client) GetCluster(organizationID, clusterID int) (Cluster, error)
 	return cluster, nil
 }
 
-func (client *Client) GetNodes(organizationID, clusterID int) ([]Node, error) {
+func (client *APIClient) GetNodes(organizationID, clusterID int) ([]Node, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodes", organizationID, clusterID)
 	content, err := client.get(path)
 	if err != nil {
 		return nil, err
 	}
-	log.Info(string(content))
+	log.Debug(string(content))
 	var nodes []Node
 	err = json.Unmarshal(content, &nodes)
 	if err != nil {
@@ -178,23 +192,62 @@ func (client *Client) GetNodes(organizationID, clusterID int) ([]Node, error) {
 	return nodes, nil
 }
 
-func (client *Client) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd) ([]byte, error) {
+// GetNode retrieves data for a single node
+func (client *APIClient) GetNode(organizationID, clusterID, nodeID int) (Node, error) {
+	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d", organizationID, clusterID, nodeID)
+	content, err := client.get(path)
+	if err != nil {
+		return Node{}, err
+	}
+	log.Debug(string(content))
+	var node Node
+	err = json.Unmarshal(content, &node)
+	if err != nil {
+		return Node{}, err
+	}
+	return node, nil
+}
+
+// DeleteNode makes an API call to delete the node
+func (client *APIClient) DeleteNode(organizationID, clusterID, nodeID int) ([]byte, error) {
+	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d", organizationID, clusterID, nodeID)
+	content, err := client.delete(path)
+	return content, err
+	// if err != nil {
+	// 	return Node{}, err
+	// }
+	// log.Debug(string(content))
+	// var node Node
+	// err = json.Unmarshal(content, &node)
+	// if err != nil {
+	// 	return Node{}, err
+	// }
+	// return node, nil
+}
+
+// AddNodes sends a request to add nodes to a cluster, returns immediately
+func (client *APIClient) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd) (NodeAdd, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/add_node", organizationID, clusterID)
 	content, err := client.post(path, nodeAdd)
 	if err != nil {
-		return nil, err
+		return NodeAdd{}, err
 	}
-	log.Info("add node response: " + string(content))
-	return content, nil
+	log.Debug("add node response: " + string(content))
+	var response NodeAdd
+	err = json.Unmarshal(content, &response)
+	if err != nil {
+		return NodeAdd{}, err
+	}
+	return response, nil
 }
 
-func (client *Client) GetVolumes(organizationID, clusterID int) ([]PersistentVolume, error) {
+func (client *APIClient) GetVolumes(organizationID, clusterID int) ([]PersistentVolume, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/volumes", organizationID, clusterID)
 	content, err := client.get(path)
 	if err != nil {
 		return nil, err
 	}
-	log.Info(string(content))
+	log.Debug(string(content))
 	var volumes []PersistentVolume
 	err = json.Unmarshal(content, &volumes)
 	if err != nil {
