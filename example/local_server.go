@@ -13,7 +13,7 @@ import (
 func main() {
 
 	token := os.Getenv("CLUSTER_API_TOKEN")
-	endpoint := os.Getenv("BASE_API_URL")
+	endpoint := os.Getenv("SPC_BASE_API_URL")
 	client := stackpointio.NewClient(token, endpoint)
 
 	orgs, err := client.GetOrganizations()

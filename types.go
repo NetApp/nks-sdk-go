@@ -95,7 +95,7 @@ type Node struct {
 	Image      string    `json:"image"`
 	Location   string    `json:"location"`
 	Size       string    `json:"size"`
-	State      string    `json:"state"`
+	State      string    `json:"state"` // draft, building, provisioned, running, deleting, deleted
 	Created    time.Time `json:"created"`
 	Updated    time.Time `json:"updated,omitempty"`
 }
@@ -124,4 +124,16 @@ type PersistentVolume struct {
 	Deleted         bool      `json:"deleted,omitempty"`
 	Backend         string    `json:"backend"`
 	Created         time.Time `json:"created"`
+}
+
+// BuildLogEntry is an event log for the cluster build process
+type BuildLogEntry struct {
+	ClusterID     int       `json:"cluster"`
+	EventCategory string    `json:"event_category"`
+	EventType     string    `json:"event_type"`
+	EventState    string    `json:"event_state"`
+	Message       string    `json:"message"`
+	Details       string    `json:"details"`
+	Reference     string    `json:"reference"`
+	Created       time.Time `json:"created"`
 }
