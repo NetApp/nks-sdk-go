@@ -118,20 +118,13 @@ func (client *APIClient) GetOrganization(organizationID int) (Organization, erro
 	return organization, nil
 }
 
-<<<<<<< HEAD
 // GetUser gets the StackPointCloud user
-=======
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 func (client *APIClient) GetUser() (User, error) {
 	content, err := client.get("/rest-auth/user/")
 	if err != nil {
 		return User{}, err
 	}
-<<<<<<< HEAD
 	glog.V(8).Info(string(content))
-=======
-	log.Debug(string(content))
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 	var user User
 	err = json.Unmarshal(content, &user)
 	if err != nil {
@@ -140,21 +133,14 @@ func (client *APIClient) GetUser() (User, error) {
 	return user, nil
 }
 
-<<<<<<< HEAD
 // GetUserProfile gets details of StackPointCloud user profile
-=======
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 func (client *APIClient) GetUserProfile(username string) (UserProfile, error) {
 	path := fmt.Sprintf("/userprofile/%s", username)
 	content, err := client.get(path)
 	if err != nil {
 		return UserProfile{}, err
 	}
-<<<<<<< HEAD
 	glog.V(8).Info(string(content))
-=======
-	log.Debug(string(content))
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 	var profile UserProfile
 	err = json.Unmarshal(content, &profile)
 	if err != nil {
@@ -163,21 +149,14 @@ func (client *APIClient) GetUserProfile(username string) (UserProfile, error) {
 	return profile, nil
 }
 
-<<<<<<< HEAD
 // GetClusters gets all clusters associated with an organization
-=======
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 func (client *APIClient) GetClusters(organizationID int) ([]Cluster, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters", organizationID)
 	content, err := client.get(path)
 	if err != nil {
 		return nil, err
 	}
-<<<<<<< HEAD
 	glog.V(8).Info(string(content))
-=======
-	log.Debug(string(content))
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 	var clusters []Cluster
 	err = json.Unmarshal(content, &clusters)
 	if err != nil {
@@ -186,21 +165,14 @@ func (client *APIClient) GetClusters(organizationID int) ([]Cluster, error) {
 	return clusters, nil
 }
 
-<<<<<<< HEAD
 // GetCluster gets a single cluster by primary ID and organization
-=======
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 func (client *APIClient) GetCluster(organizationID, clusterID int) (Cluster, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d", organizationID, clusterID)
 	content, err := client.get(path)
 	if err != nil {
 		return Cluster{}, err
 	}
-<<<<<<< HEAD
 	glog.V(8).Info(string(content))
-=======
-	log.Debug(string(content))
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 	var cluster Cluster
 	err = json.Unmarshal(content, &cluster)
 	if err != nil {
@@ -209,21 +181,14 @@ func (client *APIClient) GetCluster(organizationID, clusterID int) (Cluster, err
 	return cluster, nil
 }
 
-<<<<<<< HEAD
 // GetNodes gets the nodes associated with a cluster and organization
-=======
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 func (client *APIClient) GetNodes(organizationID, clusterID int) ([]Node, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodes", organizationID, clusterID)
 	content, err := client.get(path)
 	if err != nil {
 		return nil, err
 	}
-<<<<<<< HEAD
 	glog.V(8).Info(string(content))
-=======
-	log.Debug(string(content))
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 	var nodes []Node
 	err = json.Unmarshal(content, &nodes)
 	if err != nil {
@@ -239,11 +204,7 @@ func (client *APIClient) GetNode(organizationID, clusterID, nodeID int) (Node, e
 	if err != nil {
 		return Node{}, err
 	}
-<<<<<<< HEAD
 	glog.V(8).Info(string(content))
-=======
-	log.Debug(string(content))
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 	var node Node
 	err = json.Unmarshal(content, &node)
 	if err != nil {
@@ -252,11 +213,7 @@ func (client *APIClient) GetNode(organizationID, clusterID, nodeID int) (Node, e
 	return node, nil
 }
 
-<<<<<<< HEAD
 // DeleteNode makes an API call to begin deleting a node, and returns the contents of the web response
-=======
-// DeleteNode makes an API call to delete the node
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 func (client *APIClient) DeleteNode(organizationID, clusterID, nodeID int) ([]byte, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d", organizationID, clusterID, nodeID)
 	content, err := client.delete(path)
@@ -264,11 +221,7 @@ func (client *APIClient) DeleteNode(organizationID, clusterID, nodeID int) ([]by
 	// if err != nil {
 	// 	return Node{}, err
 	// }
-<<<<<<< HEAD
 	// glog.V(8).Info(string(content))
-=======
-	// log.Debug(string(content))
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 	// var node Node
 	// err = json.Unmarshal(content, &node)
 	// if err != nil {
@@ -284,11 +237,7 @@ func (client *APIClient) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd
 	if err != nil {
 		return NodeAdd{}, err
 	}
-<<<<<<< HEAD
 	glog.V(8).Info("add node response: " + string(content))
-=======
-	log.Debug("add node response: " + string(content))
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 	var response NodeAdd
 	err = json.Unmarshal(content, &response)
 	if err != nil {
@@ -297,21 +246,14 @@ func (client *APIClient) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd
 	return response, nil
 }
 
-<<<<<<< HEAD
 // GetVolumes gets the Persistent Volumes attached to a cluster
-=======
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 func (client *APIClient) GetVolumes(organizationID, clusterID int) ([]PersistentVolume, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/volumes", organizationID, clusterID)
 	content, err := client.get(path)
 	if err != nil {
 		return nil, err
 	}
-<<<<<<< HEAD
 	glog.V(8).Info(string(content))
-=======
-	log.Debug(string(content))
->>>>>>> 1ca9779... Support for adding and deleting nodes, interaction with cluster-autoscaler
 	var volumes []PersistentVolume
 	err = json.Unmarshal(content, &volumes)
 	if err != nil {
