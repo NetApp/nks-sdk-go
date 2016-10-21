@@ -230,18 +230,18 @@ func (client *APIClient) DeleteNode(organizationID, clusterID, nodeID int) ([]by
 	// return node, nil
 }
 
-// AddNodes sends a request to add nodes to a cluster, returns immediately
-func (client *APIClient) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd) (NodeAdd, error) {
+// AddNodes sends a request to add nodes to a cluster, returns immediately with the Node under construction
+func (client *APIClient) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd) (Node, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/add_node", organizationID, clusterID)
 	content, err := client.post(path, nodeAdd)
 	if err != nil {
-		return NodeAdd{}, err
+		return Node{}, err
 	}
 	glog.V(8).Info("add node response: " + string(content))
-	var response NodeAdd
+	var response Node
 	err = json.Unmarshal(content, &response)
 	if err != nil {
-		return NodeAdd{}, err
+		return Node{}, err
 	}
 	return response, nil
 }

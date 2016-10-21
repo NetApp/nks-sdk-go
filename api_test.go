@@ -71,13 +71,15 @@ func TestAddNode(t *testing.T) {
 		w.WriteHeader(http.StatusNotFound)
 	}))
 
+	responseText := "{\"channel\":\"stable\",\"cluster\":504,\"created\":\"2016-09-27T22:09:57.089819Z\",\"image\":\"ami-06af7f66\", \"instance_id\": \"spcvd7ah21-worker-1\", \"location\": \"us-west-2:us-west-2a\", \"pk\": 1031,\"platform\": \"coreos\",\"private_ip\": \"172.23.1.209\", \"public_ip\": \"54.70.151.25\",\"role\": \"worker\",\"group_name\":\"autoscaling\",\"size\":\"t2.medium\",\"state\":\"draft\",\"updated\":\"2016-09-27T22:09:57.089836Z\"}"
+
 	mux.Handle(fmt.Sprintf("/orgs/%d/clusters/%d/add_node", organizationKey, clusterKey),
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, http.MethodPost, r.Method)
 			postedData, err := ioutil.ReadAll(r.Body)
 			require.Nil(t, err)
 			assert.True(t, 0 < len(postedData), "postedData non-zero length")
-			fmt.Fprint(w, string(postedData))
+			fmt.Fprint(w, responseText)
 		}))
 
 	ts := httptest.NewServer(mux)
@@ -86,7 +88,9 @@ func TestAddNode(t *testing.T) {
 	token := "not used"
 	client := NewClient(token, ts.URL)
 
-	_, err := client.AddNodes(organizationKey, clusterKey, nodeAdd)
+	node, err := client.AddNodes(organizationKey, clusterKey, nodeAdd)
 	require.Nil(t, err)
+	assert.Equal(t, "draft", node.State, "returned Node in state \"draft\"")
+	assert.Equal(t, "autoscaling", node.Group, "returned Node in group \"autoscaling\"")
 
 }
