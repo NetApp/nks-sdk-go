@@ -135,7 +135,7 @@ type BuildLogEntry struct {
 	EventType     string    `json:"event_type"`
 	EventState    string    `json:"event_state"`
 	Message       string    `json:"message"`
-	Details       string    `json:"details"`
-	Reference     string    `json:"reference"`
-	Created       time.Time `json:"created"`
+	Details       string    `json:"details,omitempty"`
+	Reference     string    `json:"reference,omitempty"`
+	Created       time.Time `json:"created,omitempty"`
 }

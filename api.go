@@ -261,3 +261,66 @@ func (client *APIClient) GetVolumes(organizationID, clusterID int) ([]Persistent
 	}
 	return volumes, nil
 }
+
+// GetLogs gets the BuildEventLogs for a cluster
+func (client *APIClient) GetLogs(organizationID, clusterID int) ([]BuildLogEntry, error) {
+	path := fmt.Sprintf("/orgs/%d/clusters/%d/logs", organizationID, clusterID)
+	content, err := client.get(path)
+	if err != nil {
+		return nil, err
+	}
+	glog.V(8).Info(string(content))
+	var logs []BuildLogEntry
+	err = json.Unmarshal(content, &logs)
+	if err != nil {
+		return nil, err
+	}
+	return logs, nil
+}
+
+// PostBuildLog adds a build log to the cluster
+func (client *APIClient) PostBuildLog(organizationID, clusterID int, log BuildLogEntry) (BuildLogEntry, error) {
+	path := fmt.Sprintf("/orgs/%d/clusters/%d/buildlogs", organizationID, clusterID)
+	// data, _ := json.Marshal(log)
+	// glog.V(8).Infof("PostBuildLog received %s", data)
+	content, err := client.post(path, log)
+	if err != nil {
+		return BuildLogEntry{}, err
+	}
+	glog.V(8).Infof("PostBuildLog response %s", string(content))
+	var responseLog BuildLogEntry
+	err = json.Unmarshal(content, &responseLog)
+	if err != nil {
+		return BuildLogEntry{}, err
+	}
+	return responseLog, nil
+}
+
+// PostAlert adds a alert message to the cluster as a build log
+func (client *APIClient) PostAlert(organizationID, clusterID int, message, details, reference string) (BuildLogEntry, error) {
+	path := fmt.Sprintf("/orgs/%d/clusters/%d/buildlogs", organizationID, clusterID)
+
+	// a placeholder event type for now
+	// 	EventType:     "provider_communication",
+	alert := BuildLogEntry{
+		EventCategory: "kubernetes",
+		EventType:     "provider_communication",
+		EventState:    "failure",
+		Message:       message,
+		Details:       details,
+		Reference:     reference,
+	}
+	// data, _ := json.Marshal(alert)
+	// glog.V(8).Infof("PostBuildLog received %s", data)
+	content, err := client.post(path, alert)
+	if err != nil {
+		return BuildLogEntry{}, err
+	}
+	glog.V(8).Infof("PostBuildLog response %s", string(content))
+	var responseLog BuildLogEntry
+	err = json.Unmarshal(content, &responseLog)
+	if err != nil {
+		return BuildLogEntry{}, err
+	}
+	return responseLog, nil
+}
