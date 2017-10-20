@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/golang/glog"
 )
@@ -181,6 +182,22 @@ func (client *APIClient) GetCluster(organizationID, clusterID int) (Cluster, err
 	return cluster, nil
 }
 
+// CreateCluster requests cluster creation, returns immediately
+func (client *APIClient) CreateCluster(organizationID int, cluster Cluster) (Cluster, error) {
+	path := fmt.Sprintf("/orgs/%d/clusters", organizationID)
+	content, err := client.post(path, cluster)
+	if err != nil {
+		return Cluster{}, err
+	}
+	glog.V(8).Info(string(content))
+	var newCluster Cluster
+	err = json.Unmarshal(content, &newCluster)
+	if err != nil {
+		return Cluster{}, err
+	}
+	return newCluster, nil
+}
+
 // GetNodes gets the nodes associated with a cluster and organization
 func (client *APIClient) GetNodes(organizationID, clusterID int) ([]Node, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodes", organizationID, clusterID)
@@ -231,19 +248,88 @@ func (client *APIClient) DeleteNode(organizationID, clusterID, nodeID int) ([]by
 }
 
 // AddNodes sends a request to add nodes to a cluster, returns immediately with the Node under construction
-func (client *APIClient) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd) (Node, error) {
+func (client *APIClient) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd) ([]Node, error) {
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/add_node", organizationID, clusterID)
 	content, err := client.post(path, nodeAdd)
 	if err != nil {
-		return Node{}, err
+		return []Node{}, err
 	}
 	glog.V(8).Info("add node response: " + string(content))
-	var response Node
+	var response []Node
 	err = json.Unmarshal(content, &response)
 	if err != nil {
-		return Node{}, err
+		return []Node{}, err
 	}
 	return response, nil
+}
+
+// GetNodePools gets the NodePools for a cluster
+func (client *APIClient) GetNodePools(organizationID, clusterID int) ([]NodePool, error) {
+	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodepools", organizationID, clusterID)
+	content, err := client.get(path)
+	if err != nil {
+		return nil, err
+	}
+	glog.V(8).Info(string(content))
+	var pools []NodePool
+	err = json.Unmarshal(content, &pools)
+	if err != nil {
+		return nil, err
+	}
+	for i, pool := range pools {
+		pools[i] = setNodePoolSpecs(pool)
+	}
+	return pools, nil
+}
+
+// GetNodePool gets a NodePool for a cluster
+func (client *APIClient) GetNodePool(organizationID, clusterID, nodepoolID int) (NodePool, error) {
+	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodepools/%d", organizationID, clusterID, nodepoolID)
+	content, err := client.get(path)
+	if err != nil {
+		return NodePool{}, err
+	}
+	glog.V(8).Info(string(content))
+	var pool NodePool
+	err = json.Unmarshal(content, &pool)
+	if err != nil {
+		return NodePool{}, err
+	}
+	return setNodePoolSpecs(pool), nil
+}
+
+// CreateNodePool gets a NodePool for a cluster
+func (client *APIClient) CreateNodePool(organizationID, clusterID int, pool NodePool) (NodePool, error) {
+	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodepools", organizationID, clusterID)
+	content, err := client.post(path, pool)
+	if err != nil {
+		return NodePool{}, err
+	}
+	glog.V(8).Info(string(content))
+	var created NodePool
+	err = json.Unmarshal(content, &created)
+	if err != nil {
+		return NodePool{}, err
+	}
+	return created, nil
+}
+
+// sets the cpu and memory of a pool if they are not configured already,
+// based on the type ("size")
+func setNodePoolSpecs(pool NodePool) NodePool {
+	if pool.CPU == "" {
+		cpu := getMachineTypeCPU(pool.Size)
+		if cpu != 0 {
+			pool.CPU = strconv.Itoa(cpu)
+		}
+	}
+	if pool.Memory == "" {
+		memory := getMachineTypeMemory(pool.Size)
+		if memory != 0 {
+			pool.Memory = strconv.Itoa(memory)
+		}
+	}
+	return pool
 }
 
 // GetVolumes gets the Persistent Volumes attached to a cluster
