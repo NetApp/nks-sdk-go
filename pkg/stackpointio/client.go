@@ -247,8 +247,12 @@ func (client *APIClient) DeleteNode(organizationID, clusterID, nodeID int) ([]by
 	// return node, nil
 }
 
-// AddNodes sends a request to add nodes to a cluster, returns immediately with the Node under construction
+// AddNodes sends a request to add nodes to a cluster, returns immediately with the Nodes under construction
 func (client *APIClient) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd) ([]Node, error) {
+	invalid := Validate(nodeAdd)
+	if invalid != nil {
+		return []Node{}, invalid
+	}
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/add_node", organizationID, clusterID)
 	content, err := client.post(path, nodeAdd)
 	if err != nil {
@@ -300,6 +304,10 @@ func (client *APIClient) GetNodePool(organizationID, clusterID, nodepoolID int) 
 
 // CreateNodePool gets a NodePool for a cluster
 func (client *APIClient) CreateNodePool(organizationID, clusterID int, pool NodePool) (NodePool, error) {
+	invalid := Validate(pool)
+	if invalid != nil {
+		return NodePool{}, invalid
+	}
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodepools", organizationID, clusterID)
 	content, err := client.post(path, pool)
 	if err != nil {
@@ -366,6 +374,10 @@ func (client *APIClient) GetLogs(organizationID, clusterID int) ([]BuildLogEntry
 
 // PostBuildLog adds a build log to the cluster
 func (client *APIClient) PostBuildLog(organizationID, clusterID int, log BuildLogEntry) (BuildLogEntry, error) {
+	invalid := Validate(log)
+	if invalid != nil {
+		return BuildLogEntry{}, invalid
+	}
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/buildlogs", organizationID, clusterID)
 	// data, _ := json.Marshal(log)
 	// glog.V(8).Infof("PostBuildLog received %s", data)
@@ -384,11 +396,8 @@ func (client *APIClient) PostBuildLog(organizationID, clusterID int, log BuildLo
 
 // PostAlert adds a alert message to the cluster as a build log
 func (client *APIClient) PostAlert(organizationID, clusterID int, message, details, reference string) (BuildLogEntry, error) {
-	path := fmt.Sprintf("/orgs/%d/clusters/%d/buildlogs", organizationID, clusterID)
-
-	// a placeholder event type for now
-	// 	EventType:     "provider_communication",
 	alert := BuildLogEntry{
+		ClusterID:     clusterID,
 		EventCategory: "kubernetes",
 		EventType:     "provider_communication",
 		EventState:    "failure",
@@ -396,17 +405,5 @@ func (client *APIClient) PostAlert(organizationID, clusterID int, message, detai
 		Details:       details,
 		Reference:     reference,
 	}
-	// data, _ := json.Marshal(alert)
-	// glog.V(8).Infof("PostBuildLog received %s", data)
-	content, err := client.post(path, alert)
-	if err != nil {
-		return BuildLogEntry{}, err
-	}
-	glog.V(8).Infof("PostBuildLog response %s", string(content))
-	var responseLog BuildLogEntry
-	err = json.Unmarshal(content, &responseLog)
-	if err != nil {
-		return BuildLogEntry{}, err
-	}
-	return responseLog, nil
+	return client.PostBuildLog(organizationID, clusterID, alert)
 }

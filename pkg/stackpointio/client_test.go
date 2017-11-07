@@ -194,7 +194,12 @@ func TestAddNode(t *testing.T) {
 
 	organizationKey := 123
 	clusterKey := 2851
-	nodeAdd := NodeAdd{Count: 2, Size: "2gb"}
+	nodeAdd := NodeAdd{
+		Count:      2,
+		Size:       "2gb",
+		NodePoolID: 200,
+		Role:       "worker",
+	}
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -230,7 +235,28 @@ func TestAddNode(t *testing.T) {
 
 	assert.Equal(t, "draft", filtered[0].State, "returned Node in state \"draft\"")
 	assert.Equal(t, "autoscaling-spcaufj5gy-pool-1", filtered[0].Group, "returned Node in group \"autoscaling\"")
+	assert.Equal(t, nodeAdd.Role, filtered[0].Role, "returned Node in group \"autoscaling\"")
 
+}
+
+func TestAddNodeValidation(t *testing.T) {
+
+	client := NewClient("", "")
+	_, err := client.AddNodes(0, 0, NodeAdd{
+		Count: 2,
+		Size:  "2gb",
+	})
+	assert.IsType(t, &ValidationError{}, err)
+	_, err = client.AddNodes(0, 0, NodeAdd{
+		Size:       "2gb",
+		NodePoolID: 100,
+	})
+	assert.IsType(t, &ValidationError{}, err)
+	_, err = client.AddNodes(0, 0, NodeAdd{
+		Count:      2,
+		NodePoolID: 100,
+	})
+	assert.IsType(t, &ValidationError{}, err)
 }
 
 const nodePoolResponse = `[
@@ -338,6 +364,7 @@ func TestPostLog(t *testing.T) {
 	organizationKey := 1
 	clusterKey := 1
 	buildLog := BuildLogEntry{
+		ClusterID:     500,
 		EventCategory: "solution",
 		EventType:     "launch_operation",
 		EventState:    "started",

@@ -1,6 +1,8 @@
 package stackpointio
 
-import "time"
+import (
+	"time"
+)
 
 // Organization is the top level of the hierarchy
 type Organization struct {
@@ -141,9 +143,21 @@ type NodePool struct {
 
 // NodeAdd encapsulates the details of a call to add nodes to a cluster.
 type NodeAdd struct {
-	Size  string `json:"size"`
-	Count int    `json:"node_count"`
+	// Size is a cloudprovider-dependent string that describes the type of node to add
+	Size string `json:"size"`
+	// Count is the number of nodes to add
+	Count int `json:"node_count"`
+	// Group is the name of a stackpointcloud nodepool in the cluster
 	Group string `json:"group,omitempty"`
+	// NodePool is the id of the stackpointcloud nodepool.
+	NodePoolID int `json:"node_pool"`
+	// Role describes the role of this node - ["worker", "master"]
+	Role string `json:"role,omitempty"`
+	// Zone is a cloudprovider-dependent string for the node location
+	Zone string `json:"zone,omitempty"`
+	// ProviderSubnet... are cloudprovider-dependent network restrictions
+	ProviderSubnetID   string `json:"provider_subnet_id,omitempty"`
+	ProviderSubnetCidr string `json:"provider_subnet_cidr,omitempty"`
 }
 
 // PersistentVolume is the representation of a Kubernetes PersistentVolume in
