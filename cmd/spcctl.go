@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/StackPointCloud/stackpoint-sdk-go/pkg/stackpointio"
 	"github.com/golang/glog"
@@ -53,6 +54,14 @@ func (cluster *StackpointClient) getNodePools() ([]stackpointio.NodePool, error)
 	return cluster.client.GetNodePools(cluster.org, cluster.id)
 }
 
+func (cluster *StackpointClient) getNodePool(nodePoolID string) (stackpointio.NodePool, error) {
+	id, err := strconv.Atoi(nodePoolID)
+	if err != nil {
+		return stackpointio.NodePool{}, fmt.Errorf("Invalid nodepool id \"%s\"", nodePoolID)
+	}
+	return cluster.client.GetNodePool(cluster.org, cluster.id, id)
+}
+
 func (cluster *StackpointClient) getUser() (stackpointio.User, error) {
 	return cluster.client.GetUser()
 }
@@ -76,6 +85,9 @@ func get(c *cli.Context) error {
 
 	case "nodepools":
 		response, apiErr = cluster.getNodePools()
+
+	case "nodepool":
+		response, apiErr = cluster.getNodePool(c.Args().Get(1))
 
 	case "user":
 		response, apiErr = cluster.getUser()

@@ -133,8 +133,8 @@ type NodePool struct {
 	NodeCount          int       `json:"node_count"`
 	Platform           string    `json:"platform"`
 	Channel            string    `json:"channel"`
-	Role               string    `json:"role"`
-	State              string    `json:"state"` // draft, ...
+	Role               string    `json:"role"`  // []string{"master", "worker"}
+	State              string    `json:"state"` // []string{"draft","active","failed","deleting","deleted"}
 	Default            bool      `json:"is_default"`
 	Created            time.Time `json:"created"`
 	Updated            time.Time `json:"updated,omitempty"`
