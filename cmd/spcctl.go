@@ -46,6 +46,14 @@ func NewClusterClient(c *cli.Context) (*StackpointClient, error) {
 	return spcClient, nil
 }
 
+func (cluster *StackpointClient) getOrganizations() ([]stackpointio.Organization, error) {
+	return cluster.client.GetOrganizations()
+}
+
+func (cluster *StackpointClient) getOrganization() (stackpointio.Organization, error) {
+	return cluster.client.GetOrganization(cluster.org)
+}
+
 func (cluster *StackpointClient) getNodes() ([]stackpointio.Node, error) {
 	return cluster.client.GetNodes(cluster.org, cluster.id)
 }
@@ -80,6 +88,16 @@ func get(c *cli.Context) error {
 	var apiErr error
 
 	switch request {
+
+	case "orgs":
+		response, apiErr = cluster.getOrganizations()
+
+	case "org":
+		response, apiErr = cluster.getOrganization()
+
+	case "user":
+		response, apiErr = cluster.getUser()
+
 	case "nodes":
 		response, apiErr = cluster.getNodes()
 
@@ -89,11 +107,8 @@ func get(c *cli.Context) error {
 	case "nodepool":
 		response, apiErr = cluster.getNodePool(c.Args().Get(1))
 
-	case "user":
-		response, apiErr = cluster.getUser()
-
 	default:
-		return cli.NewExitError(fmt.Sprintf("Invalid get request: %s", request), 1)
+		return cli.NewExitError(fmt.Sprintf("Invalid get request ? : %s", request), 1)
 	}
 
 	if apiErr != nil {

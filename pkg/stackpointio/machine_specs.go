@@ -46,7 +46,7 @@ var allSpecs = map[string]mspec{
 	"c4.xlarge":  mspec{4, 7500},
 	"c4.2xlarge": mspec{8, 15000},
 	"c4.4xlarge": mspec{16, 30000},
-	"c4.8xlarge": mspec{32, 60000},
+	"c4.8xlarge": mspec{36, 60000},
 
 	"m3.large":   mspec{2, 7500},
 	"m3.xlarge":  mspec{4, 15000},

@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/golang/glog"
 )
@@ -22,7 +23,7 @@ type APIClient struct {
 func NewClient(token, endpoint string, client ...*http.Client) *APIClient {
 	c := &APIClient{
 		token:    token,
-		endpoint: endpoint,
+		endpoint: strings.TrimRight(endpoint, "/"),
 	}
 	if len(client) != 0 {
 		c.httpClient = client[0]
@@ -254,6 +255,26 @@ func (client *APIClient) AddNodes(organizationID, clusterID int, nodeAdd NodeAdd
 		return []Node{}, invalid
 	}
 	path := fmt.Sprintf("/orgs/%d/clusters/%d/add_node", organizationID, clusterID)
+	content, err := client.post(path, nodeAdd)
+	if err != nil {
+		return []Node{}, err
+	}
+	glog.V(8).Info("add node response: " + string(content))
+	var response []Node
+	err = json.Unmarshal(content, &response)
+	if err != nil {
+		return []Node{}, err
+	}
+	return response, nil
+}
+
+// AddNodesToNodePool sends a request to add nodes to a nodepool, returns immediately with the Nodes under construction
+func (client *APIClient) AddNodesToNodePool(organizationID, clusterID, nodepoolID int, nodeAdd NodeAdd) ([]Node, error) {
+	invalid := Validate(nodeAdd)
+	if invalid != nil {
+		return []Node{}, invalid
+	}
+	path := fmt.Sprintf("/orgs/%d/clusters/%d/nodepools/%d/add", organizationID, clusterID, nodepoolID)
 	content, err := client.post(path, nodeAdd)
 	if err != nil {
 		return []Node{}, err
