@@ -1,71 +1,94 @@
 # stackpoint.io Go SDK
 
-The project contains a set of stackpoint type definitions, a
-client that interacts with a stackpoint server, and an example
-commandline binary.
+Version: stackpoint-sdk-go **1.0.0**
 
-At the current time, the client library does not cover the full
-capabilities of the stackpoint api, and so the library remains
-unversioned.  At such point as coverage is roughly complete, a 
-library version will be assigned to match the stackpoint api
-version.  Although it has to be considered a pre-alpha library,
-it is still useful for programming against the stackpoint servers.
-Contributions and pull requests are welcome.
+The StackPointCloud software development kit for [Go](https://www.golang.org/) provides you with access to the StackPointCloud API. It is designed for developers who are building applications in Go.
 
-In order to use the client from the stackpoint go sdk, you must 
-provide a stackpoint api token and an url.
+In order to use the client from the StackPointCloud Go SDK, you must provide a StackPointCloud API token and endpoint url.
+
+#### Installation
+
+Install the Go language from from the official [Go installation](https://golang.org/doc/install) guide or using your Linux distribution package management system.
+
+The `GOPATH` environment variable specifies the location of your Go workspace. It is likely the only environment variable you will need to set when developing Go code. This is an example of pointing to a workspace configured under your home directory:
+
+```
+mkdir -p ~/go/bin
+export GOPATH=~/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOBIN
+```
+
+The following `go` command will download `stackpoint-sdk-go` to your configured `GOPATH`:
+
+```go
+go get "github.com/StackPointCloud/stackpoint-sdk-go"
+```
+
+The source code of the package will be located here:
+
+    $GOPATH/src/github.com/StackPointCloud/stackpoint-sdk-go
 
 ## Library
 
-Incorporate the library into your application as you would normally, 
-with the dependency management tool of your choice.
+Include the StackPointCloud SDK for Go like any other Go library. For example, create main package file *example.go*:
 
-## Command-line interface
+```go
+package main
 
-### Build
+import (
+	"fmt"
+)
 
-The commandline client, `spcctl`, uses _dep_ to manage dependencies; see https://github.com/golang/dep for more information. To build and install 
-the commandline client,
-```
-go get github.com/StackPointCloud/stackpoint-sdk-go/cmd
-cd $GOPATH/src/github.com/StackPointCloud/stackpoint-sdk-go/
-dep ensure
-GOBIN=$GOPATH/bin go install -v cmd/spcctl.go
-```
-
-### Use
-
-The commandline client requires a token, a url, an organization id and a 
-cluster id. These values may be set from environment variables or from 
-the commandline.  The `get` subcommand simply retrieves stackpoint objects
-in a serialized json form to stdout.
-
-In this example, the CLUSTER_API_TOKEN environment variable has been set, and
-other values are specified as arguments. The json result can be processed with 
-`jq`
-
-```
-$ spcctl --url=https://api-staging.stackpoint.io --org=4 --cluster=2904  get nodes | jq '.[] | select(.role=="master")'
-{
-  "pk": 9409,
-  "name": "",
-  "cluster": 2904,
-  "instance_id": "spcx31lvn3-master-1",
-  "role": "master",
-  "private_ip": "10.136.46.40",
-  "public_ip": "198.211.101.121",
-  "platform": "coreos",
-  "image": "coreos-stable",
-  "location": "nyc1",
-  "size": "2gb",
-  "state": "running",
-  "created": "2017-11-03T15:43:56.695056Z",
-  "updated": "2017-11-03T15:43:56.695072Z"
+func main() {
 }
 ```
 
-The CLI is quite limited in functionality. Future extensions will include
+Include the StackPointCloud SDK for Go under the list of imports.
 
-- more get-able types to inspect
-- creation of clusters and nodes
-- interaction with existing clusters
+```go
+import(
+	"fmt"    
+	spio "github.com/StackPointCloud/stackpoint-sdk-go"
+)
+```
+
+#### Authentication
+
+Add your StackPointCloud API token and endpoint URL to the client connection.
+
+```go
+client := spio.NewClient("token", "endpoint")
+```
+
+It might be necessary to accept credentials through environment variables in a containerized environment.
+
+Set your environment variables in your shell.
+
+```
+export SPC_API_TOKEN="YOUR TOKEN HERE"
+export SPC_BASE_API_URL="YOUR ENDPOINT URL HERE"
+```
+
+Now you can use a helper function to get a client instance with environment variables.
+
+```go
+import (
+	"fmt"
+	"os"
+	spio "github.com/StackPointCloud/stackpoint-sdk-go"
+)
+
+func main() {
+	client, err := spio.NewClientFromEnv()
+...
+```
+
+**Caution**: You will want to ensure you follow security best practices when using credentials within your code or stored in a file.
+-----------------
+
+## Examples
+
+The StackPointCloud SDK for Go comes with several example programs to demonstrate how most major operations can be performed, from listing organizations and nodes, to building clusters in various cloud ecosystems.  The examples will be located in:
+
+github.com/StackPointCloud/stackpoint-sdk-go/example
