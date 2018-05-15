@@ -13,10 +13,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Get list of configured clusters
 	clusters, err := client.GetClusters(orgID)
@@ -39,28 +39,27 @@ func main() {
 	fmt.Printf("Enter cluster ID to add node to: ")
 	fmt.Scanf("%d", &clusterID)
 
+	// Get list of instance types for provider
+	mOptions, err := client.GetInstanceSpecs(providers[clusterID])
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-  // Get list of instance types for provider
-  mOptions, err := client.GetInstanceSpecs(providers[clusterID])
-  if err != nil {
-         log.Fatal(err.Error())
-  }
+	// List instance types
+	fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
+	for _, opt := range spio.GetFormattedInstanceList(mOptions) {
+		fmt.Println(opt)
+	}
 
-  // List instance types
-  fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
-  for _, opt := range spio.GetFormattedInstanceList(mOptions) {
-          fmt.Println(opt)
-        }
+	// Get node size selection from user
+	var nodeSize string
+	fmt.Printf("Enter node size: ")
+	fmt.Scanf("%s", &nodeSize)
 
-  // Get node size selection from user
-  var nodeSize string
-  fmt.Printf("Enter node size: ")
-  fmt.Scanf("%s", &nodeSize)
-
-  // Validate machine type selection
-  if !spio.InstanceInList(mOptions, nodeSize) {
-        log.Fatalf("Invalid option: %s\n", nodeSize)
-  }
+	// Validate machine type selection
+	if !spio.InstanceInList(mOptions, nodeSize) {
+		log.Fatalf("Invalid option: %s\n", nodeSize)
+	}
 
 	// Set up new master node
 	newNode := spio.NodeAdd{
@@ -68,7 +67,6 @@ func main() {
 		Role:  "master",
 		Size:  nodeSize,
 	}
-
 
 	// Add new node
 	nodes, err := client.AddNode(orgID, clusterID, newNode)

@@ -18,10 +18,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Gather access key for AWS
 	var awsAccessKey string
@@ -43,10 +43,10 @@ func main() {
 		Workspaces: []int{},
 		Keys:       []spio.Key{pubKey, pvtKey}}
 
-        keyset, err := client.CreateKeyset(orgID, newKeyset)
-        if err != nil {
-                log.Fatal(err)
-        }
-        fmt.Println("CreateKeyset created,")
-        spio.PrettyPrint(keyset)
+	keyset, err := client.CreateKeyset(orgID, newKeyset)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("CreateKeyset created,")
+	spio.PrettyPrint(keyset)
 }

@@ -13,10 +13,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Get list of configured clusters
 	clusters, err := client.GetClusters(orgID)
@@ -43,9 +43,9 @@ func main() {
 	fmt.Scanf("%s", &solutionName)
 
 	// Set up new master node
-	newSolution := spio.Solution {
+	newSolution := spio.Solution{
 		Solution: solutionName,
-		State: "draft",
+		State:    "draft",
 	}
 	// Add new solution
 	solution, err := client.AddSolution(orgID, clusterID, newSolution)

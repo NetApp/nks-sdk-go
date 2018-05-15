@@ -18,10 +18,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-        if len(orgs) == 0 {
-                fmt.Println("Sorry, no organizations defined yet")
-                return
-        }
+	if len(orgs) == 0 {
+		fmt.Println("Sorry, no organizations defined yet")
+		return
+	}
 
 	// Print list of organizations
 	for i := 0; i < len(orgs); i++ {

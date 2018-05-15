@@ -19,10 +19,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Gather user file where JSON credential file is located
 	var jsonFile string
@@ -43,10 +43,10 @@ func main() {
 		Workspaces: []int{},
 		Keys:       []spio.Key{jsonKey}}
 
-        keyset, err := client.CreateKeyset(orgID, newKeyset)
-        if err != nil {
-                log.Fatal(err)
-        }
-        fmt.Println("CreateKeyset created,")
-        spio.PrettyPrint(keyset)
+	keyset, err := client.CreateKeyset(orgID, newKeyset)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("CreateKeyset created,")
+	spio.PrettyPrint(keyset)
 }

@@ -14,15 +14,15 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-        // Get cluster ID from user
-        var clusterID int
-        fmt.Printf("Enter cluster ID: ")
-        fmt.Scanf("%d", &clusterID)
+	// Get cluster ID from user
+	var clusterID int
+	fmt.Printf("Enter cluster ID: ")
+	fmt.Scanf("%d", &clusterID)
 
 	for i := 1; ; i++ {
 		state, err := client.GetClusterState(orgID, clusterID)

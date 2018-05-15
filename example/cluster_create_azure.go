@@ -7,14 +7,14 @@ import (
 )
 
 const (
-	provider       = "azure"
-	clusterName    = "Test Azure Cluster Go SDK"
-	region         = "eastus"
-	resourceGroup  = "__new__" // Azure creates network subsystems inside of a resource group or `__new__`
-	networkID      = "__new__" // ID of existing Azure virtual network or `__new__`
-	networkCIDR    = "172.23.0.0/16" // CIDR for a new network or CIDR of the existing network
-	subnetID       = "__new__" // CIDR for an existing subnet in specified network or `__new__`
-	subnetCIDR     = "172.23.1.0/24" // CIDR for a new subnet or CIDR of the existing subnet
+	provider      = "azure"
+	clusterName   = "Test Azure Cluster Go SDK"
+	region        = "eastus"
+	resourceGroup = "__new__"       // Azure creates network subsystems inside of a resource group or `__new__`
+	networkID     = "__new__"       // ID of existing Azure virtual network or `__new__`
+	networkCIDR   = "172.23.0.0/16" // CIDR for a new network or CIDR of the existing network
+	subnetID      = "__new__"       // CIDR for an existing subnet in specified network or `__new__`
+	subnetCIDR    = "172.23.1.0/24" // CIDR for a new subnet or CIDR of the existing subnet
 )
 
 func main() {
@@ -24,10 +24,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	sshKeysetID, err := spio.GetIDFromEnv("SPC_SSH_KEYSET")
 	if err != nil {
@@ -39,27 +39,27 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        // Get list of instance types for provider
-        mOptions, err := client.GetInstanceSpecs(provider)
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	// Get list of instance types for provider
+	mOptions, err := client.GetInstanceSpecs(provider)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-        // List instance types
-        fmt.Printf("Node size options for provider %s:\n", provider)
-        for _, opt := range spio.GetFormattedInstanceList(mOptions) {
-                fmt.Println(opt)
-        }
+	// List instance types
+	fmt.Printf("Node size options for provider %s:\n", provider)
+	for _, opt := range spio.GetFormattedInstanceList(mOptions) {
+		fmt.Println(opt)
+	}
 
-        // Get node size selection from user
-        var nodeSize string
-        fmt.Printf("Enter node size: ")
-        fmt.Scanf("%s", &nodeSize)
+	// Get node size selection from user
+	var nodeSize string
+	fmt.Printf("Enter node size: ")
+	fmt.Scanf("%s", &nodeSize)
 
-        // Validate machine type selection
-        if !spio.InstanceInList(mOptions, nodeSize) {
-                log.Fatalf("Invalid option: %s\n", nodeSize)
-        }
+	// Validate machine type selection
+	if !spio.InstanceInList(mOptions, nodeSize) {
+		log.Fatalf("Invalid option: %s\n", nodeSize)
+	}
 
 	newSolution := spio.Solution{Solution: "helm_tiller"}
 	newCluster := spio.Cluster{Name: clusterName,
@@ -70,11 +70,11 @@ func main() {
 		WorkerCount:        2,
 		WorkerSize:         nodeSize,
 		Region:             region,
-        	ProviderResourceGp: resourceGroup,
-        	ProviderNetworkID:  networkID,
-        	ProviderNetworkCdr: networkCIDR,
-        	ProviderSubnetID:   subnetID,
-        	ProviderSubnetCidr: subnetCIDR,
+		ProviderResourceGp: resourceGroup,
+		ProviderNetworkID:  networkID,
+		ProviderNetworkCdr: networkCIDR,
+		ProviderSubnetID:   subnetID,
+		ProviderSubnetCidr: subnetCIDR,
 		KubernetesVersion:  "v1.8.7",
 		RbacEnabled:        true,
 		DashboardEnabled:   true,
@@ -83,7 +83,7 @@ func main() {
 		Channel:            "stable",
 		SSHKeySet:          sshKeysetID,
 		Solutions:          []spio.Solution{newSolution}}
-//spio.PrettyPrint(newCluster); return;
+	//spio.PrettyPrint(newCluster); return;
 	cluster, err := client.CreateCluster(orgID, newCluster)
 	if err != nil {
 		log.Fatal(err)

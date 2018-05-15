@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	awsZone = "us-west-2a"
-	awsSubnetID   = "__new__"  // replace with your AWS subnet ID if you have one
+	awsZone       = "us-west-2a"
+	awsSubnetID   = "__new__" // replace with your AWS subnet ID if you have one
 	awsSubnetCidr = "172.23.5.0/24"
 )
 
@@ -19,10 +19,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Get list of configured clusters
 	clusters, err := client.GetClusters(orgID)
@@ -44,42 +44,42 @@ func main() {
 	var clusterID int
 	fmt.Printf("Enter cluster ID to add node to: ")
 	fmt.Scanf("%d", &clusterID)
-  
-  // Print list of clusters, saving map of providers for later use
-  providers := make(map[int]string)
-  for i := 0; i < len(clusters); i++ {
-          fmt.Printf("Cluster(%d): %v\n", clusters[i].ID, clusters[i].Name)
-          providers[clusters[i].ID] = clusters[i].Provider
-  }
-  if len(clusters) == 0 {
-          fmt.Println("Sorry, no clusters defined yet")
-          return
-  }
-  // Get cluster ID from user to add node to
-  var clusterID int
-  fmt.Printf("Enter cluster ID to add node to: ")
-  fmt.Scanf("%d", &clusterID)
 
-  // Get list of instance types for provider
-  mOptions, err := client.GetInstanceSpecs(providers[clusterID])
-  if err != nil {
-          log.Fatal(err.Error())
-  }
+	// Print list of clusters, saving map of providers for later use
+	providers := make(map[int]string)
+	for i := 0; i < len(clusters); i++ {
+		fmt.Printf("Cluster(%d): %v\n", clusters[i].ID, clusters[i].Name)
+		providers[clusters[i].ID] = clusters[i].Provider
+	}
+	if len(clusters) == 0 {
+		fmt.Println("Sorry, no clusters defined yet")
+		return
+	}
+	// Get cluster ID from user to add node to
+	var clusterID int
+	fmt.Printf("Enter cluster ID to add node to: ")
+	fmt.Scanf("%d", &clusterID)
 
-  // List instance types
-  fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
-  for _, opt := range spio.GetFormattedInstanceList(mOptions) {
-          fmt.Println(opt)
-  }
+	// Get list of instance types for provider
+	mOptions, err := client.GetInstanceSpecs(providers[clusterID])
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	// List instance types
+	fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
+	for _, opt := range spio.GetFormattedInstanceList(mOptions) {
+		fmt.Println(opt)
+	}
 
 	// Set up new master node
 	newNode := spio.NodeAdd{
-		Count: 1,
-		Role:  "master",
-        	Zone: awsZone,
-        	ProviderSubnetID: awsSubnetID,
-        	ProviderSubnetCidr: awsSubnetCIDR,
-		      Size:  nodeSize,
+		Count:              1,
+		Role:               "master",
+		Zone:               awsZone,
+		ProviderSubnetID:   awsSubnetID,
+		ProviderSubnetCidr: awsSubnetCIDR,
+		Size:               nodeSize,
 	}
 
 	// Add new node

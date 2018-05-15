@@ -7,11 +7,11 @@ import (
 )
 
 const (
-        azureResourceGroup  = "spceastus" // Azure creates network subsystems inside of a resource group or `__new__`
-        azureNetworkID      = "k8s_spceastus_network_abld" // ID of existing Azure virtual network or `__new__`
-        azureNetworkCIDR    = "172.23.0.0/16" // CIDR for a new network or CIDR of the existing network
-        azureSubnetID       = "k8s_spceastus_subnet_rs29" // CIDR for an existing subnet in specified network or `__new__`
-        azureSubnetCIDR     = "172.23.1.0/24" // CIDR for a new subnet or CIDR of the existing subnet
+	azureResourceGroup = "spceastus"                  // Azure creates network subsystems inside of a resource group or `__new__`
+	azureNetworkID     = "k8s_spceastus_network_abld" // ID of existing Azure virtual network or `__new__`
+	azureNetworkCIDR   = "172.23.0.0/16"              // CIDR for a new network or CIDR of the existing network
+	azureSubnetID      = "k8s_spceastus_subnet_rs29"  // CIDR for an existing subnet in specified network or `__new__`
+	azureSubnetCIDR    = "172.23.1.0/24"              // CIDR for a new subnet or CIDR of the existing subnet
 )
 
 func main() {
@@ -21,10 +21,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Get list of configured clusters
 	clusters, err := client.GetClusters(orgID)
@@ -47,35 +47,35 @@ func main() {
 	fmt.Printf("Enter cluster ID to add node to: ")
 	fmt.Scanf("%d", &clusterID)
 
-        // Get list of instance types for provider
-        mOptions, err := client.GetInstanceSpecs(providers[clusterID])
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	// Get list of instance types for provider
+	mOptions, err := client.GetInstanceSpecs(providers[clusterID])
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-        // List instance types
-        fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
-        for _, opt := range spio.GetFormattedInstanceList(mOptions) {
-                fmt.Println(opt)
-        }
+	// List instance types
+	fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
+	for _, opt := range spio.GetFormattedInstanceList(mOptions) {
+		fmt.Println(opt)
+	}
 
-        // Get node size selection from user
-        var nodeSize string
-        fmt.Printf("Enter node size: ")
-        fmt.Scanf("%s", &nodeSize)
+	// Get node size selection from user
+	var nodeSize string
+	fmt.Printf("Enter node size: ")
+	fmt.Scanf("%s", &nodeSize)
 
-        // Validate machine type selection
-        if !spio.InstanceInList(mOptions, nodeSize) {
-                log.Fatalf("Invalid option: %s\n", nodeSize)
-        }
+	// Validate machine type selection
+	if !spio.InstanceInList(mOptions, nodeSize) {
+		log.Fatalf("Invalid option: %s\n", nodeSize)
+	}
 
 	// Set up new master node
 	newNode := spio.NodeAdd{
-		Count: 1,
-		Role:  "master",
-                ProviderSubnetID:   azureSubnetID,
-                ProviderSubnetCidr: azureSubnetCIDR,
-		Size:  nodeSize,
+		Count:              1,
+		Role:               "master",
+		ProviderSubnetID:   azureSubnetID,
+		ProviderSubnetCidr: azureSubnetCIDR,
+		Size:               nodeSize,
 	}
 
 	// Add new node

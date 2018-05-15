@@ -57,7 +57,7 @@ func (c *APIClient) GetNode(orgID, clusterID, nodeID int) (*Node, error) {
 
 // DeleteNode makes an API call to begin deleting a node
 func (c *APIClient) DeleteNode(orgID, clusterID, nodeID int) error {
-	return c.runRequest("DELETE", fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d",r
+	return c.runRequest("DELETE", fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d", r,
 		orgID, clusterID, nodeID), nil, nil, 204)
 }
 

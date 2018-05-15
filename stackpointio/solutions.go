@@ -58,3 +58,4 @@ func (c *APIClient) GetSolutionState(orgID, clusterID, solutionID int) (string, 
 		return "", err
 	}
 	return r.State, nil
+}

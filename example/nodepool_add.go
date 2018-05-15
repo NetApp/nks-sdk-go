@@ -15,10 +15,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Get list of configured clusters
 	clusters, err := client.GetClusters(orgID)
@@ -64,10 +64,10 @@ func main() {
 	fmt.Printf("Enter node size: ")
 	fmt.Scanf("%s", &nodeSize)
 
-        newNodepool := spio.NodePool{Name: nodepoolName,
-                NodeCount: nodeCount,
+	newNodepool := spio.NodePool{Name: nodepoolName,
+		NodeCount: nodeCount,
 		Size:      nodeSize,
-                Platform:  "coreos"}
+		Platform:  "coreos"}
 
 	// Create new nodepool
 	pool, err := client.CreateNodePool(orgID, clusterID, newNodepool)

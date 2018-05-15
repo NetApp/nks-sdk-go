@@ -18,10 +18,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Gather access token for DO
 	var doToken string
@@ -41,5 +41,5 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("CreateKeyset created,")
-        spio.PrettyPrint(keyset)
+	spio.PrettyPrint(keyset)
 }

@@ -6,7 +6,6 @@ import (
 	"log"
 )
 
-
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
 	client, err := spio.NewClientFromEnv()
@@ -14,10 +13,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-        orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Gather list of keysets
 	keysets, err := client.GetKeysets(orgID)
