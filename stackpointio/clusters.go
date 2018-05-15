@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+const clusterRunningStateString = "running"
+
 // Cluster describes a Kubernetes cluster in the StackPointCloud system
 type Cluster struct {
 	ID                 int        `json:"pk"`
@@ -74,10 +76,24 @@ func (c *APIClient) DeleteCluster(orgID, clusterID int) error {
 
 // GetClusterState returns state of cluster
 func (c *APIClient) GetClusterState(orgID, clusterID int) (string, error) {
-        r := &Cluster{}
-        err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d", orgID, clusterID), nil, r, 200)
-        if err != nil {
-                return "", err
-        }
+	r := &Cluster{}
+	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d", orgID, clusterID), nil, r, 200)
+	if err != nil {
+		return "", err
+	}
 	return r.State, nil
+}
+
+// WaitClusterProvisioned waits until cluster reaches the running state (configured as const above)
+func (c *APIClient) WaitClusterProvisioned(orgID, clusterID int) error {
+	for i := 1; ; i++ {
+		state, err := c.GetClusterState(orgID, clusterID)
+		if err != nil {
+			return err
+		}
+		if state == clusterRunningStateString {
+			return nil
+		}
+		time.Sleep(time.Second)
+	}
 }

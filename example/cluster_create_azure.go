@@ -67,7 +67,7 @@ func main() {
 		ProviderKey:        azrKeysetID,
 		MasterCount:        1,
 		MasterSize:         nodeSize,
-		WorkerCount:        1,
+		WorkerCount:        2,
 		WorkerSize:         nodeSize,
 		Region:             region,
         	ProviderResourceGp: resourceGroup,

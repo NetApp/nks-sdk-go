@@ -13,6 +13,7 @@ import (
 )
 
 const clientUserAgentString = "Stackpoint Go SDK v0.9"
+const debugAPIResponse = false
 
 // APIClient references an api token and an http endpoint
 type APIClient struct {
@@ -80,8 +81,8 @@ func (c *APIClient) runRequest(method, path string, postObj interface{}, respons
 	// Check Status Code versus what the caller wanted, error if not correct
 	if wantedStatus != resp.StatusCode {
 		body, _ := ioutil.ReadAll(resp.Body)
-		return errors.New(fmt.Sprintf("Incorrect status code returned: %d, Status: %s\n%s", 
-				resp.StatusCode, resp.Status, string(body)))
+		return errors.New(fmt.Sprintf("Incorrect status code returned: %d, Status: %s\n%s",
+			resp.StatusCode, resp.Status, string(body)))
 	}
 
 	// If method is DELETE, don't care about response
@@ -91,6 +92,9 @@ func (c *APIClient) runRequest(method, path string, postObj interface{}, respons
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
+	}
+	if debugAPIResponse {
+		fmt.Printf("API json response: %s\n", string(body))
 	}
 	return json.Unmarshal(body, response)
 }
