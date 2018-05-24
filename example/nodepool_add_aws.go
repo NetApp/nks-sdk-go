@@ -6,7 +6,12 @@ import (
 	"log"
 )
 
-const nodepoolName = "Test Nodepool"
+const (
+	nodepoolName = "Test Nodepool"
+	awsZone       = "us-west-2a"
+        awsSubnetID   = "subnet-f4295c9c" 
+        awsSubnetCIDR = "172.31.0.0/24"
+)
 
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
@@ -69,6 +74,9 @@ func main() {
 		Name: nodepoolName,
 		NodeCount: nodeCount,
 		Size:      nodeSize,
+		Zone:	   awsZone,
+                ProviderSubnetID:   awsSubnetID,
+                ProviderSubnetCidr: awsSubnetCIDR,
 		Platform:  "coreos",
 	}
 

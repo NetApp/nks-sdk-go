@@ -64,9 +64,11 @@ func main() {
 	fmt.Scanf("%d", &nodeCount)
 
 	// Use NodeAddToPool struct for this endpoint
-	newNode := spio.NodeAddToPool{Count: nodeCount,
+	newNode := spio.NodeAddToPool{
+		Count: nodeCount,
 		Role:       "worker",
-		NodePoolID: nodepoolID}
+		NodePoolID: nodepoolID,
+	}
 
 	nodes, err := client.AddNodesToNodePool(orgID, clusterID, nodepoolID, newNode)
 	if err != nil {

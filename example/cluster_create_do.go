@@ -9,6 +9,7 @@ import (
 const (
 	provider    = "do"
 	clusterName = "Test DigitalOcean Cluster Go SDK"
+	region      = "nyc1"
 )
 
 func main() {
@@ -63,11 +64,11 @@ func main() {
 		MasterSize:        nodeSize,
 		WorkerCount:       2,
 		WorkerSize:        nodeSize,
-		Region:            "nyc1",
+		Region:            region,
 		KubernetesVersion: "v1.8.3",
 		RbacEnabled:       true,
 		DashboardEnabled:  true,
-		EtcdType:          "self_hosted",
+		EtcdType:          "classic",
 		Platform:          "coreos",
 		Channel:           "stable",
 		SSHKeySet:         sshKeysetID,

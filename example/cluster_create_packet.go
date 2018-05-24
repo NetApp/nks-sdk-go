@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	provider    = "gke"
-	clusterName = "Test GKE Cluster Go SDK"
-	region      = "us-west1-a"
+	provider    = "packet"
+	clusterName = "Test Packet Cluster Go SDK"
+	projectID   = "93125c2a-8b78-4d4f-a3c4-7367d6b7cca8"
+	region      = "sjc1"
 )
 
 func main() {
@@ -19,17 +20,17 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	orgid, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	sshKeysetid, err := spio.GetIDFromEnv("SPC_SSH_KEYSET")
+	sshKeysetID, err := spio.GetIDFromEnv("SPC_SSH_KEYSET")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	gkeKeysetid, err := spio.GetIDFromEnv("SPC_GKE_KEYSET")
+	pktKeysetID, err := spio.GetIDFromEnv("SPC_PKT_KEYSET")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -59,22 +60,22 @@ func main() {
 	newSolution := spio.Solution{Solution: "helm_tiller"}
 	newCluster := spio.Cluster{Name: clusterName,
 		Provider:          provider,
-		ProviderKey:       gkeKeysetid,
+		ProviderKey:       pktKeysetID,
+		ProjectID:	   projectID,
 		MasterCount:       1,
 		MasterSize:        nodeSize,
 		WorkerCount:       2,
 		WorkerSize:        nodeSize,
 		Region:            region,
-		KubernetesVersion: "latest",
+		KubernetesVersion: "v1.8.7",
 		RbacEnabled:       true,
 		DashboardEnabled:  true,
 		EtcdType:          "classic",
-		Platform:          "gci",
+		Platform:          "coreos",
 		Channel:           "stable",
-		SSHKeySet:         sshKeysetid,
+		SSHKeySet:         sshKeysetID,
 		Solutions:         []spio.Solution{newSolution}}
-
-	cluster, err := client.CreateCluster(orgid, newCluster)
+	cluster, err := client.CreateCluster(orgID, newCluster)
 	if err != nil {
 		log.Fatal(err)
 	}

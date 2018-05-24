@@ -78,7 +78,7 @@ func main() {
 		KubernetesVersion:  "v1.8.7",
 		RbacEnabled:        true,
 		DashboardEnabled:   true,
-		EtcdType:           "self_hosted",
+		EtcdType:           "classic",
 		Platform:           "coreos",
 		Channel:            "stable",
 		SSHKeySet:          sshKeysetID,

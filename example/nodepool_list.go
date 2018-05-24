@@ -60,5 +60,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Printf("Name: %s\nInstanceID: %s\n", nodepool.Name, nodepool.InstanceID)
 	spio.PrettyPrint(nodepool)
 }

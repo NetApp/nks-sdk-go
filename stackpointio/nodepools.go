@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const nodePoolRunningStateString = "active"
+const NodePoolRunningStateString = "active"
 
 // NodePool defines the characteristics of a grouping of nodes
 type NodePool struct {
@@ -74,6 +74,20 @@ func (c *APIClient) CreateNodePool(orgID, clusterID int, newPool NodePool) (*Nod
 	return r, err
 }
 
+// GetNodesInPool returns a list of nodes that are in given nodepool ID
+func (c *APIClient) GetNodesInPool(orgID, clusterID, nodepoolID int) (rNodes []Node, err error) {
+	nodes, err := c.GetNodes(orgID, clusterID)
+        if err != nil {
+                return
+        }
+        for i := 0; i < len(nodes); i++ {
+                if nodes[i].NodePoolID == nodepoolID {
+			rNodes = append(rNodes, nodes[i])
+                }
+        }
+	return
+}
+
 // GetNodePoolState returns state of nodepool
 func (c *APIClient) GetNodePoolState(orgID, clusterID, nodepoolID int) (string, error) {
 	r := &NodePool{}
@@ -91,7 +105,7 @@ func (c *APIClient) WaitNodePoolProvisioned(orgID, clusterID, nodepoolID int) er
 		if err != nil {
 			return err
 		}
-		if state == nodePoolRunningStateString {
+		if state == NodePoolRunningStateString {
 			return nil
 		}
 		time.Sleep(time.Second)

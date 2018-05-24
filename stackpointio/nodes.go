@@ -3,9 +3,10 @@ package stackpointio
 import (
 	"fmt"
 	"time"
+	"strings"
 )
 
-const nodeRunningStateString = "running"
+const NodeRunningStateString = "running"
 
 // Node describes a node in a cluster.  The string field Size is provider-specific
 type Node struct {
@@ -85,9 +86,22 @@ func (c *APIClient) WaitNodeProvisioned(orgID, clusterID, nodeID int) error {
 		if err != nil {
 			return err
 		}
-		if state == nodeRunningStateString {
+		if state == NodeRunningStateString {
 			return nil
 		}
 		time.Sleep(time.Second)
 	}
+}
+
+// WaitNodeDeleted waits until node disappears
+func (c *APIClient) WaitNodeDeleted(orgID, clusterID, nodeID int) error {
+        for i := 1; ; i++ {
+                _, err := c.GetNodeState(orgID, clusterID, nodeID)
+                if err != nil {
+                        if strings.Contains(err.Error(), "404") {
+                                return nil
+                        }
+                }
+                time.Sleep(time.Second)
+        }
 }

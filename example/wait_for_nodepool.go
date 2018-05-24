@@ -29,17 +29,17 @@ func main() {
 	fmt.Printf("Enter nodepool ID: ")
 	fmt.Scanf("%d", &nodepoolID)
 
-	for i := 1; ; i++ {
-		isActive, err := client.IsNodePoolActive(orgID, clusterID, nodepoolID)
-		if err != nil {
-			log.Fatal(err)
-		}
+        for i := 1; ; i++ {
+                state, err := client.GetNodePoolState(orgID, clusterID, nodepoolID)
+                if err != nil {
+                        log.Fatal(err.Error())
+                }
 		fmt.Print("\033[200D")
-		fmt.Printf("(Try: %d) Nodepool at ID %d is active: %v", i, nodepoolID, isActive)
-		if isActive {
+		fmt.Printf("(Try: %d) Nodepool at ID %d is active: %v", i, nodepoolID, state)
+                if state == spio.NodePoolRunningStateString {
 			fmt.Println()
-			break
-		}
-		time.Sleep(time.Second)
-	}
+                        log.Fatal(err.Error())
+                }
+                time.Sleep(time.Second)
+        }
 }

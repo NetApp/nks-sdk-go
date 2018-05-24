@@ -3,6 +3,7 @@ package stackpointio
 import (
 	"fmt"
 	"time"
+	"strings"
 )
 
 const clusterRunningStateString = "running"
@@ -96,4 +97,17 @@ func (c *APIClient) WaitClusterProvisioned(orgID, clusterID int) error {
 		}
 		time.Sleep(time.Second)
 	}
+}
+
+// WaitClusterDeleted waits until cluster disappears
+func (c *APIClient) WaitClusterDeleted(orgID, clusterID int) error {
+        for i := 1; ; i++ {
+                _, err := c.GetClusterState(orgID, clusterID)
+                if err != nil {
+			if strings.Contains(err.Error(), "404") {
+                                return nil
+                        }
+                }
+                time.Sleep(time.Second)
+        }
 }

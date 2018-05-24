@@ -7,10 +7,7 @@ import (
 )
 
 const (
-	azureResourceGroup = "spceastus"                  // Azure creates network subsystems inside of a resource group or `__new__`
-	azureNetworkID     = "k8s_spceastus_network_abld" // ID of existing Azure virtual network or `__new__`
-	azureNetworkCIDR   = "172.23.0.0/16"              // CIDR for a new network or CIDR of the existing network
-	azureSubnetID      = "k8s_spceastus_subnet_rs29"  // CIDR for an existing subnet in specified network or `__new__`
+	azureSubnetID      = "k8s_spceastus_subnet_csnr"  // CIDR for an existing subnet in specified network or `__new__`
 	azureSubnetCIDR    = "172.23.1.0/24"              // CIDR for a new subnet or CIDR of the existing subnet
 )
 
