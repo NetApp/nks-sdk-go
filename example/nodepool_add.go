@@ -49,24 +49,24 @@ func main() {
 	if nodeCount < 1 {
 		log.Fatal("You must add at least one node to the new nodepool")
 	}
-        // Get list of instance types for provider
-        mOptions, err := client.GetInstanceSpecs(providers[clusterID])
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	// Get list of instance types for provider
+	mOptions, err := client.GetInstanceSpecs(providers[clusterID])
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-        // List instance types
-        fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
-        for _, opt := range spio.GetFormattedInstanceList(mOptions) {
-                fmt.Println(opt)
-        }
+	// List instance types
+	fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
+	for _, opt := range spio.GetFormattedInstanceList(mOptions) {
+		fmt.Println(opt)
+	}
 	// Get node size selection from user
 	var nodeSize string
 	fmt.Printf("Enter node size: ")
 	fmt.Scanf("%s", &nodeSize)
 
 	newNodepool := spio.NodePool{
-		Name: nodepoolName,
+		Name:      nodepoolName,
 		NodeCount: nodeCount,
 		Size:      nodeSize,
 		Platform:  "coreos",

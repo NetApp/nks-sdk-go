@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	nodepoolName = "Test Nodepool"
+	nodepoolName  = "Test Nodepool"
 	awsZone       = "us-west-2a"
-        awsSubnetID   = "subnet-f4295c9c" 
-        awsSubnetCIDR = "172.31.0.0/24"
+	awsSubnetID   = "subnet-f4295c9c"
+	awsSubnetCIDR = "172.31.0.0/24"
 )
 
 func main() {
@@ -54,30 +54,30 @@ func main() {
 	if nodeCount < 1 {
 		log.Fatal("You must add at least one node to the new nodepool")
 	}
-        // Get list of instance types for provider
-        mOptions, err := client.GetInstanceSpecs(providers[clusterID])
-        if err != nil {
-                log.Fatal(err.Error())
-        }
+	// Get list of instance types for provider
+	mOptions, err := client.GetInstanceSpecs(providers[clusterID])
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-        // List instance types
-        fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
-        for _, opt := range spio.GetFormattedInstanceList(mOptions) {
-                fmt.Println(opt)
-        }
+	// List instance types
+	fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
+	for _, opt := range spio.GetFormattedInstanceList(mOptions) {
+		fmt.Println(opt)
+	}
 	// Get node size selection from user
 	var nodeSize string
 	fmt.Printf("Enter node size: ")
 	fmt.Scanf("%s", &nodeSize)
 
 	newNodepool := spio.NodePool{
-		Name: nodepoolName,
-		NodeCount: nodeCount,
-		Size:      nodeSize,
-		Zone:	   awsZone,
-                ProviderSubnetID:   awsSubnetID,
-                ProviderSubnetCidr: awsSubnetCIDR,
-		Platform:  "coreos",
+		Name:               nodepoolName,
+		NodeCount:          nodeCount,
+		Size:               nodeSize,
+		Zone:               awsZone,
+		ProviderSubnetID:   awsSubnetID,
+		ProviderSubnetCidr: awsSubnetCIDR,
+		Platform:           "coreos",
 	}
 
 	// Create new nodepool

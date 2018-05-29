@@ -40,7 +40,7 @@ func main() {
 	}
 
 	// Get list of instance types for provider
-	mOptions, err := client.GetInstanceSpecs(provider)
+	mOptions, err := client.GetInstanceSpecs(provider, "")
 	if err != nil {
 		log.Fatal(err.Error())
 	}

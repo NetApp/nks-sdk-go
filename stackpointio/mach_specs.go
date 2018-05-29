@@ -3,6 +3,7 @@ package stackpointio
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 // Provider instance structs
@@ -22,9 +23,10 @@ type MachineSpecs struct {
 }
 
 // GetMachSpecs returns list of machine types for cloud provider type
-func (c *APIClient) GetInstanceSpecs(prov string) ([]Instance, error) {
+func (c *APIClient) GetInstanceSpecs(prov, endpoint string) ([]Instance, error) {
 	var r []ProviderSpecs
-	if err := c.runRequest("GET", fmt.Sprintf("/meta/provider-instances?provider=%s", prov), nil, &r, 200); err != nil {
+	if err := c.runRequest("GET", fmt.Sprintf("%s/meta/provider-instances?provider=%s",
+		strings.TrimRight(endpoint, "/"), prov), nil, &r, 200); err != nil {
 		return nil, err
 	}
 

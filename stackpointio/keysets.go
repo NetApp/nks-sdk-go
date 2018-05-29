@@ -42,7 +42,7 @@ func (c *APIClient) GetKeyset(orgID, keysetID int) (*Keyset, error) {
 // CreateKeyset creates keyset
 func (c *APIClient) CreateKeyset(orgID int, keyset Keyset) (*Keyset, error) {
 	r := &Keyset{}
-	err := c.runRequest("POST", fmt.Sprintf("/orgs/%d/keysets", orgID), keyset, r, 200)
+	err := c.runRequest("POST", fmt.Sprintf("/orgs/%d/keysets", orgID), keyset, r, 201)
 	return r, err
 }
 

@@ -77,14 +77,14 @@ func (c *APIClient) CreateNodePool(orgID, clusterID int, newPool NodePool) (*Nod
 // GetNodesInPool returns a list of nodes that are in given nodepool ID
 func (c *APIClient) GetNodesInPool(orgID, clusterID, nodepoolID int) (rNodes []Node, err error) {
 	nodes, err := c.GetNodes(orgID, clusterID)
-        if err != nil {
-                return
-        }
-        for i := 0; i < len(nodes); i++ {
-                if nodes[i].NodePoolID == nodepoolID {
+	if err != nil {
+		return
+	}
+	for i := 0; i < len(nodes); i++ {
+		if nodes[i].NodePoolID == nodepoolID {
 			rNodes = append(rNodes, nodes[i])
-                }
-        }
+		}
+	}
 	return
 }
 
@@ -99,8 +99,8 @@ func (c *APIClient) GetNodePoolState(orgID, clusterID, nodepoolID int) (string, 
 }
 
 // WaitNodePoolProvisioned waits until nodepool reaches the running state (configured as const above)
-func (c *APIClient) WaitNodePoolProvisioned(orgID, clusterID, nodepoolID int) error {
-	for i := 1; ; i++ {
+func (c *APIClient) WaitNodePoolProvisioned(orgID, clusterID, nodepoolID, timeout int) error {
+	for i := 1; i < timeout; i++ {
 		state, err := c.GetNodePoolState(orgID, clusterID, nodepoolID)
 		if err != nil {
 			return err
@@ -110,4 +110,6 @@ func (c *APIClient) WaitNodePoolProvisioned(orgID, clusterID, nodepoolID int) er
 		}
 		time.Sleep(time.Second)
 	}
+	return fmt.Errorf("Timeout (%d seconds) reached before nodepool reached state (%s)\n",
+		timeout, NodePoolRunningStateString)
 }

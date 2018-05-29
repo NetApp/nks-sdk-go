@@ -29,17 +29,25 @@ func main() {
 	fmt.Printf("Enter nodepool ID: ")
 	fmt.Scanf("%d", &nodepoolID)
 
-        for i := 1; ; i++ {
-                state, err := client.GetNodePoolState(orgID, clusterID, nodepoolID)
-                if err != nil {
-                        log.Fatal(err.Error())
-                }
+	// Get timeout from user
+	var timeout int
+	fmt.Printf("Enter timeout in seconds: ")
+	fmt.Scanf("%d", &timeout)
+
+	for i := 1; i < timeout; i++ {
+		state, err := client.GetNodePoolState(orgID, clusterID, nodepoolID)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
 		fmt.Print("\033[200D")
+		fmt.Print("\033[0K")
 		fmt.Printf("(Try: %d) Nodepool at ID %d is active: %v", i, nodepoolID, state)
-                if state == spio.NodePoolRunningStateString {
+		if state == spio.NodePoolRunningStateString {
 			fmt.Println()
-                        log.Fatal(err.Error())
-                }
-                time.Sleep(time.Second)
-        }
+			log.Fatal(err.Error())
+		}
+		time.Sleep(time.Second)
+	}
+	fmt.Printf("Timeout (%d seconds) reached before nodepool reached state (%s)\n",
+		timeout, spio.NodePoolRunningStateString)
 }

@@ -2,11 +2,11 @@ package stackpointio
 
 import (
 	"fmt"
-	"time"
 	"strings"
+	"time"
 )
 
-const clusterRunningStateString = "running"
+const ClusterRunningStateString = "running"
 
 // Cluster describes a Kubernetes cluster in the StackPointCloud system
 type Cluster struct {
@@ -86,28 +86,31 @@ func (c *APIClient) GetClusterState(orgID, clusterID int) (string, error) {
 }
 
 // WaitClusterProvisioned waits until cluster reaches the running state (configured as const above)
-func (c *APIClient) WaitClusterProvisioned(orgID, clusterID int) error {
-	for i := 1; ; i++ {
+func (c *APIClient) WaitClusterProvisioned(orgID, clusterID, timeout int) error {
+	for i := 1; i < timeout; i++ {
 		state, err := c.GetClusterState(orgID, clusterID)
 		if err != nil {
 			return err
 		}
-		if state == clusterRunningStateString {
+		if state == ClusterRunningStateString {
 			return nil
 		}
 		time.Sleep(time.Second)
 	}
+	return fmt.Errorf("Timeout (%d seconds) reached before cluster reached state (%s)\n",
+		timeout, ClusterRunningStateString)
 }
 
 // WaitClusterDeleted waits until cluster disappears
-func (c *APIClient) WaitClusterDeleted(orgID, clusterID int) error {
-        for i := 1; ; i++ {
-                _, err := c.GetClusterState(orgID, clusterID)
-                if err != nil {
+func (c *APIClient) WaitClusterDeleted(orgID, clusterID, timeout int) error {
+	for i := 1; i < timeout; i++ {
+		_, err := c.GetClusterState(orgID, clusterID)
+		if err != nil {
 			if strings.Contains(err.Error(), "404") {
-                                return nil
-                        }
-                }
-                time.Sleep(time.Second)
-        }
+				return nil
+			}
+		}
+		time.Sleep(time.Second)
+	}
+	return fmt.Errorf("Timeout (%d seconds) reached before cluster deleted\n", timeout)
 }

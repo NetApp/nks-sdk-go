@@ -7,10 +7,9 @@ import (
 )
 
 const (
-	provider    = "packet"
-	clusterName = "Test Packet Cluster Go SDK"
-	projectID   = "93125c2a-8b78-4d4f-a3c4-7367d6b7cca8"
-	region      = "sjc1"
+	provider    = "oneandone"
+	clusterName = "Test 1&1 Cluster Go SDK 2"
+	region      = "US"
 )
 
 func main() {
@@ -30,13 +29,13 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	pktKeysetID, err := spio.GetIDFromEnv("SPC_PKT_KEYSET")
+	oneandoneKeysetID, err := spio.GetIDFromEnv("SPC_ONEANDONE_KEYSET")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
 	// Get list of instance types for provider
-	mOptions, err := client.GetInstanceSpecs(provider, "")
+	mOptions, err := client.GetInstanceSpecs(provider, "https://api-staging.stackpoint.io/")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -60,14 +59,13 @@ func main() {
 	newSolution := spio.Solution{Solution: "helm_tiller"}
 	newCluster := spio.Cluster{Name: clusterName,
 		Provider:          provider,
-		ProviderKey:       pktKeysetID,
-		ProjectID:         projectID,
+		ProviderKey:       oneandoneKeysetID,
 		MasterCount:       1,
 		MasterSize:        nodeSize,
 		WorkerCount:       2,
 		WorkerSize:        nodeSize,
 		Region:            region,
-		KubernetesVersion: "v1.8.7",
+		KubernetesVersion: "v1.8.3",
 		RbacEnabled:       true,
 		DashboardEnabled:  true,
 		EtcdType:          "classic",

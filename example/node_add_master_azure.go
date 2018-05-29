@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	azureSubnetID      = "k8s_spceastus_subnet_csnr"  // CIDR for an existing subnet in specified network or `__new__`
-	azureSubnetCIDR    = "172.23.1.0/24"              // CIDR for a new subnet or CIDR of the existing subnet
+	azureSubnetID   = "k8s_spceastus_subnet_csnr" // CIDR for an existing subnet in specified network or `__new__`
+	azureSubnetCIDR = "172.23.1.0/24"             // CIDR for a new subnet or CIDR of the existing subnet
 )
 
 func main() {

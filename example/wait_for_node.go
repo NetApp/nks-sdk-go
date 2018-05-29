@@ -29,17 +29,25 @@ func main() {
 	fmt.Printf("Enter node ID: ")
 	fmt.Scanf("%d", &nodeID)
 
-	for i := 1; ; i++ {
+	// Get timeout from user
+	var timeout int
+	fmt.Printf("Enter timeout in seconds: ")
+	fmt.Scanf("%d", &timeout)
+
+	for i := 1; i < timeout; i++ {
 		state, err := client.GetNodeState(orgID, clusterID, nodeID)
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Print("\033[200D")
+		fmt.Print("\033[0K")
 		fmt.Printf("(Try: %d) Node at ID %d state: %v", i, nodeID, state)
-		if state == "running" {
+		if state == spio.NodeRunningStateString {
 			fmt.Println()
 			break
 		}
 		time.Sleep(time.Second)
 	}
+	fmt.Printf("Timeout (%d seconds) reached before node reached state (%s)\n",
+		timeout, spio.NodeRunningStateString)
 }

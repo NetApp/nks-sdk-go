@@ -2,8 +2,8 @@ package stackpointio
 
 import (
 	"fmt"
-	"time"
 	"strings"
+	"time"
 )
 
 const NodeRunningStateString = "running"
@@ -80,8 +80,8 @@ func (c *APIClient) GetNodeState(orgID, clusterID, nodeID int) (string, error) {
 }
 
 // WaitNodeProvisioned waits until node reaches the running state (configured as const above)
-func (c *APIClient) WaitNodeProvisioned(orgID, clusterID, nodeID int) error {
-	for i := 1; ; i++ {
+func (c *APIClient) WaitNodeProvisioned(orgID, clusterID, nodeID, timeout int) error {
+	for i := 1; i < timeout; i++ {
 		state, err := c.GetNodeState(orgID, clusterID, nodeID)
 		if err != nil {
 			return err
@@ -91,17 +91,20 @@ func (c *APIClient) WaitNodeProvisioned(orgID, clusterID, nodeID int) error {
 		}
 		time.Sleep(time.Second)
 	}
+	return fmt.Errorf("Timeout (%d seconds) reached before node reached state (%s)\n",
+		timeout, NodeRunningStateString)
 }
 
 // WaitNodeDeleted waits until node disappears
-func (c *APIClient) WaitNodeDeleted(orgID, clusterID, nodeID int) error {
-        for i := 1; ; i++ {
-                _, err := c.GetNodeState(orgID, clusterID, nodeID)
-                if err != nil {
-                        if strings.Contains(err.Error(), "404") {
-                                return nil
-                        }
-                }
-                time.Sleep(time.Second)
-        }
+func (c *APIClient) WaitNodeDeleted(orgID, clusterID, nodeID, timeout int) error {
+	for i := 1; i < timeout; i++ {
+		_, err := c.GetNodeState(orgID, clusterID, nodeID)
+		if err != nil {
+			if strings.Contains(err.Error(), "404") {
+				return nil
+			}
+		}
+		time.Sleep(time.Second)
+	}
+	return fmt.Errorf("Timeout (%d seconds) reached before node deleted\n", timeout)
 }

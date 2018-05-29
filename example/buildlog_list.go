@@ -37,32 +37,28 @@ func main() {
 	fmt.Printf("Enter cluster ID to list nodes from: ")
 	fmt.Scanf("%d", &clusterID)
 
-	// Get list of nodes configured
-	nodes, err := client.GetNodes(orgID, clusterID)
+	// Get list of buildlog events
+	bls, err := client.GetBuildLogs(orgID, clusterID)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	// List nodes
-	for i := 0; i < len(nodes); i++ {
-		fmt.Printf("Node(%d): %s node is %s", nodes[i].ID, nodes[i].Role, nodes[i].State)
-		if nodes[i].Role == "worker" {
-			fmt.Printf(", in NodePool(%d) %s", nodes[i].NodePoolID, nodes[i].NodePoolName)
-		}
-		fmt.Println()
+	// List events
+	for i := 0; i < len(bls); i++ {
+		fmt.Printf("BuildLog Entry(%d): %s=%s\n", bls[i].ID, bls[i].EventType, bls[i].EventState)
 	}
-	if len(nodes) == 0 {
-		fmt.Printf("Sorry, no nodes found\n")
+	if len(bls) == 0 {
+		fmt.Printf("Sorry, no build logs found\n")
 		return
 	}
-	// Get node ID from user to inspect
-	var nodeID int
-	fmt.Printf("Enter node ID to inspect: ")
-	fmt.Scanf("%d", &nodeID)
+	// Get buildlog ID from user to inspect
+	var buildlogID int
+	fmt.Printf("Enter buildlog ID to inspect: ")
+	fmt.Scanf("%d", &buildlogID)
 
-	node, err := client.GetNode(orgID, clusterID, nodeID)
+	buildlog, err := client.GetBuildLog(orgID, clusterID, buildlogID)
 	if err != nil {
 		log.Fatal(err)
 	}
-	spio.PrettyPrint(node)
+	spio.PrettyPrint(buildlog)
 }

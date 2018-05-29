@@ -5,9 +5,9 @@ import (
 	"time"
 )
 
-const solutionInstalledStateString = "installed"
+const SolutionInstalledStateString = "installed"
 
-// Solution is a application or process running with or on a kubernetes cluster
+// Solution struct to hold software packages running on a cluster
 type Solution struct {
 	ID         int       `json:"pk"`
 	Name       string    `json:"name"`
@@ -63,15 +63,17 @@ func (c *APIClient) GetSolutionState(orgID, clusterID, solutionID int) (string, 
 }
 
 // WaitSolutionInstalled waits until solution is installed
-func (c *APIClient) WaitSolutionInstalled(orgID, clusterID, solutionID int) error {
-        for i := 1; ; i++ {
-                state, err := c.GetSolutionState(orgID, clusterID, solutionID)
-                if err != nil {
-                        return err
-                }
-                if state == solutionInstalledStateString {
-                        return nil
-                }
-                time.Sleep(time.Second)
-        }
+func (c *APIClient) WaitSolutionInstalled(orgID, clusterID, solutionID, timeout int) error {
+	for i := 1; i < timeout; i++ {
+		state, err := c.GetSolutionState(orgID, clusterID, solutionID)
+		if err != nil {
+			return err
+		}
+		if state == SolutionInstalledStateString {
+			return nil
+		}
+		time.Sleep(time.Second)
+	}
+	return fmt.Errorf("Timeout (%d seconds) reached before solution reached state (%s)\n",
+		timeout, SolutionInstalledStateString)
 }

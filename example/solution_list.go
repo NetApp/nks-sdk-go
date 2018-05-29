@@ -24,11 +24,9 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	// Print list of clusters, saving map of providers for later use
-	providers := make(map[int]string)
+	// Print list of clusters
 	for i := 0; i < len(clusters); i++ {
 		fmt.Printf("Cluster(%d): %v\n", clusters[i].ID, clusters[i].Name)
-		providers[clusters[i].ID] = clusters[i].Provider
 	}
 	if len(clusters) == 0 {
 		fmt.Println("Sorry, no clusters defined yet")

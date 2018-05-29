@@ -65,7 +65,7 @@ func main() {
 
 	// Use NodeAddToPool struct for this endpoint
 	newNode := spio.NodeAddToPool{
-		Count: nodeCount,
+		Count:      nodeCount,
 		Role:       "worker",
 		NodePoolID: nodepoolID,
 	}
