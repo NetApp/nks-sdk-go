@@ -11,12 +11,12 @@ func main() {
 	// Set up HTTP client with environment variables for API token and URL
 	client, err := spio.NewClientFromEnv()
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 
 	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 
 	// Get cluster ID from user
@@ -34,20 +34,40 @@ func main() {
 	fmt.Printf("Enter timeout in seconds: ")
 	fmt.Scanf("%d", &timeout)
 
-	for i := 1; i < timeout; i++ {
-		state, err := client.GetNodePoolState(orgID, clusterID, nodepoolID)
+	// Use WaitNodePoolProvisioned function, but run it in separate routine, waitDoneCh set to true when finished
+	waitDoneCh := make(chan bool)
+	waitSuccessCh := make(chan bool)
+	waitResultCh := make(chan string)
+	go func() {
+		err = client.WaitNodePoolProvisioned(orgID, clusterID, nodepoolID, timeout)
+		waitDoneCh <- true
 		if err != nil {
-			log.Fatal(err.Error())
+			waitSuccessCh <- false
+			waitResultCh <- err.Error()
+		}
+		waitSuccessCh <- true
+		waitResultCh <- "NodePool provisioned successfully"
+	}()
+
+	// Enter loop for main routine, checking cluster status
+	for i := 1; ; i++ {
+		np, err := client.GetNodePool(orgID, clusterID, nodepoolID)
+		if err != nil {
+			log.Fatal(err)
 		}
 		fmt.Print("\033[200D")
 		fmt.Print("\033[0K")
-		fmt.Printf("(Try: %d) Nodepool at ID %d is active: %v", i, nodepoolID, state)
-		if state == spio.NodePoolRunningStateString {
-			fmt.Println()
-			log.Fatal(err.Error())
+		fmt.Printf("(Check: %d) NodePool at ID %d is: %v", i, nodepoolID, np.State)
+
+		// Check channel to see if routine is done waiting
+		if true == <-waitDoneCh {
+			if true == <-waitSuccessCh {
+				fmt.Printf("\nSUCCESS: %s\n", <-waitResultCh)
+			} else {
+				log.Fatalf("\n %s\n", <-waitResultCh)
+			}
+			break
 		}
 		time.Sleep(time.Second)
 	}
-	fmt.Printf("Timeout (%d seconds) reached before nodepool reached state (%s)\n",
-		timeout, spio.NodePoolRunningStateString)
 }

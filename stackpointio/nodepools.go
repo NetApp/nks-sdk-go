@@ -46,32 +46,64 @@ type NodeAddToPool struct {
 }
 
 // AddNodesToNodePool sends a request to add worker nodes to a nodepool, returns list of Node objects created
-func (c *APIClient) AddNodesToNodePool(orgID, clusterID, nodepoolID int, newNode NodeAddToPool) ([]Node, error) {
-	r := []Node{}
-	err := c.runRequest("POST", fmt.Sprintf("/orgs/%d/clusters/%d/nodepools/%d/add",
-		orgID, clusterID, nodepoolID), newNode, &r, 201)
-	return r, err
+func (c *APIClient) AddNodesToNodePool(orgID, clusterID, nodepoolID int, newNode NodeAddToPool) (nodes []Node, err error) {
+	req := &APIReq{
+		Method:       "POST",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/nodepools/%d/add", orgID, clusterID, nodepoolID),
+		ResponseObj:  &nodes,
+		PostObj:      newNode,
+		WantedStatus: 201,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // GetNodePools gets the NodePools for a cluster, returns list of NodePool objects
-func (c *APIClient) GetNodePools(orgID, clusterID int) ([]NodePool, error) {
-	r := []NodePool{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/nodepools", orgID, clusterID), nil, &r, 200)
-	return r, err
+func (c *APIClient) GetNodePools(orgID, clusterID int) (nps []NodePool, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/nodepools", orgID, clusterID),
+		ResponseObj:  &nps,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // GetNodePool gets a NodePool for a cluster, returns NodePool object
-func (c *APIClient) GetNodePool(orgID, clusterID, nodepoolID int) (*NodePool, error) {
-	r := &NodePool{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/nodepools/%d", orgID, clusterID, nodepoolID), nil, r, 200)
-	return r, err
+func (c *APIClient) GetNodePool(orgID, clusterID, nodepoolID int) (np *NodePool, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/nodepools/%d", orgID, clusterID, nodepoolID),
+		ResponseObj:  &np,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // CreateNodePool creates a new nodepool for a cluster, returns NodePool object
-func (c *APIClient) CreateNodePool(orgID, clusterID int, newPool NodePool) (*NodePool, error) {
-	r := &NodePool{}
-	err := c.runRequest("POST", fmt.Sprintf("/orgs/%d/clusters/%d/nodepools", orgID, clusterID), newPool, &r, 202)
-	return r, err
+func (c *APIClient) CreateNodePool(orgID, clusterID int, newPool NodePool) (np *NodePool, err error) {
+	req := &APIReq{
+		Method:       "POST",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/nodepools", orgID, clusterID),
+		ResponseObj:  &np,
+		PostObj:      newPool,
+		WantedStatus: 202,
+	}
+	err = c.runRequest(req)
+	return
+}
+
+// DeleteNodePool deletes nodepool
+func (c *APIClient) DeleteNodePool(orgID, clusterID, nodepoolID int) (err error) {
+	req := &APIReq{
+		Method:       "DELETE",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/nodepools/%d", orgID, clusterID, nodepoolID),
+		WantedStatus: 204,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // GetNodesInPool returns a list of nodes that are in given nodepool ID
@@ -88,24 +120,14 @@ func (c *APIClient) GetNodesInPool(orgID, clusterID, nodepoolID int) (rNodes []N
 	return
 }
 
-// GetNodePoolState returns state of nodepool
-func (c *APIClient) GetNodePoolState(orgID, clusterID, nodepoolID int) (string, error) {
-	r := &NodePool{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/nodepools/%d", orgID, clusterID, nodepoolID), nil, r, 200)
-	if err != nil {
-		return "", err
-	}
-	return r.State, nil
-}
-
 // WaitNodePoolProvisioned waits until nodepool reaches the running state (configured as const above)
 func (c *APIClient) WaitNodePoolProvisioned(orgID, clusterID, nodepoolID, timeout int) error {
 	for i := 1; i < timeout; i++ {
-		state, err := c.GetNodePoolState(orgID, clusterID, nodepoolID)
+		node, err := c.GetNodePool(orgID, clusterID, nodepoolID)
 		if err != nil {
 			return err
 		}
-		if state == NodePoolRunningStateString {
+		if node.State == NodePoolRunningStateString {
 			return nil
 		}
 		time.Sleep(time.Second)

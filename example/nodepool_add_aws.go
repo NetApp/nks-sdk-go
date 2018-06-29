@@ -55,7 +55,7 @@ func main() {
 		log.Fatal("You must add at least one node to the new nodepool")
 	}
 	// Get list of instance types for provider
-	mOptions, err := client.GetInstanceSpecs(providers[clusterID])
+	mOptions, err := client.GetInstanceSpecs(providers[clusterID], "")
 	if err != nil {
 		log.Fatal(err.Error())
 	}

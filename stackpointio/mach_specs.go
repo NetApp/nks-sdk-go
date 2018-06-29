@@ -24,15 +24,20 @@ type MachineSpecs struct {
 
 // GetMachSpecs returns list of machine types for cloud provider type
 func (c *APIClient) GetInstanceSpecs(prov, endpoint string) ([]Instance, error) {
-	var r []ProviderSpecs
-	if err := c.runRequest("GET", fmt.Sprintf("%s/meta/provider-instances?provider=%s",
-		strings.TrimRight(endpoint, "/"), prov), nil, &r, 200); err != nil {
+	ps := []ProviderSpecs{}
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("%s/meta/provider-instances?provider=%s", strings.TrimRight(endpoint, "/"), prov),
+		ResponseObj:  &ps,
+		WantedStatus: 200,
+	}
+	err := c.runRequest(req)
+	if err != nil {
 		return nil, err
 	}
-
 	// Returns list of objects, not array, so we need to read it in manually and decode JSON
 	var instances []Instance
-	machines := r[0].Config.(map[string]interface{}) // at instance_name: { cpu,memory,name }
+	machines := ps[0].Config.(map[string]interface{}) // at instance_name: { cpu,memory,name }
 	for k, v := range machines {
 		specs := v.(map[string]interface{}) // at cpu: x, memory: y, name: z
 		mach := new(MachineSpecs)

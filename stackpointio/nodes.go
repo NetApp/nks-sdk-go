@@ -43,50 +43,61 @@ type NodeAdd struct {
 }
 
 // GetNodes gets the nodes associated with a cluster and organization
-func (c *APIClient) GetNodes(orgID, clusterID int) ([]Node, error) {
-	r := []Node{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/nodes", orgID, clusterID), nil, &r, 200)
-	return r, err
+func (c *APIClient) GetNodes(orgID, clusterID int) (ns []Node, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/nodes", orgID, clusterID),
+		ResponseObj:  &ns,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // GetNode retrieves data for a single node
-func (c *APIClient) GetNode(orgID, clusterID, nodeID int) (*Node, error) {
-	r := &Node{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d", orgID, clusterID, nodeID), nil, r, 200)
-	return r, err
+func (c *APIClient) GetNode(orgID, clusterID, nodeID int) (n *Node, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d", orgID, clusterID, nodeID),
+		ResponseObj:  &n,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // DeleteNode makes an API call to begin deleting a node
-func (c *APIClient) DeleteNode(orgID, clusterID, nodeID int) error {
-	return c.runRequest("DELETE", fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d",
-		orgID, clusterID, nodeID), nil, nil, 204)
+func (c *APIClient) DeleteNode(orgID, clusterID, nodeID int) (err error) {
+	req := &APIReq{
+		Method:       "DELETE",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d", orgID, clusterID, nodeID),
+		WantedStatus: 204,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // AddNodes sends a request to add master nodes to a cluster, returns list of Node objects created
-func (c *APIClient) AddNode(orgID, clusterID int, newNode NodeAdd) ([]Node, error) {
-	r := []Node{}
-	err := c.runRequest("POST", fmt.Sprintf("/orgs/%d/clusters/%d/add_node", orgID, clusterID), newNode, &r, 201)
-	return r, err
-}
-
-// GetNodeState returns state of node
-func (c *APIClient) GetNodeState(orgID, clusterID, nodeID int) (string, error) {
-	r := &Node{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/nodes/%d", orgID, clusterID, nodeID), nil, r, 200)
-	if err != nil {
-		return "", err
+func (c *APIClient) AddNode(orgID, clusterID int, newNode NodeAdd) (ns []Node, err error) {
+	req := &APIReq{
+		Method:       "POST",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/add_node", orgID, clusterID),
+		ResponseObj:  &ns,
+		PostObj:      newNode,
+		WantedStatus: 201,
 	}
-	return r.State, nil
+	err = c.runRequest(req)
+	return
 }
 
 // WaitNodeProvisioned waits until node reaches the running state (configured as const above)
 func (c *APIClient) WaitNodeProvisioned(orgID, clusterID, nodeID, timeout int) error {
 	for i := 1; i < timeout; i++ {
-		state, err := c.GetNodeState(orgID, clusterID, nodeID)
+		node, err := c.GetNode(orgID, clusterID, nodeID)
 		if err != nil {
 			return err
 		}
-		if state == NodeRunningStateString {
+		if node.State == NodeRunningStateString {
 			return nil
 		}
 		time.Sleep(time.Second)
@@ -98,7 +109,7 @@ func (c *APIClient) WaitNodeProvisioned(orgID, clusterID, nodeID, timeout int) e
 // WaitNodeDeleted waits until node disappears
 func (c *APIClient) WaitNodeDeleted(orgID, clusterID, nodeID, timeout int) error {
 	for i := 1; i < timeout; i++ {
-		_, err := c.GetNodeState(orgID, clusterID, nodeID)
+		_, err := c.GetNode(orgID, clusterID, nodeID)
 		if err != nil {
 			if strings.Contains(err.Error(), "404") {
 				return nil

@@ -32,9 +32,9 @@ func main() {
 		fmt.Println("Sorry, no clusters defined yet")
 		return
 	}
-	// Get cluster ID from user to list nodes from
+	// Get cluster ID from user to list solutions from
 	var clusterID int
-	fmt.Printf("Enter cluster ID to list nodes from: ")
+	fmt.Printf("Enter cluster ID to list solutions from: ")
 	fmt.Scanf("%d", &clusterID)
 
 	// Get list of solutions configured

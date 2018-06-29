@@ -26,27 +26,49 @@ type Keyset struct {
 }
 
 // GetKeysets gets list of keysets for Org ID
-func (c *APIClient) GetKeysets(orgID int) ([]Keyset, error) {
-	r := []Keyset{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/keysets", orgID), nil, &r, 200)
-	return r, err
+func (c *APIClient) GetKeysets(orgID int) (kss []Keyset, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/keysets", orgID),
+		ResponseObj:  &kss,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // GetKeyset returns keyset for Org ID and Keyset ID
-func (c *APIClient) GetKeyset(orgID, keysetID int) (*Keyset, error) {
-	r := &Keyset{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/keysets/%d", orgID, keysetID), nil, r, 200)
-	return r, err
+func (c *APIClient) GetKeyset(orgID, keysetID int) (ks *Keyset, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/keysets/%d", orgID, keysetID),
+		ResponseObj:  &ks,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // CreateKeyset creates keyset
-func (c *APIClient) CreateKeyset(orgID int, keyset Keyset) (*Keyset, error) {
-	r := &Keyset{}
-	err := c.runRequest("POST", fmt.Sprintf("/orgs/%d/keysets", orgID), keyset, r, 201)
-	return r, err
+func (c *APIClient) CreateKeyset(orgID int, keyset Keyset) (ks *Keyset, err error) {
+	req := &APIReq{
+		Method:       "POST",
+		Path:         fmt.Sprintf("/orgs/%d/keysets", orgID),
+		ResponseObj:  &ks,
+		PostObj:      keyset,
+		WantedStatus: 201,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // DeleteKeyset deletes keyset
-func (c *APIClient) DeleteKeyset(orgID, keysetID int) error {
-	return c.runRequest("DELETE", fmt.Sprintf("/orgs/%d/keysets/%d", orgID, keysetID), nil, nil, 204)
+func (c *APIClient) DeleteKeyset(orgID, keysetID int) (err error) {
+	req := &APIReq{
+		Method:       "DELETE",
+		Path:         fmt.Sprintf("/orgs/%d/keysets/%d", orgID, keysetID),
+		WantedStatus: 204,
+	}
+	err = c.runRequest(req)
+	return
 }

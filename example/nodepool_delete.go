@@ -6,6 +6,8 @@ import (
 	"log"
 )
 
+const nodepoolName = "Test Nodepool"
+
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
 	client, err := spio.NewClientFromEnv()
@@ -32,25 +34,34 @@ func main() {
 		fmt.Println("Sorry, no clusters defined yet")
 		return
 	}
-	// Get cluster ID from user to add solution to
+	// Get cluster ID from user to list nodepools from
 	var clusterID int
-	fmt.Printf("Enter cluster ID to add solution to: ")
+	fmt.Printf("Enter cluster ID to list nodepools from: ")
 	fmt.Scanf("%d", &clusterID)
 
-	// Get solution selection from user
-	var solutionName string
-	fmt.Printf("Enter solution to add: ")
-	fmt.Scanf("%s", &solutionName)
-
-	// Set up new solution
-	newSolution := spio.Solution{
-		Solution: solutionName,
-		State:    "draft",
+	// Get list of nodepools to select from
+	nps, err := client.GetNodePools(orgID, clusterID)
+	if err != nil {
+		log.Fatal(err.Error())
 	}
-	// Add new solution
-	solution, err := client.AddSolution(orgID, clusterID, newSolution)
+
+	// List nodepools
+	for i := 0; i < len(nps); i++ {
+		fmt.Printf("Nodepool(%d): %v (node count: %d)\n", nps[i].ID, nps[i].Name, nps[i].NodeCount)
+	}
+	if len(nps) == 0 {
+		fmt.Println("Sorry, no nodepools found")
+		return
+	}
+	// Get nodepool ID from user to delete
+	var nodepoolID int
+	fmt.Printf("Enter nodepool ID to delete: ")
+	fmt.Scanf("%d", &nodepoolID)
+
+	// Create new nodepool
+	err = client.DeleteNodePool(orgID, clusterID, nodepoolID)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Solution creation sent (ID: %d), building...\n", solution.ID)
+	fmt.Println("Nodepool should delete shortly")
 }

@@ -17,13 +17,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-
 	// Get list of configured clusters
 	clusters, err := client.GetClusters(orgID)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-
 	// Print list of clusters
 	for i := 0; i < len(clusters); i++ {
 		fmt.Printf("Cluster(%d): %v\n", clusters[i].ID, clusters[i].Name)
@@ -32,25 +30,31 @@ func main() {
 		fmt.Println("Sorry, no clusters defined yet")
 		return
 	}
-	// Get cluster ID from user to add solution to
+	// Get cluster ID from user to delete solution from
 	var clusterID int
-	fmt.Printf("Enter cluster ID to add solution to: ")
+	fmt.Printf("Enter cluster ID to delete solution from: ")
 	fmt.Scanf("%d", &clusterID)
 
-	// Get solution selection from user
-	var solutionName string
-	fmt.Printf("Enter solution to add: ")
-	fmt.Scanf("%s", &solutionName)
-
-	// Set up new solution
-	newSolution := spio.Solution{
-		Solution: solutionName,
-		State:    "draft",
-	}
-	// Add new solution
-	solution, err := client.AddSolution(orgID, clusterID, newSolution)
+	// Get list of solutions configured
+	solutions, err := client.GetSolutions(orgID, clusterID)
 	if err != nil {
+		log.Fatal(err.Error())
+	}
+	// List solutions
+	for i := 0; i < len(solutions); i++ {
+		fmt.Printf("Solution(%d): %s solution is %s and deleteable is %t\n", solutions[i].ID, solutions[i].Name, solutions[i].State, solutions[i].Deleteable)
+	}
+	if len(solutions) == 0 {
+		fmt.Printf("Sorry, no solutions found\n")
+		return
+	}
+	// Get solution ID from user to delete
+	var solutionID int
+	fmt.Printf("Enter solution ID to delete: ")
+	fmt.Scanf("%d", &solutionID)
+
+	if err = client.DeleteSolution(orgID, clusterID, solutionID); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Solution creation sent (ID: %d), building...\n", solution.ID)
+	fmt.Printf("Solution should delete shortly\n")
 }

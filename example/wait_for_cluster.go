@@ -11,12 +11,12 @@ func main() {
 	// Set up HTTP client with environment variables for API token and URL
 	client, err := spio.NewClientFromEnv()
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 
 	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 
 	// Get cluster ID from user
@@ -29,23 +29,40 @@ func main() {
 	fmt.Printf("Enter timeout in seconds: ")
 	fmt.Scanf("%d", &timeout)
 
-	for i := 1; i < timeout; i++ {
-		state, err := client.GetClusterState(orgID, clusterID)
+	// Use WaitClusterProvisioned function, but run it in separate routine, waitDoneCh set to true when finished
+	waitDoneCh := make(chan bool)
+	waitSuccessCh := make(chan bool)
+	waitResultCh := make(chan string)
+	go func() {
+		err = client.WaitClusterProvisioned(orgID, clusterID, timeout)
+		waitDoneCh <- true
+		if err != nil {
+			waitSuccessCh <- false
+			waitResultCh <- err.Error()
+		}
+		waitSuccessCh <- true
+		waitResultCh <- "Cluster provisioned successfully"
+	}()
+
+	// Enter loop for main routine, checking cluster status
+	for i := 1; ; i++ {
+		cl, err := client.GetCluster(orgID, clusterID)
 		if err != nil {
 			log.Fatal(err)
 		}
-		if i == 1 {
-			state = "provisioned"
-		}
 		fmt.Print("\033[200D")
 		fmt.Print("\033[0K")
-		fmt.Printf("(Check: %d) Cluster at ID %d is: %v", i, clusterID, state)
-		if state == spio.ClusterRunningStateString {
-			fmt.Println()
+		fmt.Printf("(Check: %d) Cluster at ID %d is: %v", i, clusterID, cl.State)
+
+		// Check channel to see if routine is done waiting
+		if true == <-waitDoneCh {
+			if true == <-waitSuccessCh {
+				fmt.Printf("\nSUCCESS: %s\n", <-waitResultCh)
+			} else {
+				log.Fatalf("\n %s\n", <-waitResultCh)
+			}
 			break
 		}
 		time.Sleep(time.Second)
 	}
-	fmt.Printf("Timeout (%d seconds) reached before cluster reached state (%s)\n",
-		timeout, spio.ClusterRunningStateString)
 }

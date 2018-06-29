@@ -11,12 +11,12 @@ func main() {
 	// Set up HTTP client with environment variables for API token and URL
 	client, err := spio.NewClientFromEnv()
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 
 	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 
 	// Get cluster ID from user

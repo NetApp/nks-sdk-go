@@ -73,6 +73,7 @@ func main() {
 		Channel:           "stable",
 		SSHKeySet:         sshKeysetID,
 		Solutions:         []spio.Solution{newSolution}}
+return
 	cluster, err := client.CreateCluster(orgID, newCluster)
 	if err != nil {
 		log.Fatal(err)

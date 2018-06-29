@@ -1,0 +1,53 @@
+{
+   "solution":"jenkins-repo-1",
+   "name":"jenkins",
+   "installer":"helm",
+   "mode":null,
+   "tag":"0.9.0",
+   "config":{
+      "namespace":"jenkins",
+      "chart_name":"jenkins",
+      "version":"0.9.0",
+      "chart_path":"spc-trusted-charts/jenkins",
+      "release_name":"jenkins-steep-boat",
+      "logo":"http://trusted-charts-logos.stackpoint.io/jenkins.png",
+      "repository":1,
+      "values_yaml":"# Default values for jenkins.\n# This is a YAML-formatted file.\n# Declare name/value pairs to be passed into your templates.\n# name: value\n\nMaster:\n  Name: jenkins-master\n  Image: \"jenkinsci/jenkins\"\n  ImageTag: \"2.67\"\n  ImagePullPolicy: \"Always\"\n  Component: \"jenkins-master\"\n  UseSecurity: true\n  AdminUser: admin\n# AdminPassword: <defaults to random>\n  Cpu: \"200m\"\n  Memory: \"256Mi\"\n# Set min/max heap here if needed with:\n# JavaOpts: \"-Xms512m -Xmx512m\"\n# JenkinsOpts: \"\"\n# JenkinsUriPrefix: \"/jenkins\"\n  ServicePort: 8080\n# For minikube, set this to NodePort, elsewhere use LoadBalancer\n# Use ClusterIP if your setup includes ingress controller\n  ServiceType: LoadBalancer\n# Master Service annotations\n  ServiceAnnotations: {}\n    #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https\n# Used to create Ingress record (should used with ServiceType: ClusterIP)\n# HostName: jenkins.cluster.local\n# NodePort: <to set explicitly, choose port between 30000-32767\n  ContainerPort: 8080\n  SlaveListenerPort: 50000\n  LoadBalancerSourceRanges:\n  - 0.0.0.0/0\n# Optionally assign a known public LB IP\n# LoadBalancerIP: 1.2.3.4\n# Optionally configure a JMX port\n# requires additional JavaOpts, ie\n# JavaOpts: >\n#   -Dcom.sun.management.jmxremote.port=4000\n#   -Dcom.sun.management.jmxremote.authenticate=false\n#   -Dcom.sun.management.jmxremote.ssl=false\n# JMXPort: 4000\n# List of plugins to be install during Jenkins master start\n  InstallPlugins:\n      - kubernetes:0.11\n      - workflow-aggregator:2.5\n      - workflow-job:2.13\n      - credentials-binding:1.12\n      - git:3.4.0\n# Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval\n  # ScriptApproval:\n  #   - \"method groovy.json.JsonSlurperClassic parseText java.lang.String\"\n  #   - \"new groovy.json.JsonSlurperClassic\"\n# List of groovy init scripts to be executed during Jenkins master start\n  InitScripts:\n#  - |\n#    print 'adding global pipeline libraries, register properties, bootstrap jobs...'\n  CustomConfigMap: false\n# Node labels and tolerations for pod assignment\n# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector\n# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature\n  NodeSelector: {}\n  Tolerations: {}\n\n  Ingress:\n    Annotations:\n      # kubernetes.io/ingress.class: nginx\n      # kubernetes.io/tls-acme: \"true\"\n\n    TLS:\n      # - secretName: jenkins.cluster.local\n      #   hosts:\n      #     - jenkins.cluster.local\n\nAgent:\n  Enabled: true\n  Image: jenkinsci/jnlp-slave\n  ImageTag: 2.62\n  Component: \"jenkins-slave\"\n  Privileged: false\n  Cpu: \"200m\"\n  Memory: \"256Mi\"\n  # You may want to change this to true while testing a new image\n  AlwaysPullImage: false\n  # You can define the volumes that you want to mount for this container\n  # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret\n  # Configure the attributes as they appear in the corresponding Java class for that type\n  # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes\n  volumes:\n  # - type: Secret\n  #   secretName: mysecret\n  #   mountPath: /var/myapp/mysecret\n  NodeSelector: {}\n  # Key Value selectors. Ex:\n  # jenkins-agent: v1\n\nPersistence:\n  Enabled: true\n  ## A manually managed Persistent Volume and Claim\n  ## Requires Persistence.Enabled: true\n  ## If defined, PVC must be created manually before volume will be bound\n  # ExistingClaim:\n\n  ## jenkins data Persistent Volume Storage Class\n  ## If defined, storageClassName: <storageClass>\n  ## If set to \"-\", storageClassName: \"\", which disables dynamic provisioning\n  ## If undefined (the default) or set to null, no storageClassName spec is\n  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on\n  ##   GKE, AWS & OpenStack)\n  ##\n  # StorageClass: \"-\"\n\n  AccessMode: ReadWriteOnce\n  Size: 8Gi\n  volumes:\n#  - name: nothing\n#    emptyDir: {}\n  mounts:\n#  - mountPath: /var/nothing\n#    name: nothing\n#    readOnly: true\n\nNetworkPolicy:\n  # Enable creation of NetworkPolicy resources.\n  Enabled: false\n  # For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'\n  # For Kubernetes v1.7, use 'networking.k8s.io/v1'\n  ApiVersion: extensions/v1beta1\n\n## Install Default RBAC roles and bindings\nrbac:\n  install: false\n  serviceAccountName: default\n  # RBAC api version (currently either v1beta1 or v1alpha1)\n  apiVersion: v1beta1\n  # Cluster role reference\n  roleRef: cluster-admin\n",
+      "required_values":{
+
+      }
+   },
+   "spec":{
+      "requirements":{
+         "node":{
+            "count":2,
+            "cpu":2
+         },
+         "app":{
+            "rbac":false,
+            "namespace":"jenkins",
+            "valuesEditRequired":[
+
+            ],
+            "storage":true,
+            "loadbalancer":true
+         }
+      }
+   },
+   "dependencies":{
+      "name":"Helm Tiller",
+      "value":"helm_tiller",
+      "available":true,
+      "keysetRequired":false,
+      "tag":"latest",
+      "isPostBuildCompatible":true,
+      "isManagedIndependently":false,
+      "dependencies":[
+
+      ],
+      "isProviderCompatible":true,
+      "categories":[
+         "PaaS"
+      ]
+   }
+}

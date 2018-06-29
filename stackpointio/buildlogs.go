@@ -22,25 +22,35 @@ type BuildLog struct {
 
 // GetBuildLogs gets the list of buildlog entries associated with a cluster and organization
 func (c *APIClient) GetBuildLogs(orgID, clusterID int) (bls []BuildLog, err error) {
-	err = c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/logs", orgID, clusterID), nil, &bls, 200)
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/logs", orgID, clusterID),
+		ResponseObj:  &bls,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
 	return
 }
 
-// GetBuildLog retrieves buildlog entry for buildlog ID
-func (c *APIClient) GetBuildLog(orgID, clusterID, buildlogID int) (bl *BuildLog, err error) {
-	err = c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/logs/%d",
-		orgID, clusterID, buildlogID), nil, bl, 200)
-	return
-}
-
-// GetBuildLogEventState takes list of buildlogs, returns state of entry for eventType string
-func (c *APIClient) GetBuildLogEventState(bls []BuildLog, eventType string) string {
-	for _, bl := range bls {
-		if bl.EventType == eventType {
-			return bl.EventState
+// GetBuildLog retrieves buildlog entry for buildlog ID, or error if not found
+func (c *APIClient) GetBuildLog(bls []BuildLog, buildlogID int) (*BuildLog, error) {
+	for i, _ := range bls {
+		if bls[i].ID == buildlogID {
+			return &bls[i], nil
 		}
 	}
-	return ""
+	return nil, fmt.Errorf("No build log found by the ID: %i\n", buildlogID)
+}
+
+// GetBuildLogEventState takes a list of buildlogs, returns most recent build log
+// entry that matches eventType string, or returns nil if not found
+func (c *APIClient) GetBuildLogEventState(bls []BuildLog, eventType string) *BuildLog {
+	for i, _ := range bls {
+		if bls[i].EventType == eventType {
+			return &bls[i]
+		}
+	}
+	return nil
 }
 
 // WaitEventSuccess waits until event type has success state
@@ -50,7 +60,8 @@ func (c *APIClient) WaitBuildLogEventSuccess(orgID, clusterID, timeout int, even
 		if err != nil {
 			return err
 		}
-		if BuildLogEventStateSuccess == c.GetBuildLogEventState(bls, eventType) {
+		bl := c.GetBuildLogEventState(bls, eventType)
+		if bl != nil && bl.EventState == BuildLogEventStateSuccess {
 			return nil
 		}
 		time.Sleep(time.Second)

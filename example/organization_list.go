@@ -13,7 +13,6 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	// Get list of configured organizations
 	orgs, err := client.GetOrganizations()
 	if err != nil {
 		log.Fatal(err.Error())
@@ -22,12 +21,10 @@ func main() {
 		fmt.Println("Sorry, no organizations defined yet")
 		return
 	}
-
 	// Print list of organizations
 	for i := 0; i < len(orgs); i++ {
 		fmt.Printf("Org(%d): %v\n", orgs[i].ID, orgs[i].Name)
 	}
-
 	// Get organization ID from user to inspect
 	var orgID int
 	fmt.Printf("Enter org ID to inspect: ")

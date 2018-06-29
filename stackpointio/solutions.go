@@ -2,6 +2,7 @@ package stackpointio
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -25,55 +26,92 @@ type Solution struct {
 }
 
 // GetSolutions gets the solutions associated with a cluster and organization
-func (c *APIClient) GetSolutions(orgID, clusterID int) ([]Solution, error) {
-	r := []Solution{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/solutions", orgID, clusterID), nil, &r, 200)
-	return r, err
+func (c *APIClient) GetSolutions(orgID, clusterID int) (sols []Solution, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/solutions", orgID, clusterID),
+		ResponseObj:  &sols,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // GetSolution retrieves data for a single solution
-func (c *APIClient) GetSolution(orgID, clusterID, solutionID int) (*Solution, error) {
-	r := &Solution{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/solutions/%d",
-		orgID, clusterID, solutionID), nil, r, 200)
-	return r, err
+func (c *APIClient) GetSolution(orgID, clusterID, solutionID int) (sol *Solution, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/solutions/%d", orgID, clusterID, solutionID),
+		ResponseObj:  &sol,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // DeleteSolution makes an API call to begin deleting a solution
-func (c *APIClient) DeleteSolution(orgID, clusterID, solutionID int) error {
-	return c.runRequest("DELETE", fmt.Sprintf("/orgs/%d/clusters/%d/solutions/%d",
-		orgID, clusterID, solutionID), nil, nil, 204)
+func (c *APIClient) DeleteSolution(orgID, clusterID, solutionID int) (err error) {
+	req := &APIReq{
+		Method:       "DELETE",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/solutions/%d", orgID, clusterID, solutionID),
+		WantedStatus: 202,
+	}
+	err = c.runRequest(req)
+	return
 }
 
 // AddSolution sends a request to add a solution to a cluster, returns list of solutions added
-func (c *APIClient) AddSolution(orgID, clusterID int, newSolution Solution) (*Solution, error) {
-	r := &Solution{}
-	err := c.runRequest("POST", fmt.Sprintf("/orgs/%d/clusters/%d/solutions", orgID, clusterID), newSolution, r, 201)
-	return r, err
+func (c *APIClient) AddSolution(orgID, clusterID int, newSolution Solution) (sol *Solution, err error) {
+	req := &APIReq{
+		Method:       "POST",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/solutions", orgID, clusterID),
+		ResponseObj:  &sol,
+		PostObj:      newSolution,
+		WantedStatus: 201,
+	}
+	err = c.runRequest(req)
+	return
 }
 
-// GetSolutionState returns state of solution
-func (c *APIClient) GetSolutionState(orgID, clusterID, solutionID int) (string, error) {
-	r := &Solution{}
-	err := c.runRequest("GET", fmt.Sprintf("/orgs/%d/clusters/%d/solutions/%d", orgID, clusterID, solutionID), nil, r, 200)
-	if err != nil {
-		return "", err
+// AddSolutionFromJSON sends a request to add a solution to a cluster using the supplied JSON, returns list of solutions added
+func (c *APIClient) AddSolutionFromJSON(orgID, clusterID int, solJSON string) (sol *Solution, err error) {
+	req := &APIReq{
+		Method:       "POST",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/solutions", orgID, clusterID),
+		ResponseObj:  &sol,
+		Payload:      strings.NewReader(solJSON),
+		WantedStatus: 201,
 	}
-	return r.State, nil
+	err = c.runRequest(req)
+	return
 }
 
 // WaitSolutionInstalled waits until solution is installed
 func (c *APIClient) WaitSolutionInstalled(orgID, clusterID, solutionID, timeout int) error {
 	for i := 1; i < timeout; i++ {
-		state, err := c.GetSolutionState(orgID, clusterID, solutionID)
+		sol, err := c.GetSolution(orgID, clusterID, solutionID)
 		if err != nil {
 			return err
 		}
-		if state == SolutionInstalledStateString {
+		if sol.State == SolutionInstalledStateString {
 			return nil
 		}
 		time.Sleep(time.Second)
 	}
 	return fmt.Errorf("Timeout (%d seconds) reached before solution reached state (%s)\n",
 		timeout, SolutionInstalledStateString)
+}
+
+// WaitSolutionDeleted waits until solution disappears
+func (c *APIClient) WaitSolutionDeleted(orgID, clusterID, solutionID, timeout int) error {
+	for i := 1; i < timeout; i++ {
+		_, err := c.GetSolution(orgID, clusterID, solutionID)
+		if err != nil {
+			if strings.Contains(err.Error(), "404") {
+				return nil
+			}
+		}
+		time.Sleep(time.Second)
+	}
+	return fmt.Errorf("Timeout (%d seconds) reached before solution deleted\n", timeout)
 }

@@ -24,7 +24,7 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	// Print list of clusters, saving map of providers for later use
+	// Print list of clusters
 	for i := 0; i < len(clusters); i++ {
 		fmt.Printf("Cluster(%d): %v\n", clusters[i].ID, clusters[i].Name)
 	}
