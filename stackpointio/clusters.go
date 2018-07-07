@@ -2,6 +2,7 @@ package stackpointio
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -120,22 +121,56 @@ func (c *APIClient) UpgradeClusterToLatestVersion(cl Cluster) error {
 	if len(cl.KubernetesMigrationVersions) < 1 {
 		return fmt.Errorf("No migration versions listed for UpgradeClusterToLatestVersion\n")
 	}
+	majorV, minorV, patchV, err := convertVersionToInts(cl.KubernetesVersion)
+	if err != nil {
+		return err
+	}
+	// Cycle through new versions, find latest version
 	for _, mv := range cl.KubernetesMigrationVersions {
-		// Determine latest version
-		fmt.Printf("mv: %s\n", mv)
+		major, minor, patch, err := convertVersionToInts(mv)
+		if err != nil {
+			return err
+		}
+		if major > majorV {
+			majorV, minorV, patchV = major, minor, patch
+		} else if major == majorV {
+			if minor > minorV {
+				majorV, minorV, patchV = major, minor, patch
+			} else if minor == minorV {
+				if patch > patchV {
+					majorV, minorV, patchV = major, minor, patch
+				}
+			}
+		}
 	}
-	req := &APIReq{
-		Method:       "POST",
-		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/migrate_version", cl.OrganizationKey, cl.ID),
-		PostObj:      cl,
-		WantedStatus: 202,
+	version := "v" + strconv.Itoa(majorV) + "." + strconv.Itoa(minorV) + "." + strconv.Itoa(patchV)
+	return c.UpgradeClusterToVersion(cl, version)
+}
+
+// convertVersionToInts converts a kubernetes version major, minor, patch to ints
+func convertVersionToInts(v string) (major, minor, patch int, err error) {
+	versionPieces := strings.Split(v, ".")
+	if len(versionPieces) != 3 {
+		err = fmt.Errorf("Invalid version string fed to convertVersionToInts")
+		return
 	}
-	err := c.runRequest(req)
-	return err
+	major, err = strconv.Atoi(versionPieces[0][1:])
+	if err != nil {
+		return
+	}
+	minor, err = strconv.Atoi(versionPieces[1])
+	if err != nil {
+		return
+	}
+	patch, err = strconv.Atoi(versionPieces[2])
+	if err != nil {
+		return
+	}
+	return
 }
 
 // WaitClusterProvisioned waits until cluster reaches the running state (configured as const above)
-func (c *APIClient) WaitClusterProvisioned(orgID, clusterID, timeout int) error {
+func (c *APIClient) WaitClusterRunning(orgID, clusterID int, isProvisioning bool, timeout int) error {
 	for i := 1; i < timeout; i++ {
 		cl, err := c.GetCluster(orgID, clusterID)
 		if err != nil {
@@ -145,17 +180,19 @@ func (c *APIClient) WaitClusterProvisioned(orgID, clusterID, timeout int) error 
 		if cl.State == ClusterRunningStateString {
 			return nil
 		}
-		// Pull build logs, check if provider build failed
-		bls, err := c.GetBuildLogs(orgID, clusterID)
-		if err == nil {
-			bl := c.GetBuildLogEventState(bls, ClusterBuildLogEventType)
-			if bl != nil && bl.EventState == ClusterBuildLogEventFailed {
-				return fmt.Errorf("Clust build failed, build log message for event %s was: %s\n",
-					ClusterBuildLogEventType, bl.Message)
+		if isProvisioning {
+			// Pull build logs, check if provider build failed
+			bls, err := c.GetBuildLogs(orgID, clusterID)
+			if err == nil {
+				bl := c.GetBuildLogEventState(bls, ClusterBuildLogEventType)
+				if bl != nil && bl.EventState == ClusterBuildLogEventFailed {
+					return fmt.Errorf("Cluster build failed, build log message for event %s was: %s\n",
+						ClusterBuildLogEventType, bl.Message)
+				}
 			}
-		}
-		if cl.IsFailed {
-			return fmt.Errorf("Cluster build failed, is_failed: %t\n", cl.IsFailed)
+			if cl.IsFailed {
+				return fmt.Errorf("Cluster build failed, is_failed: %t\n", cl.IsFailed)
+			}
 		}
 		time.Sleep(time.Second)
 	}

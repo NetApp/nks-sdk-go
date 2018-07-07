@@ -29,13 +29,11 @@ func main() {
 	fmt.Printf("Enter timeout in seconds: ")
 	fmt.Scanf("%d", &timeout)
 
-	// Use WaitClusterProvisioned function, but run it in separate routine, waitDoneCh set to true when finished
-	waitDoneCh := make(chan bool)
+	// Use WaitClusterProvisioned function, but run it in separate routine, waitSuccessCh set when finished
 	waitSuccessCh := make(chan bool)
 	waitResultCh := make(chan string)
 	go func() {
-		err = client.WaitClusterProvisioned(orgID, clusterID, timeout)
-		waitDoneCh <- true
+		err = client.WaitClusterRunning(orgID, clusterID, true, timeout)
 		if err != nil {
 			waitSuccessCh <- false
 			waitResultCh <- err.Error()
@@ -54,15 +52,17 @@ func main() {
 		fmt.Print("\033[0K")
 		fmt.Printf("(Check: %d) Cluster at ID %d is: %v", i, clusterID, cl.State)
 
-		// Check channel to see if routine is done waiting
-		if true == <-waitDoneCh {
-			if true == <-waitSuccessCh {
+		// Check channel to see if routine is finished
+		select {
+		case status := <-waitSuccessCh:
+			if status {
 				fmt.Printf("\nSUCCESS: %s\n", <-waitResultCh)
 			} else {
 				log.Fatalf("\n %s\n", <-waitResultCh)
 			}
-			break
+			return
+		default:
+			time.Sleep(time.Second)
 		}
-		time.Sleep(time.Second)
 	}
 }
