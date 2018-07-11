@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-const ClientUserAgentString = "Stackpoint Go SDK v1.2.0"
+const ClientUserAgentString = "Stackpoint Go SDK v1.2.1"
 
 // APIClient references an api token and an http endpoint
 type APIClient struct {

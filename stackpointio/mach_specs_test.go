@@ -11,7 +11,7 @@ func TestGetInstanceSpecs(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	insts, err := c.GetInstanceSpecs("do")
+	insts, err := c.GetInstanceSpecs("do", "")
 	if err != nil {
 		t.Error(err)
 	}

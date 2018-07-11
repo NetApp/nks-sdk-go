@@ -39,7 +39,7 @@ func (c *APIClient) GetBuildLog(bls []BuildLog, buildlogID int) (*BuildLog, erro
 			return &bls[i], nil
 		}
 	}
-	return nil, fmt.Errorf("No build log found by the ID: %i\n", buildlogID)
+	return nil, fmt.Errorf("No build log found by the ID: %d\n", buildlogID)
 }
 
 // GetBuildLogEventState takes a list of buildlogs, returns most recent build log
