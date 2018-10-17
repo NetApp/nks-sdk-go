@@ -129,6 +129,22 @@ func (c *APIClient) WaitHelmTillerInstalled(orgID, clusterID, timeout int) error
 		timeout, SolutionInstalledStateString)
 }
 
+// WaitSolutionInstalled waits until solution is installed
+func (c *APIClient) WaitSolutionInstalled(orgID, clusterID, solutionID, timeout int) error {
+	for i := 1; i < timeout; i++ {
+		sol, err := c.GetSolution(orgID, clusterID, solutionID)
+		if err != nil {
+			return err
+		}
+		if sol.State == SolutionInstalledStateString {
+			return nil
+		}
+		time.Sleep(time.Second)
+	}
+	return fmt.Errorf("Timeout (%d seconds) reached before solution reached state (%s)\n",
+		timeout, SolutionInstalledStateString)
+}
+
 // WaitSolutionDeleted waits until solution disappears
 func (c *APIClient) WaitSolutionDeleted(orgID, clusterID, solutionID, timeout int) error {
 	for i := 1; i < timeout; i++ {
