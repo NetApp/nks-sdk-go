@@ -66,7 +66,7 @@ func (c *APIClient) DeleteSolution(orgID, clusterID, solutionID int) (err error)
 
 // AddSolution sends a request to add a solution to a cluster, returns list of solutions added
 func (c *APIClient) AddSolution(orgID, clusterID int, newSolution Solution) (sol *Solution, err error) {
-	err = WaitHelmTillerInstalled(orgID, clusterID, HelmTillerInstallWaitTimeout)
+	err = c.WaitHelmTillerInstalled(orgID, clusterID, HelmTillerInstallWaitTimeout)
 	if err != nil {
 		return
 	}
