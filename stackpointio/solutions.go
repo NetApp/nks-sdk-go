@@ -6,7 +6,11 @@ import (
 	"time"
 )
 
-const SolutionInstalledStateString = "installed"
+const (
+	SolutionInstalledStateString = "installed"
+	HelmTillerInstallWaitTimeout = 120
+	HelmTillerSolutionName       = "helm_tiller"
+)
 
 // Solution struct to hold software packages running on a cluster
 type Solution struct {
@@ -62,6 +66,10 @@ func (c *APIClient) DeleteSolution(orgID, clusterID, solutionID int) (err error)
 
 // AddSolution sends a request to add a solution to a cluster, returns list of solutions added
 func (c *APIClient) AddSolution(orgID, clusterID int, newSolution Solution) (sol *Solution, err error) {
+	err = WaitHelmTillerInstalled(orgID, clusterID, HelmTillerInstallWaitTimeout)
+	if err != nil {
+		return
+	}
 	req := &APIReq{
 		Method:       "POST",
 		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/solutions", orgID, clusterID),
@@ -86,10 +94,29 @@ func (c *APIClient) AddSolutionFromJSON(orgID, clusterID int, solJSON string) (s
 	return
 }
 
-// WaitSolutionInstalled waits until solution is installed
-func (c *APIClient) WaitSolutionInstalled(orgID, clusterID, solutionID, timeout int) error {
+// FindSolutionByName finds solution ID by name given
+func (c *APIClient) FindSolutionByName(orgID, clusterID int, solutionName string) (int, error) {
+	sols, err := c.GetSolutions(orgID, clusterID)
+	if err != nil {
+		return 0, err
+	}
+	for _, sol := range sols {
+		if sol.Solution == solutionName {
+			return sol.ID, nil
+		}
+	}
+	return 0, fmt.Errorf("No solution by by the name: %s\n", solutionName)
+}
+
+// WaitHelmTillerInstalled waits until Tiller is installed, or errors if Tiller is not installed or not going to install,
+// since Tiller is needed for any Helm install
+func (c *APIClient) WaitHelmTillerInstalled(orgID, clusterID, timeout int) error {
+	helmID, err := c.FindSolutionByName(orgID, clusterID, HelmTillerSolutionName)
+	if err != nil {
+		return err
+	}
 	for i := 1; i < timeout; i++ {
-		sol, err := c.GetSolution(orgID, clusterID, solutionID)
+		sol, err := c.GetSolution(orgID, clusterID, helmID)
 		if err != nil {
 			return err
 		}
@@ -98,7 +125,7 @@ func (c *APIClient) WaitSolutionInstalled(orgID, clusterID, solutionID, timeout 
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before solution reached state (%s)\n",
+	return fmt.Errorf("Timeout (%d seconds) reached before Tiller reached state (%s)\n",
 		timeout, SolutionInstalledStateString)
 }
 

@@ -12,9 +12,9 @@ const (
 	region        = "eastus"
 	resourceGroup = "__new__"       // Azure creates network subsystems inside of a resource group or `__new__`
 	networkID     = "__new__"       // ID of existing Azure virtual network or `__new__`
-	networkCIDR   = "172.23.0.0/16" // CIDR for a new network or CIDR of the existing network
+	networkCIDR   = "10.0.0.0/16" // CIDR for a new network or CIDR of the existing network
 	subnetID      = "__new__"       // CIDR for an existing subnet in specified network or `__new__`
-	subnetCIDR    = "172.23.1.0/24" // CIDR for a new subnet or CIDR of the existing subnet
+	subnetCIDR    = "10.0.0.0/24" // CIDR for a new subnet or CIDR of the existing subnet
 )
 
 func main() {
@@ -75,7 +75,7 @@ func main() {
 		ProviderNetworkCdr: networkCIDR,
 		ProviderSubnetID:   subnetID,
 		ProviderSubnetCidr: subnetCIDR,
-		KubernetesVersion:  "v1.8.7",
+		KubernetesVersion:  "v1.10.4",
 		RbacEnabled:        true,
 		DashboardEnabled:   true,
 		EtcdType:           "classic",
@@ -83,7 +83,6 @@ func main() {
 		Channel:            "stable",
 		SSHKeySet:          sshKeysetID,
 		Solutions:          []spio.Solution{newSolution}}
-	//spio.PrettyPrint(newCluster); return;
 	cluster, err := client.CreateCluster(orgID, newCluster)
 	if err != nil {
 		log.Fatal(err)
