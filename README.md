@@ -1,6 +1,6 @@
 # stackpoint.io Go SDK
 
-Version: stackpoint-sdk-go **1.2.1**
+Version: stackpoint-sdk-go **1.2.2**
 
 The StackPointCloud software development kit for [Go](https://www.golang.org/) provides you with access to the StackPointCloud API. It is designed for developers who are building applications in Go.
 
