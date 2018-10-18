@@ -8,7 +8,7 @@ import (
 
 const (
 	SolutionInstalledStateString = "installed"
-	HelmTillerInstallWaitTimeout = 120
+	HelmTillerInstallWaitTimeout = 240
 	HelmTillerSolutionName       = "helm_tiller"
 )
 
