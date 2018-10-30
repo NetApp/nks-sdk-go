@@ -89,8 +89,7 @@ func (c *APIClient) runRequest(req *APIReq) error {
 	// Check Status Code versus what the caller wanted, error if not correct
 	if req.WantedStatus != resp.StatusCode {
 		body, _ := ioutil.ReadAll(resp.Body)
-		err = errors.New(fmt.Sprintf("Incorrect status code returned: %d, Status: %s\n%s",
-			resp.StatusCode, resp.Status, string(body)))
+		err = fmt.Errorf("Incorrect status code returned: %d, Status: %s\n%s", resp.StatusCode, resp.Status, string(body))
 		return err
 	}
 
@@ -108,4 +107,43 @@ func (c *APIClient) runRequest(req *APIReq) error {
 
 	// Unmarshal response into ResponseObj struct, return ResponseObj and error, if there is one
 	return json.Unmarshal(body, req.ResponseObj)
+}
+
+func (c *APIClient) runRequestSpecial(req *APIReq) (string, error) {
+	// If path is not fully qualified URL, then prepend with endpoint URL
+	if req.Path[0:4] != "http" {
+		req.Path = c.Endpoint + req.Path
+	}
+
+	// Set up new HTTP request
+	httpReq, err := http.NewRequest(req.Method, req.Path, req.Payload)
+	if err != nil {
+		return "", err
+	}
+	httpReq.Header.Set("Authorization", "Bearer "+c.Token)
+	httpReq.Header.Set("User-Agent", ClientUserAgentString)
+	httpReq.Header.Set("Content-Type", "application/json")
+
+	// Run HTTP request, catching response
+	resp, err := c.HttpClient.Do(httpReq)
+	if err != nil {
+		return "", err
+	}
+
+	// Check Status Code versus what the caller wanted, error if not correct
+	if req.WantedStatus != resp.StatusCode {
+		body, _ := ioutil.ReadAll(resp.Body)
+		err = fmt.Errorf("Incorrect status code returned: %d, Status: %s\n%s", resp.StatusCode, resp.Status, string(body))
+		return "", err
+	}
+
+	// Store response from remote server, if not a delete operation
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	req.ResponseString = string(body)
+
+	// Unmarshal response into ResponseObj struct, return ResponseObj and error, if there is one
+	return string(body), nil
 }

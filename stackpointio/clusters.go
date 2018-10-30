@@ -80,6 +80,17 @@ func (c *APIClient) GetCluster(orgID, clusterID int) (cl *Cluster, err error) {
 	return
 }
 
+// GetKubeConfig returns kubeconfig string.
+func (c *APIClient) GetKubeConfig(orgID, clusterID int) (kubeconfig string, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/kubeconfig", orgID, clusterID),
+		ResponseObj:  kubeconfig,
+		WantedStatus: 200,
+	}
+	return c.runRequestSpecial(req)
+}
+
 // CreateCluster requests cluster creation
 func (c *APIClient) CreateCluster(orgID int, cluster Cluster) (cl *Cluster, err error) {
 	req := &APIReq{
