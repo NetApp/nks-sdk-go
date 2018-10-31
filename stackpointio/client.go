@@ -107,9 +107,9 @@ func (c *APIClient) runRequest(req *APIReq) error {
 	req.ResponseString = string(body)
 
 	if req.DontUnmarsahal {
-		// Unmarshal response into ResponseObj struct, return ResponseObj and error, if there is one
 		return err
 	}
-	return json.Unmarshal(body, req.ResponseObj)
 
+	// Unmarshal response into ResponseObj struct, return ResponseObj and error, if there is one
+	return json.Unmarshal(body, req.ResponseObj)
 }
