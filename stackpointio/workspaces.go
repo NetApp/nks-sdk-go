@@ -10,16 +10,6 @@ type Federation struct {
 	State string `json:"state"`
 }
 
-// Team struct
-type Team struct {
-	ID        int       `json:"pk"`
-	Name      string    `json:"string"`
-	Slug      string    `json:"string"`
-	Org       int       `json:"org"`
-	IsOrgWide bool      `json:"is_org_wide"`
-	Created   time.Time `json:"created"`
-}
-
 // TeamWorkspace struct
 type TeamWorkspace struct {
 	ID        int       `json:"pk"`
