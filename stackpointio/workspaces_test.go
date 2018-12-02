@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestGetWorkspacesNew(t *testing.T) {
+func TestGetWorkspacesMock(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -28,7 +28,7 @@ func TestGetWorkspacesNew(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceNew(t *testing.T) {
+func TestGetWorkspaceMock(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -48,7 +48,7 @@ func TestGetWorkspaceNew(t *testing.T) {
 	}
 }
 
-func TestCreateWorkspace(t *testing.T) {
+func TestCreateWorkspaceMock(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -96,7 +96,7 @@ func TestCreateWorkspace(t *testing.T) {
 	}
 }
 
-func TestDeleteWorkspace(t *testing.T) {
+func TestDeleteWorkspaceMock(t *testing.T) {
 	setup()
 	defer teardown()
 
