@@ -37,7 +37,7 @@ type Member struct {
 	Mesh    int    `json:"mesh,omitempty"`
 	Gateway string `json:"gateway,omitempty"`
 	Role    string `json:"role,omitempty"`
-	// Cluster []Cluster   `json:"cluster,omitempty"`
+	// Cluster []MeshCluster `json:"cluster,omitempty"`
 	State   string      `json:"state,omitempty"`
 	Config  interface{} `json:"config,omitempty"`
 	Errors  interface{} `json:"errors,omitempty"`
@@ -86,7 +86,7 @@ func (c *APIClient) CreateIstioMesh(orgID int, workspaceID int, mesh IstioMeshRe
 func (c *APIClient) DeleteIstioMesh(orgID int, workspaceID int, meshID int) (err error) {
 	req := &APIReq{
 		Method:       "DELETE",
-		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/istio-meshes/%d", orgID, workspaceID, meshID),
+		Path:         fmt.Sprintf("/orgs/%d/istio-meshes/%d", orgID, meshID),
 		WantedStatus: 204,
 	}
 	err = c.runRequest(req)
