@@ -3,13 +3,26 @@ package stackpointio
 import "fmt"
 import "time"
 
+// IstioMeshRequest object used to create an istio mesh
+type IstioMeshRequest struct {
+	Name      string          `json:"name"`
+	MeshType  string          `json:"mesh_type"`
+	Members   []MemberRequest `json:"members"`
+	Workspace int             `json:"workspace"`
+}
+
+type MemberRequest struct {
+	Role    string `json:"role,omitempty"`
+	Cluster int    `json:"cluster,omitempty"`
+}
+
 // IstioMesh struct
 type IstioMesh struct {
 	ID        int         `json:"pk"`
 	Name      string      `json:"name"`
 	MeshType  string      `json:"mesh_type"`
 	Org       int         `json:"org"`
-	Workspace int         `json:"workspace"`
+	Workspace Workspace   `json:"workspace"`
 	Members   []Member    `json:"members"`
 	State     string      `json:"state,omitempty"`
 	Config    interface{} `json:"config,omitempty"`
@@ -20,11 +33,11 @@ type IstioMesh struct {
 
 // Member struct
 type Member struct {
-	ID      int         `json:"pk,omitempty"`
-	Mesh    int         `json:"mesh,omitempty"`
-	Gateway string      `json:"gateway,omitempty"`
-	Role    string      `json:"role,omitempty"`
-	Cluster int         `json:"cluster,omitempty"`
+	ID      int    `json:"pk,omitempty"`
+	Mesh    int    `json:"mesh,omitempty"`
+	Gateway string `json:"gateway,omitempty"`
+	Role    string `json:"role,omitempty"`
+	// Cluster []Cluster   `json:"cluster,omitempty"`
 	State   string      `json:"state,omitempty"`
 	Config  interface{} `json:"config,omitempty"`
 	Errors  interface{} `json:"errors,omitempty"`
@@ -57,7 +70,7 @@ func (c *APIClient) GetIstioMesh(orgID int, workspaceID int, meshID int) (m *Ist
 }
 
 // CreateIstioMesh creates an Istio mesh
-func (c *APIClient) CreateIstioMesh(orgID int, workspaceID int, mesh IstioMesh) (m *IstioMesh, err error) {
+func (c *APIClient) CreateIstioMesh(orgID int, workspaceID int, mesh IstioMeshRequest) (m *IstioMesh, err error) {
 	req := &APIReq{
 		Method:       "POST",
 		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/istio-meshes", orgID, workspaceID),
