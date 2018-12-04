@@ -9,9 +9,9 @@ type IstioMesh struct {
 	Name      string      `json:"name"`
 	MeshType  string      `json:"mesh_type"`
 	Org       int         `json:"org"`
-	Workspace Workspace   `json:"workspace"`
+	Workspace int         `json:"workspace"`
 	Members   []Member    `json:"members"`
-	State     string      `json:"state"`
+	State     string      `json:"state,omitempty"`
 	Config    interface{} `json:"config,omitempty"`
 	Errors    interface{} `json:"errors,omitempty"`
 	Created   time.Time   `json:"created"`
@@ -20,16 +20,16 @@ type IstioMesh struct {
 
 // Member struct
 type Member struct {
-	ID      int         `json:"pk"`
-	Mesh    int         `json:"mesh"`
-	Gateway string      `json:"gateway"`
-	Role    string      `json:"role"`
-	Cluster Cluster     `json:"cluster"`
-	State   string      `json:"state"`
+	ID      int         `json:"pk,omitempty"`
+	Mesh    int         `json:"mesh,omitempty"`
+	Gateway string      `json:"gateway,omitempty"`
+	Role    string      `json:"role,omitempty"`
+	Cluster int         `json:"cluster,omitempty"`
+	State   string      `json:"state,omitempty"`
 	Config  interface{} `json:"config,omitempty"`
 	Errors  interface{} `json:"errors,omitempty"`
-	Created time.Time   `json:"created"`
-	Updated time.Time   `json:"updated"`
+	Created time.Time   `json:"created,omitempty"`
+	Updated time.Time   `json:"updated,omitempty"`
 }
 
 // GetIstioMeshes gets list of meshes for Org ID and Workspace ID
@@ -60,7 +60,7 @@ func (c *APIClient) GetIstioMesh(orgID int, workspaceID int, meshID int) (m *Ist
 func (c *APIClient) CreateIstioMesh(orgID int, workspaceID int, mesh IstioMesh) (m *IstioMesh, err error) {
 	req := &APIReq{
 		Method:       "POST",
-		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/istio-mesh", orgID, workspaceID),
+		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/istio-meshes", orgID, workspaceID),
 		ResponseObj:  &m,
 		PostObj:      mesh,
 		WantedStatus: 201,
@@ -73,7 +73,7 @@ func (c *APIClient) CreateIstioMesh(orgID int, workspaceID int, mesh IstioMesh) 
 func (c *APIClient) DeleteIstioMesh(orgID int, workspaceID int, meshID int) (err error) {
 	req := &APIReq{
 		Method:       "DELETE",
-		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/istio-mesh/%d", orgID, workspaceID, meshID),
+		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/istio-meshs/%d", orgID, workspaceID, meshID),
 		WantedStatus: 204,
 	}
 	err = c.runRequest(req)
