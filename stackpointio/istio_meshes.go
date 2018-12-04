@@ -86,7 +86,7 @@ func (c *APIClient) CreateIstioMesh(orgID int, workspaceID int, mesh IstioMeshRe
 func (c *APIClient) DeleteIstioMesh(orgID int, workspaceID int, meshID int) (err error) {
 	req := &APIReq{
 		Method:       "DELETE",
-		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/istio-meshs/%d", orgID, workspaceID, meshID),
+		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/istio-meshes/%d", orgID, workspaceID, meshID),
 		WantedStatus: 204,
 	}
 	err = c.runRequest(req)
