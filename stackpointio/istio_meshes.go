@@ -11,6 +11,7 @@ type IstioMeshRequest struct {
 	Workspace int             `json:"workspace"`
 }
 
+// MemberRequest object used to by IstioMeshRequest to create an istio mesh
 type MemberRequest struct {
 	Role    string `json:"role,omitempty"`
 	Cluster int    `json:"cluster,omitempty"`
@@ -33,11 +34,11 @@ type IstioMesh struct {
 
 // Member struct
 type Member struct {
-	ID      int    `json:"pk,omitempty"`
-	Mesh    int    `json:"mesh,omitempty"`
-	Gateway string `json:"gateway,omitempty"`
-	Role    string `json:"role,omitempty"`
-	// Cluster []MeshCluster `json:"cluster,omitempty"`
+	ID      int         `json:"pk,omitempty"`
+	Mesh    int         `json:"mesh,omitempty"`
+	Gateway string      `json:"gateway,omitempty"`
+	Role    string      `json:"role,omitempty"`
+	Cluster Cluster     `json:"cluster,omitempty"`
 	State   string      `json:"state,omitempty"`
 	Config  interface{} `json:"config,omitempty"`
 	Errors  interface{} `json:"errors,omitempty"`
