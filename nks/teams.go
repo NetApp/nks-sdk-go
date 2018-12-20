@@ -1,4 +1,4 @@
-package stackpointio
+package nks
 
 import "fmt"
 import "time"
@@ -16,10 +16,10 @@ type Team struct {
 
 // Membership struct
 type Membership struct {
-	ID        int       `json:"pk"`
-	User      User      `json:"user"`
-	Team      int       `json:"team"`
-	Created   time.Time `json:"created"`
+	ID      int       `json:"pk"`
+	User    User      `json:"user"`
+	Team    int       `json:"team"`
+	Created time.Time `json:"created"`
 }
 
 // User struct

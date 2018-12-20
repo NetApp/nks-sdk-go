@@ -1,4 +1,4 @@
-package stackpointio
+package nks
 
 import "fmt"
 import "time"

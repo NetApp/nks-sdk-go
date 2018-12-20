@@ -2,20 +2,21 @@ package main
 
 import (
 	"fmt"
-	spio "github.com/StackPointCloud/stackpoint-sdk-go/stackpointio"
 	"log"
+
+	nks "github.com/StackPointCloud/nks-sdk-go/nks"
 )
 
 const nodepoolName = "Test Nodepool"
 
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
-	client, err := spio.NewClientFromEnv()
+	client, err := nks.NewClientFromEnv()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := nks.GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -57,7 +58,7 @@ func main() {
 
 	// List instance types
 	fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
-	for _, opt := range spio.GetFormattedInstanceList(mOptions) {
+	for _, opt := range nks.GetFormattedInstanceList(mOptions) {
 		fmt.Println(opt)
 	}
 	// Get node size selection from user
@@ -65,7 +66,7 @@ func main() {
 	fmt.Printf("Enter node size: ")
 	fmt.Scanf("%s", &nodeSize)
 
-	newNodepool := spio.NodePool{
+	newNodepool := nks.NodePool{
 		Name:      nodepoolName,
 		NodeCount: nodeCount,
 		Size:      nodeSize,

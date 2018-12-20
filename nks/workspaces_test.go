@@ -1,4 +1,4 @@
-package stackpointio
+package nks
 
 import (
 	"encoding/json"
@@ -116,7 +116,7 @@ func TestGetWorkspaces(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	orgID, err := GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
@@ -134,7 +134,7 @@ func TestGetWorkspace(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	orgID, err := GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}

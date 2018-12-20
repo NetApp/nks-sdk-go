@@ -1,4 +1,4 @@
-package stackpointio
+package nks
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ func TestGetIstioMeshes(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	orgID, err := GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
-	workspaceID, err := GetIDFromEnv("SPC_WORKSPACE_ID")
+	workspaceID, err := GetIDFromEnv("NKS_WORKSPACE_ID")
 	if err != nil {
 		t.Error(err)
 	}
@@ -32,11 +32,11 @@ func TestGetIstioMesh(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	orgID, err := GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
-	workspaceID, err := GetIDFromEnv("SPC_WORKSPACE_ID")
+	workspaceID, err := GetIDFromEnv("NKS_WORKSPACE_ID")
 	if err != nil {
 		t.Error(err)
 	}

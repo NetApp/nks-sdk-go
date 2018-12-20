@@ -76,11 +76,11 @@ Now you can use a helper function to get a client instance with environment vari
 import (
 	"fmt"
 	"os"
-	spio "github.com/StackPointCloud/nks-sdk-go"
+	nks "github.com/StackPointCloud/nks-sdk-go"
 )
 
 func main() {
-	client, err := spio.NewClientFromEnv()
+	client, err := nks.NewClientFromEnv()
 ...
 ```
 

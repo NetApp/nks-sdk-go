@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	spio "github.com/StackPointCloud/stackpoint-sdk-go/stackpointio"
 	"log"
+
+	nks "github.com/StackPointCloud/nks-sdk-go/nks"
 )
 
 const (
@@ -19,22 +20,22 @@ const (
 
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
-	client, err := spio.NewClientFromEnv()
+	client, err := nks.NewClientFromEnv()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := nks.GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	sshKeysetID, err := spio.GetIDFromEnv("SPC_SSH_KEYSET")
+	sshKeysetID, err := nks.GetIDFromEnv("SPC_SSH_KEYSET")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	awsKeysetID, err := spio.GetIDFromEnv("SPC_AWS_KEYSET")
+	awsKeysetID, err := nks.GetIDFromEnv("SPC_AWS_KEYSET")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -47,7 +48,7 @@ func main() {
 
 	// List instance types
 	fmt.Printf("Node size options for provider %s:\n", provider)
-	for _, opt := range spio.GetFormattedInstanceList(mOptions) {
+	for _, opt := range nks.GetFormattedInstanceList(mOptions) {
 		fmt.Println(opt)
 	}
 
@@ -57,12 +58,12 @@ func main() {
 	fmt.Scanf("%s", &nodeSize)
 
 	// Validate machine type selection
-	if !spio.InstanceInList(mOptions, nodeSize) {
+	if !nks.InstanceInList(mOptions, nodeSize) {
 		log.Fatalf("Invalid option: %s\n", nodeSize)
 	}
 
-	newSolution := spio.Solution{Solution: "helm_tiller"}
-	newCluster := spio.Cluster{Name: clusterName,
+	newSolution := nks.Solution{Solution: "helm_tiller"}
+	newCluster := nks.Cluster{Name: clusterName,
 		Provider:           provider,
 		ProviderKey:        awsKeysetID,
 		MasterCount:        1,
@@ -82,7 +83,7 @@ func main() {
 		Platform:           "coreos",
 		Channel:            "stable",
 		SSHKeySet:          sshKeysetID,
-		Solutions:          []spio.Solution{newSolution}}
+		Solutions:          []nks.Solution{newSolution}}
 
 	cluster, err := client.CreateCluster(orgID, newCluster)
 	if err != nil {

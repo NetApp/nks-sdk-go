@@ -2,19 +2,20 @@ package main
 
 import (
 	"fmt"
-	spio "github.com/StackPointCloud/stackpoint-sdk-go/stackpointio"
 	"log"
 	"time"
+
+	nks "github.com/StackPointCloud/nks-sdk-go/nks"
 )
 
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
-	client, err := spio.NewClientFromEnv()
+	client, err := nks.NewClientFromEnv()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := nks.GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,12 +43,12 @@ func main() {
 		fmt.Print("\033[200D")
 		fmt.Print("\033[0K")
 		fmt.Printf("(Try: %d) Node at ID %d state: %v", i, nodeID, state)
-		if state == spio.NodeRunningStateString {
+		if state == nks.NodeRunningStateString {
 			fmt.Println()
 			break
 		}
 		time.Sleep(time.Second)
 	}
 	fmt.Printf("Timeout (%d seconds) reached before node reached state (%s)\n",
-		timeout, spio.NodeRunningStateString)
+		timeout, nks.NodeRunningStateString)
 }

@@ -1,4 +1,4 @@
-package stackpointio
+package nks
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ const (
 	ClusterBuildLogEventFailed = "failure"
 )
 
-// Cluster describes a Kubernetes cluster in the StackPointCloud system
+// Cluster describes a Kubernetes cluster in the NetApp Kubernetes Service system
 type Cluster struct {
 	ID                          int        `json:"pk"`
 	Name                        string     `json:"name"`
@@ -183,7 +183,7 @@ func convertVersionToInts(v string) (major, minor, patch int, err error) {
 	return
 }
 
-// WaitClusterProvisioned waits until cluster reaches the running state (configured as const above)
+// WaitClusterRunning waits until cluster reaches the running state (configured as const above)
 func (c *APIClient) WaitClusterRunning(orgID, clusterID int, isProvisioning bool, timeout int) error {
 	for i := 1; i < timeout; i++ {
 		cl, err := c.GetCluster(orgID, clusterID)
