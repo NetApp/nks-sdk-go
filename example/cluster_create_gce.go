@@ -25,12 +25,12 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	sshKeysetid, err := nks.GetIDFromEnv("SPC_SSH_KEYSET")
+	sshKeysetid, err := nks.GetIDFromEnv("NKS_SSH_KEYSET")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	gceKeysetid, err := nks.GetIDFromEnv("SPC_GCE_KEYSET")
+	gceKeysetid, err := nks.GetIDFromEnv("NKS_GCE_KEYSET")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
