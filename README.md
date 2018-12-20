@@ -1,10 +1,10 @@
-# stackpoint.io Go SDK
+# NetApp Kubernetes Service Go SDK
 
-Version: stackpoint-sdk-go **1.2.4**
+Version: nks-sdk-go **1.2.4**
 
-The StackPointCloud software development kit for [Go](https://www.golang.org/) provides you with access to the StackPointCloud API. It is designed for developers who are building applications in Go.
+The NetApp Kubernetes Service software development kit for [Go](https://www.golang.org/) provides you with access to the NetApp Kubernetes Service API. It is designed for developers who are building applications in Go.
 
-In order to use the client from the StackPointCloud Go SDK, you must provide a StackPointCloud API token and endpoint url.
+In order to use the client from the NetApp Kubernetes Service Go SDK, you must provide a NetApp Kubernetes Service API token and endpoint url.
 
 #### Installation
 
@@ -19,19 +19,19 @@ export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 ```
 
-The following `go` command will download `stackpoint-sdk-go` to your configured `GOPATH`:
+The following `go` command will download `nks-sdk-go` to your configured `GOPATH`:
 
 ```go
-go get "github.com/StackPointCloud/stackpoint-sdk-go"
+go get "github.com/StackPointCloud/nks-sdk-go"
 ```
 
 The source code of the package will be located here:
 
-    $GOPATH/src/github.com/StackPointCloud/stackpoint-sdk-go
+    $GOPATH/src/github.com/StackPointCloud/nks-sdk-go
 
 ## Library
 
-Include the StackPointCloud SDK for Go like any other Go library. For example, create main package file *example.go*:
+Include the NetApp Kubernetes Service SDK for Go like any other Go library. For example, create main package file *example.go*:
 
 ```go
 package main
@@ -44,21 +44,21 @@ func main() {
 }
 ```
 
-Include the StackPointCloud SDK for Go under the list of imports.
+Include the NetApp Kubernetes Service SDK for Go under the list of imports.
 
 ```go
 import(
 	"fmt"    
-	spio "github.com/StackPointCloud/stackpoint-sdk-go"
+	nks "github.com/StackPointCloud/nks-sdk-go"
 )
 ```
 
 #### Authentication
 
-Add your StackPointCloud API token and endpoint URL to the client connection.
+Add your NetApp Kubernetes Service API token and endpoint URL to the client connection.
 
 ```go
-client := spio.NewClient("token", "endpoint")
+client := nks.NewClient("token", "endpoint")
 ```
 
 It might be necessary to accept credentials through environment variables in a containerized environment.
@@ -66,8 +66,8 @@ It might be necessary to accept credentials through environment variables in a c
 Set your environment variables in your shell.
 
 ```
-export SPC_API_TOKEN="YOUR TOKEN HERE"
-export SPC_BASE_API_URL="YOUR ENDPOINT URL HERE"
+export NKS_API_TOKEN="YOUR TOKEN HERE"
+export NKS_BASE_API_URL="YOUR ENDPOINT URL HERE"
 ```
 
 Now you can use a helper function to get a client instance with environment variables.
@@ -76,7 +76,7 @@ Now you can use a helper function to get a client instance with environment vari
 import (
 	"fmt"
 	"os"
-	spio "github.com/StackPointCloud/stackpoint-sdk-go"
+	spio "github.com/StackPointCloud/nks-sdk-go"
 )
 
 func main() {
@@ -89,6 +89,6 @@ func main() {
 
 ## Examples
 
-The StackPointCloud SDK for Go comes with several example programs to demonstrate how most major operations can be performed, from listing organizations and nodes, to building clusters in various cloud ecosystems.  The examples will be located in:
+The NetApp Kubernetes Service SDK for Go comes with several example programs to demonstrate how most major operations can be performed, from listing organizations and nodes, to building clusters in various cloud ecosystems.  The examples will be located in:
 
-github.com/StackPointCloud/stackpoint-sdk-go/example
+github.com/StackPointCloud/nks-sdk-go/example
