@@ -1,4 +1,4 @@
-package stackpointio
+package nks
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ func TestGetOrganization(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	orgID, err := GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}

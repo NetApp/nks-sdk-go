@@ -2,19 +2,20 @@ package main
 
 import (
 	"fmt"
-	spio "github.com/StackPointCloud/stackpoint-sdk-go/stackpointio"
 	"io/ioutil"
 	"log"
+
+	nks "github.com/StackPointCloud/nks-sdk-go/nks"
 )
 
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
-	client, err := spio.NewClientFromEnv()
+	client, err := nks.NewClientFromEnv()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := nks.GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		log.Fatal(err.Error())
 	}

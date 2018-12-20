@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	spio "github.com/StackPointCloud/stackpoint-sdk-go/stackpointio"
 	"log"
+
+	nks "github.com/StackPointCloud/nks-sdk-go/nks"
 )
 
 const (
@@ -13,12 +14,12 @@ const (
 
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
-	client, err := spio.NewClientFromEnv()
+	client, err := nks.NewClientFromEnv()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := nks.GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -33,20 +34,20 @@ func main() {
 	fmt.Printf("Enter AWS Secret Access Key: ")
 	fmt.Scanf("%s", &awsSecretKey)
 
-	pubKey := spio.Key{Type: "pub",
+	pubKey := nks.Key{Type: "pub",
 		Value: awsAccessKey}
-	pvtKey := spio.Key{Type: "pvt",
+	pvtKey := nks.Key{Type: "pvt",
 		Value: awsSecretKey}
-	newKeyset := spio.Keyset{Name: keysetName,
+	newKeyset := nks.Keyset{Name: keysetName,
 		Category:   "provider",
 		Entity:     provider,
 		Workspaces: []int{},
-		Keys:       []spio.Key{pubKey, pvtKey}}
+		Keys:       []nks.Key{pubKey, pvtKey}}
 
 	keyset, err := client.CreateKeyset(orgID, newKeyset)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("CreateKeyset created,")
-	spio.PrettyPrint(keyset)
+	nks.PrettyPrint(keyset)
 }

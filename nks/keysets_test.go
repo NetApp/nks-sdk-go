@@ -1,4 +1,4 @@
-package stackpointio
+package nks
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ func TestGetKeysets(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	orgID, err := GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
@@ -30,7 +30,7 @@ func TestGetKeyset(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	orgID, err := GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}

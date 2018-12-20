@@ -2,18 +2,19 @@ package main
 
 import (
 	"fmt"
-	spio "github.com/StackPointCloud/stackpoint-sdk-go/stackpointio"
 	"log"
+
+	nks "github.com/StackPointCloud/nks-sdk-go/nks"
 )
 
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
-	client, err := spio.NewClientFromEnv()
+	client, err := nks.NewClientFromEnv()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := nks.GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -47,7 +48,7 @@ func main() {
 
 	// List instance types
 	fmt.Printf("Node size options for provider %s:\n", providers[clusterID])
-	for _, opt := range spio.GetFormattedInstanceList(mOptions) {
+	for _, opt := range nks.GetFormattedInstanceList(mOptions) {
 		fmt.Println(opt)
 	}
 
@@ -57,12 +58,12 @@ func main() {
 	fmt.Scanf("%s", &nodeSize)
 
 	// Validate machine type selection
-	if !spio.InstanceInList(mOptions, nodeSize) {
+	if !nks.InstanceInList(mOptions, nodeSize) {
 		log.Fatalf("Invalid option: %s\n", nodeSize)
 	}
 
 	// Set up new master node
-	newNode := spio.NodeAdd{
+	newNode := nks.NodeAdd{
 		Count: 1,
 		Role:  "master",
 		Size:  nodeSize,

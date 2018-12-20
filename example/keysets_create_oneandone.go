@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	spio "github.com/StackPointCloud/stackpoint-sdk-go/stackpointio"
 	"log"
+
+	nks "github.com/StackPointCloud/nks-sdk-go/nks"
 )
 
 const (
@@ -13,12 +14,12 @@ const (
 
 func main() {
 	// Set up HTTP client with environment variables for API token and URL
-	client, err := spio.NewClientFromEnv()
+	client, err := nks.NewClientFromEnv()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	orgID, err := spio.GetIDFromEnv("SPC_ORG_ID")
+	orgID, err := nks.GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -28,16 +29,16 @@ func main() {
 	fmt.Printf("Enter 1&1 Token: ")
 	fmt.Scanf("%s", &oneandoneToken)
 
-	newKey := spio.Key{
+	newKey := nks.Key{
 		Type:  "token",
 		Value: oneandoneToken,
 	}
-	newKeyset := spio.Keyset{
+	newKeyset := nks.Keyset{
 		Name:       keysetName,
 		Category:   "provider",
 		Entity:     provider,
 		Workspaces: []int{},
-		Keys:       []spio.Key{newKey},
+		Keys:       []nks.Key{newKey},
 	}
 
 	keyset, err := client.CreateKeyset(orgID, newKeyset)
@@ -45,5 +46,5 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("CreateKeyset created,")
-	spio.PrettyPrint(keyset)
+	nks.PrettyPrint(keyset)
 }
