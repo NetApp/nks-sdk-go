@@ -28,7 +28,7 @@ func main() {
 	fmt.Printf("Org ID found is: %d\n", orgID)
 
 	// Loop through supported providers, see if a key can be fetched for any of them
-	for _, prov := range []string{"aws", "azure", "do", "gce", "gke", "oneandone", "packet", "user_ssh"} {
+	for _, prov := range []string{"aws", "azure", "gce", "gke", "user_ssh"} {
 		ksid, _ := client.GetUserProfileKeysetID(&up[0], prov)
 		fmt.Printf("Keyset ID found for %s is: %d\n", prov, ksid)
 	}

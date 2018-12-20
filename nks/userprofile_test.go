@@ -1,4 +1,4 @@
-package nks
+package stackpointio
 
 import (
 	"fmt"
@@ -65,7 +65,7 @@ func TestGetUserProfileKeysetID(t *testing.T) {
 		t.Error("No default org found")
 	}
 	var ksids []int
-	for _, prov := range []string{"aws", "azure", "do", "gce", "gke", "oneandone", "packet", "user_ssh"} {
+	for _, prov := range []string{"aws", "azure", "gce", "gke", "user_ssh"} {
 		ksid, _ := c.GetUserProfileKeysetID(&up[0], prov)
 		ksids = append(ksids, ksid)
 	}
