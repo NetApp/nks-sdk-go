@@ -28,13 +28,57 @@ var testAwsCluster = Cluster{
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
 
+var testEKSCluster = Cluster{
+	Name:               "Test EKS Cluster Go SDK " + getTicks(),
+	Provider:           "eks",
+	MasterCount:        1,
+	MasterSize:         "t2.medium",
+	WorkerCount:        2,
+	WorkerSize:         "t2.medium",
+	Region:             "us-east-1",
+	Zone:               "us-east-1a",
+	ProviderNetworkID:  "__new__",
+	ProviderNetworkCdr: "172.23.0.0/16",
+	ProviderSubnetID:   "__new__",
+	ProviderSubnetCidr: "172.23.1.0/24",
+	KubernetesVersion:  "v1.13.1",
+	RbacEnabled:        true,
+	DashboardEnabled:   true,
+	EtcdType:           "classic",
+	Platform:           "coreos",
+	Channel:            "stable",
+	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
+}
+
 var testAzureCluster = Cluster{
 	Name:               "Test Azure Cluster Go SDK " + getTicks(),
 	Provider:           "azure",
 	MasterCount:        1,
-	MasterSize:         "standardA",
+	MasterSize:         "standardA2",
 	WorkerCount:        2,
-	WorkerSize:         "standardA",
+	WorkerSize:         "standardA2",
+	Region:             "eastus",
+	ProviderResourceGp: "__new__",
+	ProviderNetworkID:  "__new__",
+	ProviderNetworkCdr: "10.0.0.0/16",
+	ProviderSubnetID:   "__new__",
+	ProviderSubnetCidr: "10.0.0.0/24",
+	KubernetesVersion:  "v1.13.1",
+	RbacEnabled:        true,
+	DashboardEnabled:   true,
+	EtcdType:           "classic",
+	Platform:           "coreos",
+	Channel:            "stable",
+	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
+}
+
+var testAKSCluster = Cluster{
+	Name:               "Test AKS Cluster Go SDK " + getTicks(),
+	Provider:           "aks",
+	MasterCount:        1,
+	MasterSize:         "standardA2",
+	WorkerCount:        2,
+	WorkerSize:         "standardA2",
 	Region:             "eastus",
 	ProviderResourceGp: "__new__",
 	ProviderNetworkID:  "__new__",
@@ -62,11 +106,11 @@ var testGKECluster = Cluster{
 	ProviderNetworkCdr: "172.23.0.0/16",
 	ProviderSubnetID:   "__new__",
 	ProviderSubnetCidr: "172.23.1.0/24",
-	KubernetesVersion:  "v1.13.1",
+	KubernetesVersion:  "latest",
 	RbacEnabled:        true,
 	DashboardEnabled:   true,
 	EtcdType:           "classic",
-	Platform:           "coreos",
+	Platform:           "gci",
 	Channel:            "stable",
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
@@ -131,6 +175,43 @@ func TestClusterCreateAWS(t *testing.T) {
 	}
 }
 
+func TestClusterCreateEKS(t *testing.T) {
+	c, err := NewClientFromEnv()
+	if err != nil {
+		t.Error(err)
+	}
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
+	if err != nil {
+		t.Error(err)
+	}
+
+	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
+	if err != nil {
+		t.Error(err)
+	}
+
+	awsKeysetID, err := GetIDFromEnv("NKS_AWS_KEYSET")
+	if err != nil {
+		t.Error(err)
+	}
+
+	testEKSCluster.ProviderKey = awsKeysetID
+	testEKSCluster.SSHKeySet = sshKeysetID
+
+	cluster, err := c.CreateCluster(orgID, testEKSCluster)
+	if err != nil {
+		t.Error(err)
+	}
+
+	clusterIds = append(clusterIds, cluster.ID)
+
+	timeout := 1200
+	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 func TestClusterCreateAzure(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
@@ -155,6 +236,43 @@ func TestClusterCreateAzure(t *testing.T) {
 	testAzureCluster.SSHKeySet = sshKeysetID
 
 	cluster, err := c.CreateCluster(orgID, testAzureCluster)
+	if err != nil {
+		t.Error(err)
+	}
+
+	clusterIds = append(clusterIds, cluster.ID)
+
+	timeout := 1200
+	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestClusterCreateAKS(t *testing.T) {
+	c, err := NewClientFromEnv()
+	if err != nil {
+		t.Error(err)
+	}
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
+	if err != nil {
+		t.Error(err)
+	}
+
+	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
+	if err != nil {
+		t.Error(err)
+	}
+
+	azureKeysetID, err := GetIDFromEnv("NKS_AZR_KEYSET")
+	if err != nil {
+		t.Error(err)
+	}
+
+	testAKSCluster.ProviderKey = azureKeysetID
+	testAKSCluster.SSHKeySet = sshKeysetID
+
+	cluster, err := c.CreateCluster(orgID, testAKSCluster)
 	if err != nil {
 		t.Error(err)
 	}
