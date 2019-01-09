@@ -2,13 +2,12 @@ package nks
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
 var testAwsCluster = Cluster{
-	Name:               "Test AWS Cluster Go SDK " + getTickes(),
+	Name:               "Test AWS Cluster Go SDK " + getTicks(),
 	Provider:           "aws",
 	MasterCount:        1,
 	MasterSize:         "t2.medium",
@@ -30,12 +29,12 @@ var testAwsCluster = Cluster{
 }
 
 var testAzureCluster = Cluster{
-	Name:               "Test Azure Cluster Go SDK " + getTickes(),
+	Name:               "Test Azure Cluster Go SDK " + getTicks(),
 	Provider:           "azure",
 	MasterCount:        1,
-	MasterSize:         "t2.medium",
+	MasterSize:         "standardA",
 	WorkerCount:        2,
-	WorkerSize:         "t2.medium",
+	WorkerSize:         "standardA",
 	Region:             "eastus",
 	ProviderResourceGp: "__new__",
 	ProviderNetworkID:  "__new__",
@@ -52,13 +51,13 @@ var testAzureCluster = Cluster{
 }
 
 var testGKECluster = Cluster{
-	Name:               "Test GKE Cluster Go SDK " + time.Now().Format(time.RFC850),
+	Name:               "Test GKE Cluster Go SDK " + getTicks(),
 	Provider:           "gke",
 	MasterCount:        1,
-	MasterSize:         "standardA",
+	MasterSize:         "n1-standard-1",
 	WorkerCount:        2,
-	WorkerSize:         "standardA",
-	Region:             "us-east-1c",
+	WorkerSize:         "n1-standard-1",
+	Region:             "us-east1-c",
 	ProviderNetworkID:  "__new__",
 	ProviderNetworkCdr: "172.23.0.0/16",
 	ProviderSubnetID:   "__new__",
@@ -73,13 +72,13 @@ var testGKECluster = Cluster{
 }
 
 var testGCECluster = Cluster{
-	Name:               "Test GCE Cluster Go SDK " + time.Now().Format(time.RFC850),
+	Name:               "Test GCE Cluster Go SDK " + getTicks(),
 	Provider:           "gce",
 	MasterCount:        1,
-	MasterSize:         "standardA",
+	MasterSize:         "n1-standard-1",
 	WorkerCount:        2,
-	WorkerSize:         "standardA",
-	Region:             "us-east-1c",
+	WorkerSize:         "n1-standard-1",
+	Region:             "us-east1-c",
 	ProviderNetworkID:  "__new__",
 	ProviderNetworkCdr: "172.23.0.0/16",
 	ProviderSubnetID:   "__new__",

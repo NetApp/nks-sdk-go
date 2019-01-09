@@ -5,6 +5,6 @@ import (
 	"time"
 )
 
-func getTickes() string {
+func getTicks() string {
 	return strconv.FormatInt(time.Now().Unix(), 10)
 }
