@@ -31,23 +31,38 @@ var testAwsCluster = Cluster{
 var testEKSCluster = Cluster{
 	Name:               "Test EKS Cluster Go SDK " + getTicks(),
 	Provider:           "eks",
-	MasterCount:        1,
-	MasterSize:         "t2.medium",
-	WorkerCount:        2,
+	NodeCount:          2,
+	MinNodeCount:       2,
+	MaxNodeCount:       3,
 	WorkerSize:         "t2.medium",
 	Region:             "us-east-1",
-	Zone:               "us-east-1a",
-	ProviderNetworkID:  "__new__",
+	ProviderNetworkID:  "vpc-1179c777",
 	ProviderNetworkCdr: "172.23.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "172.23.1.0/24",
-	KubernetesVersion:  "v1.13.1",
+	KubernetesVersion:  "v1.10",
 	RbacEnabled:        true,
 	DashboardEnabled:   true,
 	EtcdType:           "classic",
-	Platform:           "coreos",
-	Channel:            "stable",
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
+	Platform:           "amazon-linux",
+	Channel:            "v2",
+	NetworkComponents: []NetworkComponent{
+		NetworkComponent{
+			Cidr:          "172.23.12.0/24",
+			ComponentType: "provider_subnet",
+			ID:            "__new__",
+			VpcID:         "vpc-1179c777",
+			Zone:          "us-east-1a",
+			ProviderID:    "__new__",
+		},
+		NetworkComponent{
+			Cidr:          "172.23.15.0/24",
+			ComponentType: "provider_subnet",
+			ID:            "__new__",
+			VpcID:         "vpc-1179c777",
+			Zone:          "us-east-1b",
+			ProviderID:    "__new__",
+		},
+	},
+	Solutions: []Solution{Solution{Solution: "helm_tiller"}},
 }
 
 var testAzureCluster = Cluster{
@@ -190,12 +205,12 @@ func TestClusterCreateEKS(t *testing.T) {
 		t.Error(err)
 	}
 
-	awsKeysetID, err := GetIDFromEnv("NKS_AWS_KEYSET")
+	eksKeysetID, err := GetIDFromEnv("NKS_AKS_KEYSET")
 	if err != nil {
 		t.Error(err)
 	}
 
-	testEKSCluster.ProviderKey = awsKeysetID
+	testEKSCluster.ProviderKey = eksKeysetID
 	testEKSCluster.SSHKeySet = sshKeysetID
 
 	cluster, err := c.CreateCluster(orgID, testEKSCluster)
