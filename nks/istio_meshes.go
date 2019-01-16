@@ -60,18 +60,14 @@ func (c *APIClient) GetIstioMeshes(orgID int, workspaceID int) (m []IstioMesh, e
 
 // GetIstioMesh returns a mesh for Org ID, Workspace ID, and meshID
 func (c *APIClient) GetIstioMesh(orgID int, workspaceID int, meshID int) (m *IstioMesh, err error) {
-	items, err := c.GetIstioMeshes(orgID, workspaceID)
-	if err != nil {
-		return nil, err
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/istio-meshes/%d", orgID, workspaceID, meshID),
+		ResponseObj:  &m,
+		WantedStatus: 200,
 	}
-	for _, item := range items {
-		if item.ID == meshID {
-			return &item, nil
-		}
-	}
-
-	err = fmt.Errorf("Incorrect status code returned: 404, Status: 404 Not Found,")
-	return nil, err
+	err = c.runRequest(req)
+	return
 }
 
 // CreateIstioMesh creates an Istio mesh
