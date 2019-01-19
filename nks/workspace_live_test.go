@@ -8,8 +8,9 @@ import (
 
 var testWorkspaceLiveID int
 var testWorkspace = Workspace{
-	Name: "Test Go SDK" + getTicks(),
-	Slug: "test_go_sdk_" + getTicks(),
+	Name:           "Test Go SDK" + getTicks(),
+	Slug:           "test_go_sdk_" + getTicks(),
+	TeamWorkspaces: []TeamWorkspace{},
 }
 
 func TestLiveWorkspaceBasic(t *testing.T) {
@@ -33,6 +34,8 @@ func testLiveWorkspaceCreate(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+	testWorkspaceLiveID = workspace.ID
 
 	assert.Equal(t, testWorkspace.Name, workspace.Name, "Name should be equal")
 	assert.Equal(t, testWorkspace.Name, workspace.Name, "Slug should be equal")
@@ -82,7 +85,6 @@ func testLiveWorkspaceGet(t *testing.T) {
 
 	assert.Equal(t, testWorkspace.Name, workspace.Name, "Name should be equal")
 	assert.Equal(t, testWorkspace.Name, workspace.Name, "Slug should be equal")
-
 }
 
 func testLiveWorkspaceDelete(t *testing.T) {
