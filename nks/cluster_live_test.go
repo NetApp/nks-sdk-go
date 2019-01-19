@@ -463,7 +463,9 @@ func testClusterDelete(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+	}
 
+	for _, clusterID := range clusterIds {
 		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
 		if err != nil {
 			t.Error(err)
