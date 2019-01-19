@@ -30,6 +30,8 @@ func testLiveWorkspaceCreate(t *testing.T) {
 		t.Error(err)
 	}
 
+	testWorkspace.Org = orgID
+
 	workspace, err := c.CreateWorkspace(orgID, testWorkspace)
 	if err != nil {
 		t.Error(err)
