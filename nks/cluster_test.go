@@ -25,6 +25,7 @@ var testAwsCluster = Cluster{
 	EtcdType:           "classic",
 	Platform:           "coreos",
 	Channel:            "stable",
+	NetworkComponents:  []NetworkComponent{},
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
 
@@ -84,6 +85,7 @@ var testAzureCluster = Cluster{
 	EtcdType:           "classic",
 	Platform:           "coreos",
 	Channel:            "stable",
+	NetworkComponents:  []NetworkComponent{},
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
 
@@ -106,6 +108,7 @@ var testAKSCluster = Cluster{
 	EtcdType:           "classic",
 	Platform:           "coreos",
 	Channel:            "stable",
+	NetworkComponents:  []NetworkComponent{},
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
 
@@ -127,6 +130,7 @@ var testGKECluster = Cluster{
 	EtcdType:           "classic",
 	Platform:           "gci",
 	Channel:            "stable",
+	NetworkComponents:  []NetworkComponent{},
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
 
@@ -148,12 +152,35 @@ var testGCECluster = Cluster{
 	EtcdType:           "classic",
 	Platform:           "coreos",
 	Channel:            "stable",
+	NetworkComponents:  []NetworkComponent{},
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
 
 var clusterIds = make([]int, 0)
 
-func TestClusterCreateAWS(t *testing.T) {
+func TestLiveClusterBasic(t *testing.T) {
+	t.Run("create clusters", func(t *testing.T) {
+		t.Run("aws", testClusterCreateAWS)
+		t.Run("eks", testClusterCreateEKS)
+		t.Run("azure", testClusterCreateAzure)
+		t.Run("aks", testClusterCreateAKS)
+		t.Run("gce", testClusterCreateGCE)
+		t.Run("gke", testClusterCreateGKE)
+	})
+
+	t.Run("get clusters", func(t *testing.T) {
+		t.Run("list", testClusterList)
+		t.Run("get", testClusterGet)
+	})
+
+	t.Run("delete clusters", func(t *testing.T) {
+		t.Run("delete", testClusterDelete)
+	})
+}
+
+func testClusterCreateAWS(t *testing.T) {
+	t.Parallel()
+
 	c, err := NewClientFromEnv()
 	if err != nil {
 		t.Error(err)
@@ -181,16 +208,18 @@ func TestClusterCreateAWS(t *testing.T) {
 		t.Error(err)
 	}
 
-	clusterIds = append(clusterIds, cluster.ID)
-
 	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
 	}
+
+	clusterIds = append(clusterIds, cluster.ID)
 }
 
-func TestClusterCreateEKS(t *testing.T) {
+func testClusterCreateEKS(t *testing.T) {
+	t.Parallel()
+
 	c, err := NewClientFromEnv()
 	if err != nil {
 		t.Error(err)
@@ -218,16 +247,18 @@ func TestClusterCreateEKS(t *testing.T) {
 		t.Error(err)
 	}
 
-	clusterIds = append(clusterIds, cluster.ID)
-
 	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
 	}
+
+	clusterIds = append(clusterIds, cluster.ID)
 }
 
-func TestClusterCreateAzure(t *testing.T) {
+func testClusterCreateAzure(t *testing.T) {
+	t.Parallel()
+
 	c, err := NewClientFromEnv()
 	if err != nil {
 		t.Error(err)
@@ -255,16 +286,18 @@ func TestClusterCreateAzure(t *testing.T) {
 		t.Error(err)
 	}
 
-	clusterIds = append(clusterIds, cluster.ID)
-
 	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
 	}
+
+	clusterIds = append(clusterIds, cluster.ID)
 }
 
-func TestClusterCreateAKS(t *testing.T) {
+func testClusterCreateAKS(t *testing.T) {
+	t.Parallel()
+
 	c, err := NewClientFromEnv()
 	if err != nil {
 		t.Error(err)
@@ -292,16 +325,18 @@ func TestClusterCreateAKS(t *testing.T) {
 		t.Error(err)
 	}
 
-	clusterIds = append(clusterIds, cluster.ID)
-
 	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
 	}
+
+	clusterIds = append(clusterIds, cluster.ID)
 }
 
-func TestClusterCreateGCE(t *testing.T) {
+func testClusterCreateGCE(t *testing.T) {
+	t.Parallel()
+
 	c, err := NewClientFromEnv()
 	if err != nil {
 		t.Error(err)
@@ -329,16 +364,18 @@ func TestClusterCreateGCE(t *testing.T) {
 		t.Error(err)
 	}
 
-	clusterIds = append(clusterIds, cluster.ID)
-
 	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
 	}
+
+	clusterIds = append(clusterIds, cluster.ID)
 }
 
-func TestClusterCreateGKE(t *testing.T) {
+func testClusterCreateGKE(t *testing.T) {
+	t.Parallel()
+
 	c, err := NewClientFromEnv()
 	if err != nil {
 		t.Error(err)
@@ -366,15 +403,15 @@ func TestClusterCreateGKE(t *testing.T) {
 		t.Error(err)
 	}
 
-	clusterIds = append(clusterIds, cluster.ID)
-
 	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
 	}
+
+	clusterIds = append(clusterIds, cluster.ID)
 }
-func TestClusterList(t *testing.T) {
+func testClusterList(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
 		t.Error(err)
@@ -392,7 +429,7 @@ func TestClusterList(t *testing.T) {
 	assert.True(t, len(clusters) > 0, "There should be at lease one cluster")
 }
 
-func TestClusterGet(t *testing.T) {
+func testClusterGet(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
 		t.Error(err)
@@ -410,8 +447,9 @@ func TestClusterGet(t *testing.T) {
 	assert.NotNil(t, cluster, "Cluster does not exists")
 }
 
-func TestClusterDelete(t *testing.T) {
+func testClusterDelete(t *testing.T) {
 	c, err := NewClientFromEnv()
+	timeout := 1200
 	if err != nil {
 		t.Error(err)
 	}
@@ -422,6 +460,11 @@ func TestClusterDelete(t *testing.T) {
 
 	for _, clusterID := range clusterIds {
 		err = c.DeleteCluster(orgID, clusterID)
+		if err != nil {
+			t.Error(err)
+		}
+
+		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
 		if err != nil {
 			t.Error(err)
 		}
