@@ -6,8 +6,8 @@ import "time"
 // Team struct
 type Team struct {
 	ID          int          `json:"pk"`
-	Name        string       `json:"string"`
-	Slug        string       `json:"string"`
+	Name        string       `json:"name"`
+	Slug        string       `json:"slug"`
 	Org         int          `json:"org"`
 	IsOrgWide   bool         `json:"is_org_wide"`
 	Created     time.Time    `json:"created"`
