@@ -92,8 +92,6 @@ var testAzureCluster = Cluster{
 var testAKSCluster = Cluster{
 	Name:               "Test AKS Cluster Go SDK " + getTicks(),
 	Provider:           "aks",
-	MasterCount:        1,
-	MasterSize:         "standardA2",
 	WorkerCount:        2,
 	WorkerSize:         "standardA2",
 	Region:             "eastus",
@@ -158,6 +156,8 @@ var testGCECluster = Cluster{
 
 var clusterIds = make([]int, 0)
 
+var timeout = 3600
+
 func TestLiveClusterBasic(t *testing.T) {
 	t.Run("create clusters", func(t *testing.T) {
 		t.Run("aws", testClusterCreateAWS)
@@ -208,7 +208,6 @@ func testClusterCreateAWS(t *testing.T) {
 		t.Error(err)
 	}
 
-	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
@@ -247,7 +246,6 @@ func testClusterCreateEKS(t *testing.T) {
 		t.Error(err)
 	}
 
-	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
@@ -286,7 +284,6 @@ func testClusterCreateAzure(t *testing.T) {
 		t.Error(err)
 	}
 
-	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
@@ -325,7 +322,6 @@ func testClusterCreateAKS(t *testing.T) {
 		t.Error(err)
 	}
 
-	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
@@ -364,7 +360,6 @@ func testClusterCreateGCE(t *testing.T) {
 		t.Error(err)
 	}
 
-	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
@@ -403,7 +398,6 @@ func testClusterCreateGKE(t *testing.T) {
 		t.Error(err)
 	}
 
-	timeout := 1200
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
@@ -448,8 +442,16 @@ func testClusterGet(t *testing.T) {
 }
 
 func testClusterDelete(t *testing.T) {
+	for _, clusterID := range clusterIds {
+		clusterDelete(t, clusterID)
+	}
+}
+
+func clusterDelete(t *testing.T, clusterID int) {
+	t.Parallel()
+
 	c, err := NewClientFromEnv()
-	timeout := 1200
+
 	if err != nil {
 		t.Error(err)
 	}
@@ -458,17 +460,13 @@ func testClusterDelete(t *testing.T) {
 		t.Error(err)
 	}
 
-	for _, clusterID := range clusterIds {
-		err = c.DeleteCluster(orgID, clusterID)
-		if err != nil {
-			t.Error(err)
-		}
+	err = c.DeleteCluster(orgID, clusterID)
+	if err != nil {
+		t.Error(err)
 	}
 
-	for _, clusterID := range clusterIds {
-		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
-		if err != nil {
-			t.Error(err)
-		}
+	err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+	if err != nil {
+		t.Error(err)
 	}
 }

@@ -121,6 +121,17 @@ func (c *APIClient) DeleteCluster(orgID, clusterID int) (err error) {
 	return
 }
 
+// ForceDeleteCluster forcing deletion of a cluster
+func (c *APIClient) ForceDeleteCluster(orgID, clusterID int) (err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters/%d/force_delete", orgID, clusterID),
+		WantedStatus: 204,
+	}
+	err = c.runRequest(req)
+	return
+}
+
 // UpgradeClusterToVersion upgrades cluster to supplied k8s version
 func (c *APIClient) UpgradeClusterToVersion(cl Cluster, version string) (err error) {
 	req := &APIReq{
