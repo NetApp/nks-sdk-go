@@ -7,7 +7,7 @@ import (
 )
 
 var testAwsCluster = Cluster{
-	Name:               "Test AWS Cluster Go SDK " + getTicks(),
+	Name:               "Test AWS Cluster Go SDK " + GetTicks(),
 	Provider:           "aws",
 	MasterCount:        1,
 	MasterSize:         "t2.medium",
@@ -30,7 +30,7 @@ var testAwsCluster = Cluster{
 }
 
 var testEKSCluster = Cluster{
-	Name:               "Test EKS Cluster Go SDK " + getTicks(),
+	Name:               "Test EKS Cluster Go SDK " + GetTicks(),
 	Provider:           "eks",
 	NodeCount:          2,
 	MinNodeCount:       2,
@@ -67,7 +67,7 @@ var testEKSCluster = Cluster{
 }
 
 var testAzureCluster = Cluster{
-	Name:               "Test Azure Cluster Go SDK " + getTicks(),
+	Name:               "Test Azure Cluster Go SDK " + GetTicks(),
 	Provider:           "azure",
 	MasterCount:        1,
 	MasterSize:         "standardA2",
@@ -90,7 +90,7 @@ var testAzureCluster = Cluster{
 }
 
 var testAKSCluster = Cluster{
-	Name:               "Test AKS Cluster Go SDK " + getTicks(),
+	Name:               "Test AKS Cluster Go SDK " + GetTicks(),
 	Provider:           "aks",
 	WorkerCount:        2,
 	WorkerSize:         "standardA2",
@@ -111,7 +111,7 @@ var testAKSCluster = Cluster{
 }
 
 var testGKECluster = Cluster{
-	Name:               "Test GKE Cluster Go SDK " + getTicks(),
+	Name:               "Test GKE Cluster Go SDK " + GetTicks(),
 	Provider:           "gke",
 	MasterCount:        1,
 	MasterSize:         "n1-standard-1",
@@ -133,7 +133,7 @@ var testGKECluster = Cluster{
 }
 
 var testGCECluster = Cluster{
-	Name:               "Test GCE Cluster Go SDK " + getTicks(),
+	Name:               "Test GCE Cluster Go SDK " + GetTicks(),
 	Provider:           "gce",
 	MasterCount:        1,
 	MasterSize:         "n1-standard-1",

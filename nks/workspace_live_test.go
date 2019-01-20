@@ -8,8 +8,8 @@ import (
 
 var testWorkspaceLiveID int
 var testWorkspace = Workspace{
-	Name:           "Test Go SDK" + getTicks(),
-	Slug:           "test_go_sdk_" + getTicks(),
+	Name:           "Test Go SDK" + GetTicks(),
+	Slug:           "test_go_sdk_" + GetTicks(),
 	TeamWorkspaces: []TeamWorkspace{},
 }
 

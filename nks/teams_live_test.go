@@ -8,7 +8,7 @@ import (
 
 var testTeamLiveID int
 var testTeam = Team{
-	Name:        "Test Go SDK" + getTicks(),
+	Name:        "Test Go SDK" + GetTicks(),
 	Memberships: []Membership{},
 }
 
