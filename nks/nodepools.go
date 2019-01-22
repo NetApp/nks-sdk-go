@@ -122,6 +122,7 @@ func (c *APIClient) GetNodesInPool(orgID, clusterID, nodepoolID int) (rNodes []N
 
 // WaitNodePoolProvisioned waits until nodepool reaches the running state (configured as const above)
 func (c *APIClient) WaitNodePoolProvisioned(orgID, clusterID, nodepoolID, timeout int) error {
+	//Check if the pool is ready
 	for i := 1; i < timeout; i++ {
 		node, err := c.GetNodePool(orgID, clusterID, nodepoolID)
 		if err != nil {
@@ -131,6 +132,15 @@ func (c *APIClient) WaitNodePoolProvisioned(orgID, clusterID, nodepoolID, timeou
 			return nil
 		}
 		time.Sleep(time.Second)
+	}
+
+	//Check if nodes are ready
+	nodes, err := c.GetNodesInPool(orgID, clusterID, nodepoolID)
+	if err != nil {
+		return err
+	}
+	for _, node := range nodes {
+		c.WaitNodeProvisioned(orgID, clusterID, node.ID, 60)
 	}
 	return fmt.Errorf("Timeout (%d seconds) reached before nodepool reached state (%s)\n",
 		timeout, NodePoolRunningStateString)
