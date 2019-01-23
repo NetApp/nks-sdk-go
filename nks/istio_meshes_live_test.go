@@ -7,9 +7,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var testIstioMeshClusterIDs = make([]int, 0)
+var testIstioMeshWorkspace, meshID int
+
 func TestLiveIstioMeshBasic(t *testing.T) {
-	cluster1ID := testIstioMeshCreateCluster(t)
-	cluster2ID := testIstioMeshCreateCluster(t)
+
+	testAwsCluster.Solutions = append(testAwsCluster.Solutions, Solution{
+		Solution: "istio",
+		State:    "draft",
+	})
+
+	cluster1ID := 0
+	cluster2ID := 0
+
+	t.Run("create clusters", func(t *testing.T) {
+		t.Run("Cluster 1", func(t *testing.T) {
+			cluster1ID = testIstioMeshCreateCluster(t)
+		})
+		t.Run("Cluster 2", func(t *testing.T) {
+			cluster2ID = testIstioMeshCreateCluster(t)
+		})
+	})
+
 	workspaceID := testIstioMeshGetDefaultWorkspace(t)
 	meshID := testIstioMeshCreateIstioMesh(t, workspaceID, cluster1ID, cluster2ID)
 
@@ -17,8 +36,15 @@ func TestLiveIstioMeshBasic(t *testing.T) {
 	testIstioMeshGet(t, workspaceID, meshID)
 
 	testIstioMeshDeleteIstioMesh(t, workspaceID, meshID)
-	testIstioMeshDeleteCluster(t, cluster1ID)
-	testIstioMeshDeleteCluster(t, cluster2ID)
+
+	t.Run("delete clusters", func(t *testing.T) {
+		t.Run("Cluster 1", func(t *testing.T) {
+			testIstioMeshDeleteCluster(t, cluster1ID)
+		})
+		t.Run("Cluster 2", func(t *testing.T) {
+			testIstioMeshDeleteCluster(t, cluster2ID)
+		})
+	})
 }
 
 func testIstioMeshGetDefaultWorkspace(t *testing.T) int {
@@ -69,10 +95,6 @@ func testIstioMeshCreateCluster(t *testing.T) int {
 
 	testAwsCluster.ProviderKey = awsKeysetID
 	testAwsCluster.SSHKeySet = sshKeysetID
-	testAwsCluster.Solutions = append(testAwsCluster.Solutions, Solution{
-		Solution: "istio",
-		State:    "draft",
-	})
 
 	cluster, err := c.CreateCluster(orgID, testAwsCluster)
 	if err != nil {
