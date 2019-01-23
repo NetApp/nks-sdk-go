@@ -6,6 +6,29 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var testSolutionAwsCluster = Cluster{
+	Name:               "Test AWS Cluster Go SDK " + GetTicks(),
+	Provider:           "aws",
+	MasterCount:        1,
+	MasterSize:         "t2.medium",
+	WorkerCount:        2,
+	WorkerSize:         "t2.medium",
+	Region:             "us-east-1",
+	Zone:               "us-east-1a",
+	ProviderNetworkID:  "__new__",
+	ProviderNetworkCdr: "172.23.0.0/16",
+	ProviderSubnetID:   "__new__",
+	ProviderSubnetCidr: "172.23.1.0/24",
+	KubernetesVersion:  "v1.13.1",
+	RbacEnabled:        true,
+	DashboardEnabled:   true,
+	EtcdType:           "classic",
+	Platform:           "coreos",
+	Channel:            "stable",
+	NetworkComponents:  []NetworkComponent{},
+	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
+}
+
 func TestLiveSolutionBasic(t *testing.T) {
 	clusterID := testSolutionCreateCluster(t)
 	solutionID := testSolutionAdd(t, clusterID)
@@ -36,10 +59,10 @@ func testSolutionCreateCluster(t *testing.T) int {
 		t.Error(err)
 	}
 
-	testAwsCluster.ProviderKey = awsKeysetID
-	testAwsCluster.SSHKeySet = sshKeysetID
+	testSolutionAwsCluster.ProviderKey = awsKeysetID
+	testSolutionAwsCluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testAwsCluster)
+	cluster, err := c.CreateCluster(orgID, testSolutionAwsCluster)
 	if err != nil {
 		t.Error(err)
 	}
