@@ -93,7 +93,7 @@ var testAKSCluster = Cluster{
 	Name:               "Test AKS Cluster Go SDK " + GetTicks(),
 	Provider:           "aks",
 	WorkerCount:        2,
-	WorkerSize:         "standardA2",
+	WorkerSize:         "Standard_DS2_v2",
 	Region:             "eastus",
 	ProviderResourceGp: "__new__",
 	ProviderNetworkID:  "__new__",
