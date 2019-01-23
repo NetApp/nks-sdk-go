@@ -7,12 +7,35 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var testIstioAwsCluster = Cluster{
+	Name:               "Test AWS Cluster Go SDK " + GetTicks(),
+	Provider:           "aws",
+	MasterCount:        1,
+	MasterSize:         "t2.medium",
+	WorkerCount:        2,
+	WorkerSize:         "t2.medium",
+	Region:             "us-east-1",
+	Zone:               "us-east-1a",
+	ProviderNetworkID:  "__new__",
+	ProviderNetworkCdr: "172.23.0.0/16",
+	ProviderSubnetID:   "__new__",
+	ProviderSubnetCidr: "172.23.1.0/24",
+	KubernetesVersion:  "v1.13.1",
+	RbacEnabled:        true,
+	DashboardEnabled:   true,
+	EtcdType:           "classic",
+	Platform:           "coreos",
+	Channel:            "stable",
+	NetworkComponents:  []NetworkComponent{},
+	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
+}
+
 var testIstioMeshClusterIDs = make([]int, 0)
 var testIstioMeshWorkspace, meshID int
 
 func TestLiveIstioMeshBasic(t *testing.T) {
 
-	testAwsCluster.Solutions = append(testAwsCluster.Solutions, Solution{
+	testIstioAwsCluster.Solutions = append(testIstioAwsCluster.Solutions, Solution{
 		Solution: "istio",
 		State:    "draft",
 	})
@@ -93,10 +116,10 @@ func testIstioMeshCreateCluster(t *testing.T) int {
 		t.Error(err)
 	}
 
-	testAwsCluster.ProviderKey = awsKeysetID
-	testAwsCluster.SSHKeySet = sshKeysetID
+	testIstioAwsCluster.ProviderKey = awsKeysetID
+	testIstioAwsCluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testAwsCluster)
+	cluster, err := c.CreateCluster(orgID, testIstioAwsCluster)
 	if err != nil {
 		t.Error(err)
 	}
