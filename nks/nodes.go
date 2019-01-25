@@ -40,6 +40,7 @@ type NodeAdd struct {
 	Zone               string `json:"zone,omitempty"`
 	ProviderSubnetID   string `json:"provider_subnet_id,omitempty"`
 	ProviderSubnetCidr string `json:"provider_subnet_cidr,omitempty"`
+	RootDiskSize       int    `json:"root_disk_size"`
 }
 
 // GetNodes gets the nodes associated with a cluster and organization

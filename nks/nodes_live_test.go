@@ -35,6 +35,7 @@ func TestLiveNodeBasic(t *testing.T) {
 	testNodeList(t, clusterID)
 	testNodeGet(t, clusterID, nodeID)
 	testNodeDelete(t, clusterID, nodeID)
+	testNodeClusterDelete(t, clusterID)
 }
 
 func testNodeClusterCreate(t *testing.T) int {
@@ -82,17 +83,12 @@ func testNodeCreate(t *testing.T, clusterID int) int {
 		t.Error(err)
 	}
 
-	// cluster, err := c.GetCluster(orgID, clusterID)
-	// if err != nil {
-	// 	t.Error(err)
-	// }
-
 	nodeAdd := NodeAdd{
 		Count:              1,
 		Size:               "t2.medium",
 		Role:               "master",
 		Zone:               "us-east-1a",
-		ProviderSubnetID:   "__new__", //cluster.ProviderSubnetID,
+		ProviderSubnetID:   "__new__",
 		ProviderSubnetCidr: "172.23.1.0/24",
 		RootDiskSize:       50,
 	}
@@ -168,6 +164,28 @@ func testNodeDelete(t *testing.T, clusterID, nodeID int) {
 	}
 
 	err = c.WaitNodeDeleted(orgID, clusterID, nodeID, timeout)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func testNodeClusterDelete(t *testing.T, clusterID int) {
+	c, err := NewClientFromEnv()
+	if err != nil {
+		t.Error(err)
+	}
+
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err := c.DeleteCluster(orgID, clusterID)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err := c.WaitClusterDeleted(orgID, clusterID, timeout)
 	if err != nil {
 		t.Error(err)
 	}
