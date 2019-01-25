@@ -180,12 +180,12 @@ func testNodeClusterDelete(t *testing.T, clusterID int) {
 		t.Error(err)
 	}
 
-	err := c.DeleteCluster(orgID, clusterID)
+	err = c.DeleteCluster(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err := c.WaitClusterDeleted(orgID, clusterID, timeout)
+	err = c.WaitClusterDeleted(orgID, clusterID, timeout)
 	if err != nil {
 		t.Error(err)
 	}
