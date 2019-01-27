@@ -104,7 +104,7 @@ var testAKSCluster = Cluster{
 	RbacEnabled:        true,
 	DashboardEnabled:   true,
 	EtcdType:           "classic",
-	Platform:           "coreos",
+	Platform:           "ubuntu",
 	Channel:            "stable",
 	NetworkComponents:  []NetworkComponent{},
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
@@ -309,12 +309,12 @@ func testClusterCreateAKS(t *testing.T) {
 		t.Error(err)
 	}
 
-	azureKeysetID, err := GetIDFromEnv("NKS_AZR_KEYSET")
+	aksKeysetID, err := GetIDFromEnv("NKS_AKS_KEYSET")
 	if err != nil {
 		t.Error(err)
 	}
 
-	testAKSCluster.ProviderKey = azureKeysetID
+	testAKSCluster.ProviderKey = aksKeysetID
 	testAKSCluster.SSHKeySet = sshKeysetID
 
 	cluster, err := c.CreateCluster(orgID, testAKSCluster)
