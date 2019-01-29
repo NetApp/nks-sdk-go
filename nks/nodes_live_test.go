@@ -29,7 +29,7 @@ var testNodeAwsCluster = Cluster{
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
 
-func TestLiveNodeBasic(t *testing.T) {
+func TestLiveBasicNode(t *testing.T) {
 	clusterID := testNodeClusterCreate(t)
 	nodeID := testNodeCreate(t, clusterID)
 	testNodeList(t, clusterID)
@@ -124,7 +124,7 @@ func testNodeList(t *testing.T, clusterID int) {
 		t.Error(err)
 	}
 
-	assert.Equal(t, len(list), 4, "There should be 2 master nodes")
+	assert.Equal(t, len(list), 4, "There should be 4 nodes")
 }
 
 func testNodeGet(t *testing.T, clusterID, nodeID int) {

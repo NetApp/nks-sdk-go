@@ -158,7 +158,7 @@ var clusterIds = make([]int, 0)
 
 var timeout = 3600
 
-func TestLiveClusterBasic(t *testing.T) {
+func TestLiveBasicCluster(t *testing.T) {
 	t.Run("create clusters", func(t *testing.T) {
 		t.Run("aws", testClusterCreateAWS)
 		t.Run("eks", testClusterCreateEKS)

@@ -29,7 +29,7 @@ var testNodePoolAwsCluster = Cluster{
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
 
-func TestLiveNodePoolBasic(t *testing.T) {
+func TestLiveBasicNodePool(t *testing.T) {
 	clusterID, nodePoolID := testNodePoolClusterCreate(t)
 	nodeID := testNodePoolCreate(t, clusterID, nodePoolID)
 	testNodePoolList(t, clusterID)

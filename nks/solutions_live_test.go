@@ -29,7 +29,7 @@ var testSolutionAwsCluster = Cluster{
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
 }
 
-func TestLiveSolutionBasic(t *testing.T) {
+func TestLiveBasicSolution(t *testing.T) {
 	clusterID := testSolutionCreateCluster(t)
 	solutionID := testSolutionAdd(t, clusterID)
 	testSolutionList(t, clusterID)

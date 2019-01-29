@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLiveMachSpecBasic(t *testing.T) {
+func TestLiveBasicMachSpec(t *testing.T) {
 	testProvider(t, "aws")
 	testProvider(t, "eks")
 	testProvider(t, "gce")

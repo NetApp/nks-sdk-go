@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLiveOrganizationBasic(t *testing.T) {
+func TestLiveBasicOrganization(t *testing.T) {
 	tesOrganizationtList(t)
 	testOrganizationGet(t)
 }

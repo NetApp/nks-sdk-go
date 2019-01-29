@@ -16,7 +16,7 @@ var testKeyset = Keyset{
 	Keys:       []Key{},
 }
 
-func TestLiveKeysetBasic(t *testing.T) {
+func TestLiveBasicKeyset(t *testing.T) {
 	testLiveKeysetCreate(t)
 	testLiveKeysetList(t)
 	testLiveKeysetGet(t)

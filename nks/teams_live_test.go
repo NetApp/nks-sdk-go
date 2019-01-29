@@ -12,7 +12,7 @@ var testTeam = Team{
 	Memberships: []Membership{},
 }
 
-func TestLiveTeamBasic(t *testing.T) {
+func TestLiveBasicTeam(t *testing.T) {
 	testLiveTeamCreate(t)
 	testLiveTeamList(t)
 	testLiveTeamGet(t)

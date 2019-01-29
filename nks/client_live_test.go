@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLiveClientBasic(t *testing.T) {
+func TestLiveBasicClient(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
 		t.Error(err)

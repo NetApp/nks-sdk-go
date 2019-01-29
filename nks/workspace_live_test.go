@@ -13,7 +13,7 @@ var testWorkspace = Workspace{
 	TeamWorkspaces: []TeamWorkspace{},
 }
 
-func TestLiveWorkspaceBasic(t *testing.T) {
+func TestLiveBasicWorkspace(t *testing.T) {
 	testLiveWorkspaceCreate(t)
 	testLiveWorkspaceList(t)
 	testLiveWorkspaceGet(t)

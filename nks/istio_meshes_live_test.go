@@ -33,7 +33,7 @@ var testIstioAwsCluster = Cluster{
 var testIstioMeshClusterIDs = make([]int, 0)
 var testIstioMeshWorkspace, meshID int
 
-func TestLiveIstioMeshBasic(t *testing.T) {
+func TestLiveBasicIstioMesh(t *testing.T) {
 
 	testIstioAwsCluster.Solutions = append(testIstioAwsCluster.Solutions, Solution{
 		Solution: "istio",
