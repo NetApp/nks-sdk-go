@@ -70,9 +70,9 @@ var testAzureCluster = Cluster{
 	Name:               "Test Azure Cluster Go SDK " + GetTicks(),
 	Provider:           "azure",
 	MasterCount:        1,
-	MasterSize:         "standardA2",
+	MasterSize:         "standard_d2",
 	WorkerCount:        2,
-	WorkerSize:         "standardA2",
+	WorkerSize:         "standard_d2",
 	Region:             "eastus",
 	ProviderResourceGp: "__new__",
 	ProviderNetworkID:  "__new__",
@@ -233,7 +233,7 @@ func testClusterCreateEKS(t *testing.T) {
 		t.Error(err)
 	}
 
-	eksKeysetID, err := GetIDFromEnv("NKS_AKS_KEYSET")
+	eksKeysetID, err := GetIDFromEnv("NKS_EKS_KEYSET")
 	if err != nil {
 		t.Error(err)
 	}
