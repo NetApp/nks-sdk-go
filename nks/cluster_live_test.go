@@ -443,7 +443,9 @@ func testClusterGet(t *testing.T) {
 
 func testClusterDelete(t *testing.T) {
 	for _, clusterID := range clusterIds {
-		clusterDelete(t, clusterID)
+		t.Run(string(clusterID), func(t *testing.T) {
+			clusterDelete(t, clusterID)
+		})
 	}
 }
 
