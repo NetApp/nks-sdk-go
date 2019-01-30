@@ -92,3 +92,24 @@ func main() {
 The NetApp Kubernetes Service SDK for Go comes with several example programs to demonstrate how most major operations can be performed, from listing organizations and nodes, to building clusters in various cloud ecosystems.  The examples will be located in:
 
 github.com/StackPointCloud/nks-sdk-go/example
+
+## Testing
+
+You can run test against an environment by using the command go test TestLiveBasic -timeout 99999s. Also you could run only one test with the command go test TestLiveBasicCluster -timeout 99999s.
+
+Before running any test you have to make sure to set testing environment. The following environment variables have to be set:
+```
+export NKS_API_TOKEN=<Token generated>
+export NKS_AWS_KEYSET=<Id of AWS keyset>
+export NKS_AZR_KEYSET=<Id of Azure keyset>
+export NKS_EKS_KEYSET=<<Id of EKS keyset>
+export NKS_GKE_KEYSET=<Id of GKE keyset>
+export NKS_GCE_KEYSET=<Id of GCE keyset>
+export NKS_AKS_KEYSET=<Id of AKS keyset>
+export NKS_BASE_API_URL=https://api.stackpoint.io/
+export NKS_ORG_ID=<Id of your ograzation>
+export NKS_SSH_KEYSET=<Id of SSH keyset>
+export NKS_ID_RSA_PUB_PATH=~/.ssh/id_rsa.pub
+```
+
+To retrive keys you can use [nks-cli](https://github.com/NetApp/nks-cli/#listget-keysets) or calling [the API directly](https://staging.stackpoint.io/docs/#keysets)
