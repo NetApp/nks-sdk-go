@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	nks "github.com/StackPointCloud/nks-sdk-go/nks"
+	nks "github.com/NetApp/nks-sdk-go/nks"
 )
 
 const nodepoolName = "Test Nodepool"

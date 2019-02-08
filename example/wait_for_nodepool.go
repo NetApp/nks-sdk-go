@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	nks "github.com/StackPointCloud/nks-sdk-go/nks"
+	nks "github.com/NetApp/nks-sdk-go/nks"
 )
 
 func main() {
