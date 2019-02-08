@@ -49,9 +49,9 @@ func NewClientFromEnv() (*APIClient, error) {
 	if token == "" {
 		return nil, errors.New("Missing token env in NKS_API_TOKEN")
 	}
-	endpoint := os.Getenv("NKS_BASE_API_URL")
+	endpoint := os.Getenv("NKS_API_URL")
 	if endpoint == "" {
-		return nil, errors.New("Missing endpoint env in NKS_BASE_API_URL")
+		return nil, errors.New("Missing endpoint env in NKS_API_URL")
 	}
 	return NewClient(token, endpoint), nil
 }

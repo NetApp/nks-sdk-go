@@ -22,12 +22,12 @@ export PATH=$PATH:$GOBIN
 The following `go` command will download `nks-sdk-go` to your configured `GOPATH`:
 
 ```go
-go get "github.com/StackPointCloud/nks-sdk-go"
+go get "github.com/NetApp/nks-sdk-go"
 ```
 
 The source code of the package will be located here:
 
-    $GOPATH/src/github.com/StackPointCloud/nks-sdk-go
+    $GOPATH/src/github.com/NetApp/nks-sdk-go
 
 ## Library
 
@@ -49,7 +49,7 @@ Include the NetApp Kubernetes Service SDK for Go under the list of imports.
 ```go
 import(
 	"fmt"    
-	nks "github.com/StackPointCloud/nks-sdk-go"
+	nks "github.com/NetApp/nks-sdk-go"
 )
 ```
 
@@ -67,7 +67,7 @@ Set your environment variables in your shell.
 
 ```
 export NKS_API_TOKEN="YOUR TOKEN HERE"
-export NKS_BASE_API_URL="YOUR ENDPOINT URL HERE"
+export NKS_API_URL="YOUR ENDPOINT URL HERE"
 ```
 
 Now you can use a helper function to get a client instance with environment variables.
@@ -76,7 +76,7 @@ Now you can use a helper function to get a client instance with environment vari
 import (
 	"fmt"
 	"os"
-	nks "github.com/StackPointCloud/nks-sdk-go"
+	nks "github.com/NetApp/nks-sdk-go"
 )
 
 func main() {
@@ -91,4 +91,4 @@ func main() {
 
 The NetApp Kubernetes Service SDK for Go comes with several example programs to demonstrate how most major operations can be performed, from listing organizations and nodes, to building clusters in various cloud ecosystems.  The examples will be located in:
 
-github.com/StackPointCloud/nks-sdk-go/example
+github.com/NetApp/nks-sdk-go/example
