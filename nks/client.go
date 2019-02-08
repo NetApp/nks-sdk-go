@@ -12,7 +12,8 @@ import (
 	"strings"
 )
 
-const ClientUserAgentString = "NetApp Kubernetes Service Go SDK v1.2.1"
+const ClientUserAgentString = "NetApp Kubernetes Service Go SDK v2.0.3"
+const defaultNKSApiURL = "https://api.stackpoint.io/"
 
 // APIClient references an api token and an http endpoint
 type APIClient struct {
@@ -51,7 +52,7 @@ func NewClientFromEnv() (*APIClient, error) {
 	}
 	endpoint := os.Getenv("NKS_API_URL")
 	if endpoint == "" {
-		return nil, errors.New("Missing endpoint env in NKS_API_URL")
+		endpoint = defaultNKSApiURL
 	}
 	return NewClient(token, endpoint), nil
 }
