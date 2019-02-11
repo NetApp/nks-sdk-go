@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-const ClientUserAgentString = "NetApp Kubernetes Service Go SDK v2.0.4"
+const ClientUserAgentString = "NetApp Kubernetes Service Go SDK v2.0.7"
 const defaultNKSApiURL = "https://api-netapp.stackpoint.io"
 
 // APIClient references an api token and an http endpoint
