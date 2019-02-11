@@ -15,7 +15,7 @@ type TeamWorkspace struct {
 	ID        int       `json:"pk"`
 	Team      Team      `json:"team"`
 	Workspace int       `json:"workspace"`
-	Created   time.Time `json:"creaated"`
+	Created   time.Time `json:"created"`
 }
 
 // Workspace struct
