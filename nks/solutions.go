@@ -158,3 +158,23 @@ func (c *APIClient) WaitSolutionDeleted(orgID, clusterID, solutionID, timeout in
 	}
 	return fmt.Errorf("Timeout (%d seconds) reached before solution deleted\n", timeout)
 }
+
+// WaitSolutionInstalledByName waits until solution is installed, or errors if solution is not installed or not going to install
+func (c *APIClient) WaitSolutionInstalledByName(orgID, clusterID, timeout int, solutionName string) error {
+	solutionID, err := c.FindSolutionByName(orgID, clusterID, solutionName)
+	if err != nil {
+		return err
+	}
+	for i := 1; i < timeout; i++ {
+		sol, err := c.GetSolution(orgID, clusterID, solutionID)
+		if err != nil {
+			return err
+		}
+		if sol.State == SolutionInstalledStateString {
+			return nil
+		}
+		time.Sleep(time.Second)
+	}
+	return fmt.Errorf("Timeout (%d seconds) reached before solution %s reached state (%s)\n",
+		timeout, solutionName, SolutionInstalledStateString)
+}
