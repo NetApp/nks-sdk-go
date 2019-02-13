@@ -1,6 +1,6 @@
 # NetApp Kubernetes Service Go SDK
 
-Version: nks-sdk-go **2.0.7**
+Version: nks-sdk-go **2.0.8**
 
 The NetApp Kubernetes Service software development kit for [Go](https://www.golang.org/) provides you with access to the NetApp Kubernetes Service API. It is designed for developers who are building applications in Go.
 
