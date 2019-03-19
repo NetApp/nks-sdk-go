@@ -16,7 +16,7 @@ func TestNewClientFromEnv(t *testing.T) {
 	}
 }
 
-func TestrunRequest(t *testing.T) {
+func TestRunRequest(t *testing.T) {
 	fmt.Println("runRequest testing")
 	c, err := NewClientFromEnv()
 	if err != nil {
