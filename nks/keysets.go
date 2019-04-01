@@ -72,16 +72,3 @@ func (c *APIClient) DeleteKeyset(orgID, keysetID int) (err error) {
 	err = c.runRequest(req)
 	return
 }
-
-// RunProxyRequest runs a request on the API proxy
-func (c *APIClient) RunProxyRequest(provider string, keysetID int, cmd string, obj interface{}) (err error) {
-	req := &APIReq{
-		Method:       "GET",
-		Path:         fmt.Sprintf("/provider/%s/keyset/%d/proxy?%s", provider, keysetID, cmd),
-		ResponseObj:  &obj,
-		WantedStatus: 200,
-	}
-
-	err = c.runRequest(req)
-	return
-}
