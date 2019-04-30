@@ -33,6 +33,7 @@ type Cluster struct {
 	State                       string             `json:"state,omitempty"`
 	IsFailed                    bool               `json:"is_failed"`
 	ProjectID                   string             `json:"project_id,omitempty"`
+	Workspace                   Workspace          `json:"workspace"`
 	Owner                       int                `json:"owner"`
 	Notified                    bool               `json:"notified,omitempty"`
 	KubernetesVersion           string             `json:"k8s_version"`
