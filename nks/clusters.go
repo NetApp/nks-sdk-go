@@ -111,6 +111,19 @@ func (c *APIClient) CreateCluster(orgID int, cluster Cluster) (cl *Cluster, err 
 	return
 }
 
+// CreateClusterInWorkspace requests cluster creation in workspace
+func (c *APIClient) CreateClusterInWorkspace(orgID, workspaceID int, cluster Cluster) (cl *Cluster, err error) {
+	req := &APIReq{
+		Method:       "POST",
+		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/clusters", orgID, workspaceID),
+		ResponseObj:  &cl,
+		PostObj:      cluster,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
+}
+
 // DeleteCluster deletes cluster
 func (c *APIClient) DeleteCluster(orgID, clusterID int) (err error) {
 	req := &APIReq{
