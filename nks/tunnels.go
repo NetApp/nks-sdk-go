@@ -4,6 +4,7 @@ import "fmt"
 
 // Tunnel describes credentials for a Dispatch tunnel
 type Tunnel struct {
+	URL  string `json:"url"`
 	Cert string `json:"cert"`
 	Key  string `json:"key"`
 }
