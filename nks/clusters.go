@@ -13,6 +13,11 @@ const (
 	ClusterBuildLogEventFailed = "failure"
 )
 
+// Config describes a cluster config in the NetApp Kubernetes Service system
+type Config struct {
+	IsServiceCluster bool `json:"is_service_cluster"`
+}
+
 // Cluster describes a Kubernetes cluster in the NetApp Kubernetes Service system
 type Cluster struct {
 	ID                          int                `json:"pk"`
@@ -30,6 +35,7 @@ type Cluster struct {
 	ProviderBalancerID          string             `json:"provider_balancer_id,omitempty"`
 	Region                      string             `json:"region"`
 	Zone                        string             `json:"zone,omitempty"`
+	Config                      Config             `json:"config,omitempty"`
 	State                       string             `json:"state,omitempty"`
 	IsFailed                    bool               `json:"is_failed"`
 	ProjectID                   string             `json:"project_id,omitempty"`
