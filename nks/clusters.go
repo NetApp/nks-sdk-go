@@ -78,6 +78,18 @@ func (c *APIClient) GetClusters(orgID int) (cls []Cluster, err error) {
 	return
 }
 
+// GetAllClusters gets all clusters associated with an organization, including service clusters
+func (c *APIClient) GetAllClusters(orgID int) (cls []Cluster, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters?include_service_clusters=true", orgID),
+		ResponseObj:  &cls,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
+}
+
 // GetCluster gets a single cluster by primary ID and organization
 func (c *APIClient) GetCluster(orgID, clusterID int) (cl *Cluster, err error) {
 	req := &APIReq{
