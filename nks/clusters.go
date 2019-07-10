@@ -13,6 +13,11 @@ const (
 	ClusterBuildLogEventFailed = "failure"
 )
 
+// Config describes a cluster config in the NetApp Kubernetes Service system
+type Config struct {
+	IsServiceCluster bool `json:"is_service_cluster"`
+}
+
 // Cluster describes a Kubernetes cluster in the NetApp Kubernetes Service system
 type Cluster struct {
 	ID                          int                `json:"pk"`
@@ -30,6 +35,7 @@ type Cluster struct {
 	ProviderBalancerID          string             `json:"provider_balancer_id,omitempty"`
 	Region                      string             `json:"region"`
 	Zone                        string             `json:"zone,omitempty"`
+	Config                      Config             `json:"config,omitempty"`
 	State                       string             `json:"state,omitempty"`
 	IsFailed                    bool               `json:"is_failed"`
 	ProjectID                   string             `json:"project_id,omitempty"`
@@ -72,6 +78,18 @@ func (c *APIClient) GetClusters(orgID int) (cls []Cluster, err error) {
 	return
 }
 
+// GetAllClusters gets all clusters associated with an organization, including service clusters
+func (c *APIClient) GetAllClusters(orgID int) (cls []Cluster, err error) {
+	req := &APIReq{
+		Method:       "GET",
+		Path:         fmt.Sprintf("/orgs/%d/clusters?include_service_clusters=true", orgID),
+		ResponseObj:  &cls,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
+}
+
 // GetCluster gets a single cluster by primary ID and organization
 func (c *APIClient) GetCluster(orgID, clusterID int) (cl *Cluster, err error) {
 	req := &APIReq{
@@ -103,6 +121,19 @@ func (c *APIClient) CreateCluster(orgID int, cluster Cluster) (cl *Cluster, err 
 	req := &APIReq{
 		Method:       "POST",
 		Path:         fmt.Sprintf("/orgs/%d/clusters", orgID),
+		ResponseObj:  &cl,
+		PostObj:      cluster,
+		WantedStatus: 200,
+	}
+	err = c.runRequest(req)
+	return
+}
+
+// CreateClusterInWorkspace requests cluster creation in workspace
+func (c *APIClient) CreateClusterInWorkspace(orgID, workspaceID int, cluster Cluster) (cl *Cluster, err error) {
+	req := &APIReq{
+		Method:       "POST",
+		Path:         fmt.Sprintf("/orgs/%d/workspaces/%d/clusters", orgID, workspaceID),
 		ResponseObj:  &cl,
 		PostObj:      cluster,
 		WantedStatus: 200,
