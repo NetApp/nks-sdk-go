@@ -4,14 +4,15 @@ import "fmt"
 
 // UserProfile struct
 type UserProfile struct {
-	ID        int             `json:"pk"`
-	Username  string          `json:"username"`
-	Email     string          `json:"email"`
-	FirstName string          `json:"first_name"`
-	LastName  string          `json:"last_name"`
-	FullName  string          `json:"full_name"`
-	OrgMems   []OrgMembership `json:"org_memberships"`
-	Keysets   []Keyset        `json:"keysets"`
+	ID           int             `json:"pk"`
+	Username     string          `json:"username"`
+	Email        string          `json:"email"`
+	FirstName    string          `json:"first_name"`
+	LastName     string          `json:"last_name"`
+	FullName     string          `json:"full_name"`
+	OrgMems      []OrgMembership `json:"org_memberships"`
+	Keysets      []Keyset        `json:"keysets"`
+	Subscription Subscription    `json:"subscription"`
 }
 
 type OrgMembership struct {
@@ -22,6 +23,12 @@ type OrgMembership struct {
 	IsOwner   bool         `json:"is_owner"`
 	IsManager bool         `json:"is_manager"`
 	IsDefault bool         `json:"is_default"`
+}
+
+type Subscription struct {
+	ID       int    `json:"pk"`
+	State    string `json:"state"`
+	IsActive bool   `json:"is_active"`
 }
 
 // GetUserProfile gets user profile for user (based on API token)
