@@ -24,6 +24,12 @@ type OrgMembership struct {
 	IsDefault bool         `json:"is_default"`
 }
 
+type Subscription struct {
+	ID       int    `json:"pk"`
+	State    string `json:"state"`
+	IsActive bool   `json:"is_active"`
+}
+
 // GetUserProfile gets user profile for user (based on API token)
 func (c *APIClient) GetUserProfile() (up []UserProfile, err error) {
 	req := &APIReq{
