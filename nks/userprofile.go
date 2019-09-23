@@ -16,13 +16,14 @@ type UserProfile struct {
 }
 
 type OrgMembership struct {
-	ID        int          `json:"pk"`
-	User      int          `json:"user"`
-	Org       Organization `json:"org"`
-	Role      string       `json:"role"`
-	IsOwner   bool         `json:"is_owner"`
-	IsManager bool         `json:"is_manager"`
-	IsDefault bool         `json:"is_default"`
+	ID           int          `json:"pk"`
+	User         int          `json:"user"`
+	Org          Organization `json:"org"`
+	Role         string       `json:"role"`
+	IsOwner      bool         `json:"is_owner"`
+	IsManager    bool         `json:"is_manager"`
+	IsDefault    bool         `json:"is_default"`
+	Subscription Subscription `json:"subscription"`
 }
 
 type Subscription struct {
