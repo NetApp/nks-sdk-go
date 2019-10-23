@@ -43,6 +43,8 @@ type Cluster struct {
 	Owner                       int                `json:"owner"`
 	Notified                    bool               `json:"notified,omitempty"`
 	KubernetesVersion           string             `json:"k8s_version"`
+	KubernetesPodCidr           string             `json:"k8s_pod_cidr"`
+	KubernetesServiceCidr       string             `json:"k8s_service_cidr"`
 	Created                     time.Time          `json:"created"`
 	Updated                     time.Time          `json:"updated,omitempty"`
 	DashboardEnabled            bool               `json:"k8s_dashboard_enabled"`
