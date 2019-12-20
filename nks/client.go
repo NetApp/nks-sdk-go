@@ -13,7 +13,7 @@ import (
 )
 
 const ClientUserAgentString = "NetApp Kubernetes Service Go SDK v2.0.10"
-const defaultNKSApiURL = "https://api-netapp.stackpoint.io"
+const defaultNKSApiURL = "https://api.nks.netapp.io"
 
 // APIClient references an api token and an http endpoint
 type APIClient struct {
