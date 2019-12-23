@@ -15,7 +15,8 @@ const (
 
 // Config describes a cluster config in the NetApp Kubernetes Service system
 type Config struct {
-	IsServiceCluster bool `json:"is_service_cluster"`
+	IsServiceCluster     bool `json:"is_service_cluster"`
+	ExperimentalFeatures bool `json:"enable_experimental_features":`
 }
 
 // Cluster describes a Kubernetes cluster in the NetApp Kubernetes Service system
