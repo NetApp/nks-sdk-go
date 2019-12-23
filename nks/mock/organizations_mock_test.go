@@ -16,5 +16,8 @@ func TestGetOrganizations(t *testing.T) {
 		t.Fail()
 	}
 
-	fmt.Println(orgs)
+	if len(orgs) == 0 {
+		fmt.Println("No orgs found, but no error")
+		t.Fail()
+	}
 }

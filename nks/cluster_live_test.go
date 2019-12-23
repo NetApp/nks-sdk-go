@@ -13,8 +13,8 @@ var testAwsCluster = Cluster{
 	MasterSize:         "t2.medium",
 	WorkerCount:        2,
 	WorkerSize:         "t2.medium",
-	Region:             "us-east-1",
-	Zone:               "us-east-1a",
+	Region:             "eu-central-1",
+	Zone:               "eu-central-1a",
 	ProviderNetworkID:  "__new__",
 	ProviderNetworkCdr: "172.23.0.0/16",
 	ProviderSubnetID:   "__new__",
@@ -27,43 +27,6 @@ var testAwsCluster = Cluster{
 	Channel:            "stable",
 	NetworkComponents:  []NetworkComponent{},
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
-}
-
-var testEKSCluster = Cluster{
-	Name:               "Test EKS Cluster Go SDK " + GetTicks(),
-	Provider:           "eks",
-	NodeCount:          2,
-	MinNodeCount:       2,
-	MaxNodeCount:       3,
-	WorkerSize:         "t2.medium",
-	Region:             "us-east-1",
-	ProviderNetworkID:  "vpc-1179c777",
-	ProviderNetworkCdr: "172.23.0.0/16",
-	KubernetesVersion:  "v1.10",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "amazon-linux",
-	Channel:            "v2",
-	NetworkComponents: []NetworkComponent{
-		NetworkComponent{
-			Cidr:          "172.23.12.0/24",
-			ComponentType: "provider_subnet",
-			ID:            "__new__",
-			VpcID:         "vpc-1179c777",
-			Zone:          "us-east-1a",
-			ProviderID:    "__new__",
-		},
-		NetworkComponent{
-			Cidr:          "172.23.15.0/24",
-			ComponentType: "provider_subnet",
-			ID:            "__new__",
-			VpcID:         "vpc-1179c777",
-			Zone:          "us-east-1b",
-			ProviderID:    "__new__",
-		},
-	},
-	Solutions: []Solution{Solution{Solution: "helm_tiller"}},
 }
 
 var testAzureCluster = Cluster{
@@ -84,49 +47,6 @@ var testAzureCluster = Cluster{
 	DashboardEnabled:   true,
 	EtcdType:           "classic",
 	Platform:           "coreos",
-	Channel:            "stable",
-	NetworkComponents:  []NetworkComponent{},
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
-}
-
-var testAKSCluster = Cluster{
-	Name:               "Test AKS Cluster Go SDK " + GetTicks(),
-	Provider:           "aks",
-	WorkerCount:        2,
-	WorkerSize:         "Standard_F4s",
-	Region:             "eastus",
-	ProviderResourceGp: "__new__",
-	ProviderNetworkID:  "__new__",
-	ProviderNetworkCdr: "10.0.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "10.0.0.0/24",
-	KubernetesVersion:  "v1.11.5",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "ubuntu",
-	Channel:            "16.04-lts",
-	NetworkComponents:  []NetworkComponent{},
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
-}
-
-var testGKECluster = Cluster{
-	Name:               "Test GKE Cluster Go SDK " + GetTicks(),
-	Provider:           "gke",
-	MasterCount:        1,
-	MasterSize:         "n1-standard-1",
-	WorkerCount:        2,
-	WorkerSize:         "n1-standard-1",
-	Region:             "us-east1-c",
-	ProviderNetworkID:  "__new__",
-	ProviderNetworkCdr: "172.23.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "172.23.1.0/24",
-	KubernetesVersion:  "latest",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "gci",
 	Channel:            "stable",
 	NetworkComponents:  []NetworkComponent{},
 	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
@@ -161,8 +81,8 @@ var timeout = 3600
 func TestLiveBasicCluster(t *testing.T) {
 	t.Run("create clusters", func(t *testing.T) {
 		t.Run("aws", testClusterCreateAWS)
-		t.Run("azure", testClusterCreateAzure)
-		t.Run("gce", testClusterCreateGCE)
+		// t.Run("azure", testClusterCreateAzure)
+		// t.Run("gce", testClusterCreateGCE)
 	})
 
 	t.Run("get clusters", func(t *testing.T) {
