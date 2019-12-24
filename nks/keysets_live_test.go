@@ -26,26 +26,26 @@ func TestLiveBasicKeyset(t *testing.T) {
 func testLiveKeysetCreate(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	idRsaPubPath, err := GetValueFromEnv("NKS_ID_RSA_PUB_PATH")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	idRsaPubPath, err = GetAbsPath(idRsaPubPath)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	content, err := ioutil.ReadFile(idRsaPubPath)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	testKeyset.Keys = append(testKeyset.Keys, Key{
@@ -55,7 +55,7 @@ func testLiveKeysetCreate(t *testing.T) {
 
 	Keyset, err := c.CreateKeyset(orgID, testKeyset)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	testKeysetLiveID = Keyset.ID
@@ -68,16 +68,16 @@ func testLiveKeysetCreate(t *testing.T) {
 func testLiveKeysetList(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	list, err := c.GetKeysets(orgID)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var Keyset Keyset
@@ -94,16 +94,16 @@ func testLiveKeysetList(t *testing.T) {
 func testLiveKeysetGet(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	Keyset, err := c.GetKeyset(orgID, testKeysetLiveID)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	assert.Equal(t, testKeyset.Name, Keyset.Name, "Name should be equal")
@@ -112,15 +112,15 @@ func testLiveKeysetGet(t *testing.T) {
 func testLiveKeysetDelete(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = c.DeleteKeyset(orgID, testKeysetLiveID)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }

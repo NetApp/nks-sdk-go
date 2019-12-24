@@ -1,32 +1,37 @@
 package nks
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
+var solutionName = "haproxy"
+
 var testSolutionAwsCluster = Cluster{
-	Name:               "Test AWS Cluster Go SDK " + GetTicks(),
-	Provider:           "aws",
-	MasterCount:        1,
-	MasterSize:         "t2.medium",
-	WorkerCount:        2,
-	WorkerSize:         "t2.medium",
-	Region:             "us-east-1",
-	Zone:               "us-east-1a",
-	ProviderNetworkID:  "__new__",
-	ProviderNetworkCdr: "172.23.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "172.23.1.0/24",
-	KubernetesVersion:  "v1.13.1",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "coreos",
-	Channel:            "stable",
-	NetworkComponents:  []NetworkComponent{},
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
+	Name:                  "Test AWS Cluster Go SDK " + GetTicks(),
+	Provider:              "aws",
+	MasterCount:           1,
+	MasterSize:            "t2.medium",
+	WorkerCount:           2,
+	WorkerSize:            "t2.medium",
+	Region:                "eu-west-1",
+	Zone:                  "eu-west-1b",
+	ProviderNetworkID:     "__new__",
+	ProviderNetworkCdr:    "172.23.0.0/16",
+	ProviderSubnetID:      "__new__",
+	ProviderSubnetCidr:    "172.23.1.0/24",
+	KubernetesVersion:     "v1.13.1",
+	KubernetesPodCidr:     "10.2.0.0",
+	KubernetesServiceCidr: "10.3.0.0",
+	RbacEnabled:           true,
+	DashboardEnabled:      true,
+	EtcdType:              "classic",
+	Platform:              "coreos",
+	Channel:               "stable",
+	NetworkComponents:     []NetworkComponent{},
+	Solutions:             []Solution{Solution{Solution: "helm_tiller"}},
 }
 
 func TestLiveBasicSolution(t *testing.T) {
@@ -84,7 +89,7 @@ func testSolutionAdd(t *testing.T, clusterID int) int {
 	}
 
 	newSolution := Solution{
-		Solution: "gitlab",
+		Solution: solutionName,
 		State:    "draft",
 	}
 
@@ -117,8 +122,10 @@ func testSolutionList(t *testing.T, clusterID int) {
 		t.Error(err)
 	}
 
+	fmt.Println(list)
+
 	assert.Equal(t, len(list), 2, "Two solutins have to be installed")
-	assert.Equal(t, list[0].Solution, "gitlab", "Gitlab solution has to be installed")
+	assert.Equal(t, list[0].Solution, solutionName, solutionName+" solution has to be installed")
 }
 
 func testSolutionGet(t *testing.T, clusterID int) {
@@ -132,7 +139,7 @@ func testSolutionGet(t *testing.T, clusterID int) {
 		t.Error(err)
 	}
 
-	solutionID, err := c.FindSolutionByName(orgID, clusterID, "gitlab")
+	solutionID, err := c.FindSolutionByName(orgID, clusterID, solutionName)
 	if err != nil {
 		t.Error(err)
 	}
@@ -142,8 +149,8 @@ func testSolutionGet(t *testing.T, clusterID int) {
 		t.Error(err)
 	}
 
-	assert.Equal(t, solution.Solution, "gitlab", "Gitlab solution has to be installed")
-	assert.Equal(t, solution.State, SolutionInstalledStateString, "Gitlab solution has to be installed")
+	assert.Equal(t, solution.Solution, solutionName, solutionName+"solution has to be installed")
+	assert.Equal(t, solution.State, SolutionInstalledStateString, solutionName+"solution has to be installed")
 }
 
 func testSolutionDelete(t *testing.T, clusterID int, solutionID int) {
