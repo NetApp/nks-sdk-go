@@ -57,6 +57,8 @@ type Cluster struct {
 	MasterSize                  string             `json:"master_size"`
 	WorkerSize                  string             `json:"worker_size"`
 	NodeCount                   int                `json:"node_count"`
+	MasterRootDiskSize          int                `json:"master_root_disk_size"`
+	WorkerRootDiskSize          int                `json:"worker_root_disk_size"`
 	MaxNodeCount                int                `json:"max_node_count"`
 	MinNodeCount                int                `json:"min_node_count"`
 	EtcdType                    string             `json:"etcd_type"`
