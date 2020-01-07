@@ -2,12 +2,22 @@ package nks
 
 import (
 	"fmt"
+	"gopkg.in/h2non/gock.v1"
 	"testing"
 )
 
-func TestGetOrganizations(t *testing.T) {
+func TestLiveOrganization(t *testing.T) {
+	defer gock.Off()
+	t.Run("get clusters", func(t *testing.T) {
+		t.Run("list", testGetOrganizations)
+		t.Run("get", testGetOrganization)
+	})
+
+}
+
+func testGetOrganizations(t *testing.T) {
 	fmt.Println("GetOrganizations testing")
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -20,9 +30,9 @@ func TestGetOrganizations(t *testing.T) {
 	}
 }
 
-func TestGetOrganization(t *testing.T) {
+func testGetOrganization(t *testing.T) {
 	fmt.Println("GetOrganization testing")
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
