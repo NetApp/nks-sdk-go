@@ -44,7 +44,7 @@ func TestLiveBasicSolution(t *testing.T) {
 }
 
 func testSolutionCreateCluster(t *testing.T) int {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -78,7 +78,7 @@ func testSolutionCreateCluster(t *testing.T) int {
 }
 
 func testSolutionAdd(t *testing.T, clusterID int) int {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -107,7 +107,7 @@ func testSolutionAdd(t *testing.T, clusterID int) int {
 }
 
 func testSolutionList(t *testing.T, clusterID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -129,7 +129,7 @@ func testSolutionList(t *testing.T, clusterID int) {
 }
 
 func testSolutionGet(t *testing.T, clusterID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -154,7 +154,7 @@ func testSolutionGet(t *testing.T, clusterID int) {
 }
 
 func testSolutionDelete(t *testing.T, clusterID int, solutionID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -168,15 +168,16 @@ func testSolutionDelete(t *testing.T, clusterID int, solutionID int) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	err = c.WaitSolutionDeleted(orgID, clusterID, solutionID, timeout)
-	if err != nil {
-		t.Error(err)
+	if testEnv != "mock" {
+		err = c.WaitSolutionDeleted(orgID, clusterID, solutionID, timeout)
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }
 
 func testSolutionDeleteCluster(t *testing.T, clusterID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -190,9 +191,10 @@ func testSolutionDeleteCluster(t *testing.T, clusterID int) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	err = c.WaitClusterDeleted(orgID, clusterID, timeout)
-	if err != nil {
-		t.Error(err)
+	if testEnv != "mock" {
+		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }

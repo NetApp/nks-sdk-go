@@ -48,7 +48,7 @@ func setupMockServer() {
 		HeaderPresent("User-Agent").
 		HeaderPresent("Content-Type").
 		Persist().
-		Reply(http.StatusNoContent)
+		Reply(http.StatusAccepted)
 
 	gock.New("http://foo.bar").
 		Post("/orgs/1/clusters/1/solutions").
@@ -486,6 +486,26 @@ var mockWorkspaces = `[
 var mockSolutions = `[
   {
     "pk": 1,
+    "name": "haproxy",
+    "instance_id": "solul8hytt",
+    "cluster": 30635,
+    "solution": "haproxy",
+    "installer": "ansible_helm",
+    "keyset": null,
+    "keyset_name": "",
+    "version": "latest",
+    "version_migrations": [],
+    "state": "installed",    
+    "max_nodes": null,
+    "initial": false,
+    "config": {},
+    "extra_data": {},
+    "created": "2020-01-07T15:13:12.434024Z",
+    "updated": "2020-01-07T15:13:12.434049Z",
+    "is_deleteable": false
+  },
+  {
+    "pk": 1,
     "name": "Helm Tiller",
     "instance_id": "sole28lbi1",
     "cluster": 30635,
@@ -508,52 +528,21 @@ var mockSolutions = `[
     "created": "2020-01-07T14:38:39.347700Z",
     "updated": "2020-01-07T14:38:39.347717Z",
     "is_deleteable": false
-  },
-  {
-    "pk": 1,
-    "name": "Gitlab",
-    "instance_id": "solul8hytt",
-    "cluster": 30635,
-    "solution": "gitlab",
-    "installer": "ansible_helm",
-    "keyset": null,
-    "keyset_name": "",
-    "version": "latest",
-    "version_migrations": [],
-    "state": "installed",
-    "url": "https://gitlab.gl.nettbievan.stackpoint.io",
-    "username": "xx",
-    "password": "xx",
-    "max_nodes": null,
-    "git_repo": "",
-    "git_path": "",
-    "initial": false,
-    "config": {},
-    "extra_data": {},
-    "created": "2020-01-07T15:13:12.434024Z",
-    "updated": "2020-01-07T15:13:12.434049Z",
-    "is_deleteable": false
   }
 ]`
 
 var mockSolution = `{
   "pk": 1,
-  "name": "Gitlab",
+  "name": "haproxy",
   "instance_id": "solul8hytt",
   "cluster": 30635,
-  "solution": "gitlab",
+  "solution": "haproxy",
   "installer": "ansible_helm",
   "keyset": null,
   "keyset_name": "",
   "version": "latest",
   "version_migrations": [],
   "state": "installed",
-  "url": "",
-  "username": "",
-  "password": "",
-  "max_nodes": null,
-  "git_repo": "",
-  "git_path": "",
   "initial": false,
   "config": {},
   "extra_data": {},
