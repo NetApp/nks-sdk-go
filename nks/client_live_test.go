@@ -7,7 +7,7 @@ import (
 )
 
 func TestLiveBasicClient(t *testing.T) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}

@@ -39,7 +39,6 @@ var testIstioMeshClusterIDs = make([]int, 0)
 var testIstioMeshWorkspace, meshID int
 
 func TestLiveBasicIstioMesh(t *testing.T) {
-
 	cluster1ID := 0
 	cluster2ID := 0
 
@@ -71,7 +70,7 @@ func TestLiveBasicIstioMesh(t *testing.T) {
 }
 
 func testIstioMeshGetDefaultWorkspace(t *testing.T) int {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -96,7 +95,7 @@ func testIstioMeshGetDefaultWorkspace(t *testing.T) int {
 
 func testIstioMeshCreateCluster(t *testing.T, index string) int {
 	t.Parallel()
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -135,18 +134,17 @@ func testIstioMeshCreateCluster(t *testing.T, index string) int {
 
 	solution, err := c.AddSolution(orgID, cluster.ID, newSolution)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = c.WaitSolutionInstalled(orgID, cluster.ID, solution.ID, timeout)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
-
 	return cluster.ID
 }
 
 func testIstioMeshCreateIstioMesh(t *testing.T, workspaceID, cluster1ID, cluster2ID int) int {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -176,7 +174,6 @@ func testIstioMeshCreateIstioMesh(t *testing.T, workspaceID, cluster1ID, cluster
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	err = c.WaitIstioMeshCreated(orgID, workspaceID, mesh.ID, timeout)
 	if err != nil {
 		t.Fatal(err)
@@ -186,7 +183,7 @@ func testIstioMeshCreateIstioMesh(t *testing.T, workspaceID, cluster1ID, cluster
 }
 
 func testIstioMeshList(t *testing.T, worspaceID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -205,7 +202,7 @@ func testIstioMeshList(t *testing.T, worspaceID int) {
 }
 
 func testIstioMeshGet(t *testing.T, worspaceID, meshId int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -224,7 +221,7 @@ func testIstioMeshGet(t *testing.T, worspaceID, meshId int) {
 }
 
 func testIstioMeshDeleteIstioMesh(t *testing.T, workspaceID, istioMeshID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -239,15 +236,17 @@ func testIstioMeshDeleteIstioMesh(t *testing.T, workspaceID, istioMeshID int) {
 		t.Fatal(err)
 	}
 
-	err = c.WaitIstioMeshDeleted(orgID, workspaceID, istioMeshID, timeout)
-	if err != nil {
-		t.Fatal(err)
+	if testEnv != "mock" {
+		err = c.WaitIstioMeshDeleted(orgID, workspaceID, istioMeshID, timeout)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 func testIstioMeshDeleteCluster(t *testing.T, clusterID int) {
 	t.Parallel()
 
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -261,9 +260,10 @@ func testIstioMeshDeleteCluster(t *testing.T, clusterID int) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	err = c.WaitClusterDeleted(orgID, clusterID, timeout)
-	if err != nil {
-		t.Fatal(err)
+	if testEnv != "mock" {
+		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
