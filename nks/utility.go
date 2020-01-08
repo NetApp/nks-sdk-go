@@ -20,7 +20,7 @@ func PrettyPrint(v interface{}) {
 
 // GetEnvID grabs string from environment and converts to integer
 func GetIDFromEnv(name string) (int, error) {
-	isMock := os.Getenv("TEST_ENV") == "mock"
+	isMock := os.Getenv("NKS_TEST_ENV") == "mock"
 	if isMock {
 		return 1, nil
 	}
@@ -34,7 +34,7 @@ func GetIDFromEnv(name string) (int, error) {
 
 //GetValueFromEnv grabs string from environment
 func GetValueFromEnv(name string) (string, error) {
-	if os.Getenv("TEST_ENV") == "mock" {
+	if os.Getenv("NKS_TEST_ENV") == "mock" {
 		return "", nil
 	}
 	content := os.Getenv(name)

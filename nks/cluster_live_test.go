@@ -86,7 +86,7 @@ var clusterIds = make([]int, 0)
 
 var timeout = 3600
 
-var testEnv = os.Getenv("TEST_ENV")
+var testEnv = os.Getenv("NKS_TEST_ENV")
 
 func TestLiveBasicCluster(t *testing.T) {
 	t.Run("create clusters", func(t *testing.T) {

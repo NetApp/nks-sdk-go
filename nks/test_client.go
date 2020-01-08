@@ -10,9 +10,9 @@ import (
 
 var mockServer = "http://foo.bar"
 
-// NewTestClientFromEnv creates a new client from environment variables checks if mock or live tests needed
+// NewTestClientFromEnv creates either a mock or live test client based on env variable NKS_TEST_ENV
 func NewTestClientFromEnv() (*APIClient, error) {
-	testEnv := os.Getenv("TEST_ENV")
+	testEnv := os.Getenv("NKS_TEST_ENV")
 	if testEnv == "live" {
 		token := os.Getenv("NKS_API_TOKEN")
 		if token == "" {
@@ -32,6 +32,51 @@ func NewTestClientFromEnv() (*APIClient, error) {
 }
 
 func setupMockServer() {
+
+	//nodepools
+	gock.New("http://foo.bar").
+		Post("/orgs/1/clusters/1/nodepools/1/add").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusCreated).
+		JSON(mockNodes)
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/nodepools/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockNodePool)
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/nodepools").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockNodePools)
+
+	gock.New("http://foo.bar").
+		Post("/orgs/1/clusters/1/nodepools").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusAccepted).
+		JSON(mockNodePool)
+
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/clusters/1/nodepools").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
 
 	//mach specs
 	gock.New("http://foo.bar").
@@ -927,3 +972,244 @@ var mockMachSpecs = `[
 	}
 }
 ]`
+
+var mockNodes = `[
+    {
+        "pk":1,
+        "cluster":30667,
+        "pool":null,
+        "pool_name":"",
+        "instance_id":"netp2h4pg8-master-1",
+        "provider_node_id":"i-038f00f3b164f86bb",
+        "role":"master",
+        "group_name":"",
+        "private_ip":"172.23.4.102",
+        "public_ip":"54.218.62.37",
+        "platform":"ubuntu",
+        "image":"ami-0a7d051a1c4b54f65",
+        "channel":"18.04-lts",
+        "etcd_state":"kube_etcd",
+        "root_disk_size":50,
+        "gpu_instance_size":"",
+        "gpu_core_count":null,
+        "location":"us-west-2:us-west-2a",
+        "zone":"us-west-2a",
+        "provider_subnet_id":"subnet-065b60e89fb5acf33",
+        "provider_subnet_cidr":"172.23.4.0/24",
+        "size":"m5.large",
+        "state":"running",
+        "is_failed":false,
+        "created":"2020-01-08T11:39:53.872530Z",
+        "updated":"2020-01-08T11:39:53.872541Z"
+    },
+    {
+        "pk":1,
+        "cluster":30667,
+        "pool":27288,
+        "pool_name":"Default Worker Pool",
+        "instance_id":"netp2h4pg8-worker-1",
+        "provider_node_id":"i-0dd18342301f04607",
+        "role":"worker",
+        "group_name":"autoscaling-netp2h4pg8-pool-1",
+        "private_ip":"172.23.4.104",
+        "public_ip":"18.237.248.178",
+        "platform":"ubuntu",
+        "image":"ami-0a7d051a1c4b54f65",
+        "channel":"18.04-lts",
+        "etcd_state":"kube_etcd",
+        "root_disk_size":50,
+        "gpu_instance_size":"",
+        "gpu_core_count":null,
+        "location":"us-west-2:us-west-2a",
+        "zone":"us-west-2a",
+        "provider_subnet_id":"subnet-065b60e89fb5acf33",
+        "provider_subnet_cidr":"172.23.4.0/24",
+        "size":"m5.large",
+        "state":"running",
+        "is_failed":false,
+        "created":"2020-01-08T11:39:53.873670Z",
+        "updated":"2020-01-08T11:39:53.873680Z"
+    },
+    {
+        "pk":1,
+        "cluster":30667,
+        "pool":27288,
+        "pool_name":"Default Worker Pool",
+        "instance_id":"netp2h4pg8-worker-2",
+        "provider_node_id":"i-09afa4461e8d1f5c4",
+        "role":"worker",
+        "group_name":"autoscaling-netp2h4pg8-pool-1",
+        "private_ip":"172.23.4.220",
+        "public_ip":"18.236.132.53",
+        "platform":"ubuntu",
+        "image":"ami-0a7d051a1c4b54f65",
+        "channel":"18.04-lts",
+        "etcd_state":"kube_etcd",
+        "root_disk_size":50,
+        "gpu_instance_size":"",
+        "gpu_core_count":null,
+        "location":"us-west-2:us-west-2a",
+        "zone":"us-west-2a",
+        "provider_subnet_id":"subnet-065b60e89fb5acf33",
+        "provider_subnet_cidr":"172.23.4.0/24",
+        "size":"m5.large",
+        "state":"running",
+        "is_failed":false,
+        "created":"2020-01-08T11:39:53.874550Z",
+        "updated":"2020-01-08T11:39:53.874562Z"
+    },
+    {
+        "pk":1,
+        "cluster":30667,
+        "pool":27288,
+        "pool_name":"Default Worker Pool",
+        "instance_id":"netp2h4pg8-worker-2",
+        "provider_node_id":"i-09afa4461e8d1f5c4",
+        "role":"worker",
+        "group_name":"autoscaling-netp2h4pg8-pool-1",
+        "private_ip":"172.23.4.220",
+        "public_ip":"18.236.132.53",
+        "platform":"ubuntu",
+        "image":"ami-0a7d051a1c4b54f65",
+        "channel":"18.04-lts",
+        "etcd_state":"kube_etcd",
+        "root_disk_size":50,
+        "gpu_instance_size":"",
+        "gpu_core_count":null,
+        "location":"us-west-2:us-west-2a",
+        "zone":"us-west-2a",
+        "provider_subnet_id":"subnet-065b60e89fb5acf33",
+        "provider_subnet_cidr":"172.23.4.0/24",
+        "size":"m5.large",
+        "state":"running",
+        "is_failed":false,
+        "created":"2020-01-08T11:39:53.874550Z",
+        "updated":"2020-01-08T11:39:53.874562Z"
+    }
+]`
+
+var mockNode = `{
+        "pk":1,
+        "cluster":30667,
+        "pool":null,
+        "pool_name":"",
+        "instance_id":"netp2h4pg8-master-1",
+        "provider_node_id":"i-038f00f3b164f86bb",
+        "role":"worker",
+        "group_name":"",
+        "private_ip":"172.23.4.102",
+        "public_ip":"54.218.62.37",
+        "platform":"ubuntu",
+        "image":"ami-0a7d051a1c4b54f65",
+        "channel":"18.04-lts",
+        "etcd_state":"kube_etcd",
+        "root_disk_size":50,
+        "gpu_instance_size":"",
+        "gpu_core_count":null,
+        "location":"us-west-2:us-west-2a",
+        "zone":"us-west-2a",
+        "provider_subnet_id":"subnet-065b60e89fb5acf33",
+        "provider_subnet_cidr":"172.23.4.0/24",
+        "size":"m5.large",
+        "state":"running",
+        "is_failed":false,
+        "created":"2020-01-08T11:39:53.872530Z",
+        "updated":"2020-01-08T11:39:53.872541Z"
+    }`
+
+var mockNodePools = `[
+    {
+        "pk":1,
+        "cluster":30667,
+        "name":"Default Worker Pool",
+        "instance_id":"netp2h4pg8-pool-1",
+        "instance_size":"m5.large",
+        "platform":"ubuntu",
+        "channel":"18.04-lts",
+        "root_disk_size":50,
+        "zone":"us-west-2a",
+        "provider_subnet_id":"subnet-065b60e89fb5acf33",
+        "provider_subnet_cidr":"172.23.4.0/24",
+        "node_count":2,
+        "autoscaled":false,
+        "min_count":0,
+        "max_count":0,
+        "network_components":[
+
+        ],
+        "gpu_instance_size":"",
+        "gpu_core_count":null,
+        "labels":"",
+        "role":"worker",
+        "state":"active",
+        "is_default":true,
+        "config":{
+
+        },
+        "created":"2020-01-08T11:39:53.871453Z",
+        "updated":"2020-01-08T11:39:53.930118Z"
+    },
+ {
+        "pk":1,
+        "cluster":30667,
+        "name":"Default Worker Pool",
+        "instance_id":"netp2h4pg8-pool-1",
+        "instance_size":"m5.large",
+        "platform":"ubuntu",
+        "channel":"18.04-lts",
+        "root_disk_size":50,
+        "zone":"us-west-2a",
+        "provider_subnet_id":"subnet-065b60e89fb5acf33",
+        "provider_subnet_cidr":"172.23.4.0/24",
+        "node_count":2,
+        "autoscaled":false,
+        "min_count":0,
+        "max_count":0,
+        "network_components":[
+
+        ],
+        "gpu_instance_size":"",
+        "gpu_core_count":null,
+        "labels":"",
+        "role":"worker",
+        "state":"active",
+        "is_default":true,
+        "config":{
+
+        },
+        "created":"2020-01-08T11:39:53.871453Z",
+        "updated":"2020-01-08T11:39:53.930118Z"
+    }
+]`
+
+var mockNodePool = `{
+        "pk":1,
+        "cluster":30667,
+        "name":"Default Worker Pool",
+        "instance_id":"netp2h4pg8-pool-1",
+        "instance_size":"m5.large",
+        "platform":"ubuntu",
+        "channel":"18.04-lts",
+        "root_disk_size":50,
+        "zone":"us-west-2a",
+        "provider_subnet_id":"subnet-065b60e89fb5acf33",
+        "provider_subnet_cidr":"172.23.4.0/24",
+        "node_count":2,
+        "autoscaled":false,
+        "min_count":0,
+        "max_count":0,
+        "network_components":[
+
+        ],
+        "gpu_instance_size":"",
+        "gpu_core_count":null,
+        "labels":"",
+        "role":"worker",
+        "state":"active",
+        "is_default":true,
+        "config":{
+
+        },
+        "created":"2020-01-08T11:39:53.871453Z",
+        "updated":"2020-01-08T11:39:53.930118Z"
+    }`
