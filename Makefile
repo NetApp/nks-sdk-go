@@ -2,7 +2,7 @@ MODULES :=$(shell go list ./... | grep -v example)
 
 default: vet fmt
 
-ci: vet fmt
+ci: vet fmt mock_test
 
 vet: 
 	@go vet $(MODULES)
@@ -10,5 +10,5 @@ vet:
 fmt:
 	@go fmt $(MODULES)
 
-test:
+mock_test:
 	cd nks && NKS_TEST_ENV=mock go test ./... -v
