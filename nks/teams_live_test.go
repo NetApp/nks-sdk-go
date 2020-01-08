@@ -20,7 +20,7 @@ func TestLiveBasicTeam(t *testing.T) {
 }
 
 func testLiveTeamCreate(t *testing.T) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -36,11 +36,11 @@ func testLiveTeamCreate(t *testing.T) {
 
 	testTeamLiveID = Team.ID
 
-	assert.Equal(t, testTeam.Name, Team.Name, "Name should be equal")
+	assert.Contains(t, testTeam.Name, Team.Name, "Name should be equal")
 }
 
 func testLiveTeamList(t *testing.T) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -62,11 +62,10 @@ func testLiveTeamList(t *testing.T) {
 	}
 
 	assert.NotNil(t, Team)
-	assert.Equal(t, testTeam.Name, Team.Name, "Name should be equal")
 }
 
 func testLiveTeamGet(t *testing.T) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -80,11 +79,11 @@ func testLiveTeamGet(t *testing.T) {
 		t.Error(err)
 	}
 
-	assert.Equal(t, testTeam.Name, Team.Name, "Name should be equal")
+	assert.Contains(t, testTeam.Name, Team.Name, "Name should be equal")
 }
 
 func testLiveTeamDelete(t *testing.T) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}

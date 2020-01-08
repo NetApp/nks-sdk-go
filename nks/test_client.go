@@ -33,6 +33,42 @@ func NewTestClientFromEnv() (*APIClient, error) {
 
 func setupMockServer() {
 
+	//nodes
+	gock.New("http://foo.bar").
+		Post("/orgs/1/clusters/1/add_node").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusCreated).
+		JSON(mockNodes)
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/nodes/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockNode)
+
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/clusters/1/nodes/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/nodes").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockNodes)
+
 	//nodepools
 	gock.New("http://foo.bar").
 		Post("/orgs/1/clusters/1/nodepools/1/add").
@@ -231,6 +267,43 @@ func setupMockServer() {
 		Persist().
 		Reply(http.StatusOK).
 		JSON(mockWorkspaces)
+
+	//teams
+	gock.New("http://foo.bar").
+		Get("/orgs/1/teams/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockTeam)
+
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/teams/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/teams").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockTeams)
+
+	gock.New("http://foo.bar").
+		Post("/orgs/1/teams").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		MatchHeader("Content-Type", "application/json").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusCreated).
+		JSON(mockTeam)
 
 	//organization endpoints
 	gock.New("http://foo.bar").
@@ -1212,4 +1285,122 @@ var mockNodePool = `{
         },
         "created":"2020-01-08T11:39:53.871453Z",
         "updated":"2020-01-08T11:39:53.930118Z"
+    }`
+
+var mockTeams = `[
+    {
+        "pk":1,
+        "name":"Test Go SDK1",
+        "slug":"Test Go SDK1",
+        "org":1,
+        "is_org_wide":true,
+        "created":"2018-10-09T05:43:48.656349Z",
+        "memberships":[
+            {
+                "pk":1,
+                "user":{
+                    "pk":1,
+                    "username":"test",
+                    "email":"test@netapp.com",
+                    "first_name":"test",
+                    "last_name":"test",
+                    "full_name":"test test",
+                    "date_joined":"2018-10-26T20:02:22.808014Z"
+                },
+                "team":1,
+                "created":"2019-12-09T22:47:51.580402Z"
+            },
+            {
+                "pk":1,
+                "user":{
+                    "pk":11700,
+                    "username":"test2-runar",
+                    "email":"test2@netapp.com",
+                    "first_name":"test2",
+                    "last_name":"test2",
+                    "full_name":"test2",
+                    "date_joined":"2018-10-08T14:31:21.131137Z"
+                },
+                "team":12164,
+                "created":"2019-12-09T22:47:51.546908Z"
+            }
+        ]
+    },
+    {
+        "pk":1,
+        "name":"Dev Team",
+        "slug":"dev-team",
+        "org":1,
+        "is_org_wide":false,
+        "created":"2019-07-11T23:51:13.452413Z",
+        "memberships":[
+            {
+                "pk":1,
+                "user":{
+                    "pk":1,
+                    "username":"devtest",
+                    "email":"devtest@netapp.com",
+                    "first_name":"devtest",
+                    "last_name":"devtest",
+                    "full_name":"devtest",
+                    "date_joined":"2018-10-08T14:31:21.131137Z"
+                },
+                "team":1,
+                "created":"2019-12-06T19:42:20.628920Z"
+            },
+            {
+                "pk":1,
+                "user":{
+                    "pk":1,
+                    "username":"devtest2",
+                    "email":"devtest2@antcolony.io",
+                    "first_name":"devtest2",
+                    "last_name":"devtest2",
+                    "full_name":"devtest2",
+                    "date_joined":"2019-12-05T20:01:06.770149Z"
+                },
+                "team":20675,
+                "created":"2019-12-05T20:23:35.029754Z"
+            }
+        ]
+    }
+]`
+
+var mockTeam = `{
+        "pk":1,
+        "name":"Test Go SDK",
+        "slug":"Test Go SDK1",
+        "org":1,
+        "is_org_wide":true,
+        "created":"2018-10-09T05:43:48.656349Z",
+        "memberships":[
+            {
+                "pk":1,
+                "user":{
+                    "pk":1,
+                    "username":"test",
+                    "email":"test@netapp.com",
+                    "first_name":"test",
+                    "last_name":"test",
+                    "full_name":"test test",
+                    "date_joined":"2018-10-26T20:02:22.808014Z"
+                },
+                "team":1,
+                "created":"2019-12-09T22:47:51.580402Z"
+            },
+            {
+                "pk":1,
+                "user":{
+                    "pk":11700,
+                    "username":"test2-runar",
+                    "email":"test2@netapp.com",
+                    "first_name":"test2",
+                    "last_name":"test2",
+                    "full_name":"test2",
+                    "date_joined":"2018-10-08T14:31:21.131137Z"
+                },
+                "team":12164,
+                "created":"2019-12-09T22:47:51.546908Z"
+            }
+        ]
     }`
