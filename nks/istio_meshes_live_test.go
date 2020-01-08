@@ -70,17 +70,12 @@ func TestLiveBasicIstioMesh(t *testing.T) {
 }
 
 func testIstioMeshGetDefaultWorkspace(t *testing.T) int {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	list, err := c.GetWorkspaces(orgID)
+	list, err := client.GetWorkspaces(orgID)
 
 	for _, workspace := range list {
 		if workspace.IsDefault {
@@ -95,11 +90,6 @@ func testIstioMeshGetDefaultWorkspace(t *testing.T) int {
 
 func testIstioMeshCreateCluster(t *testing.T, index string) int {
 	t.Parallel()
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
@@ -119,24 +109,24 @@ func testIstioMeshCreateCluster(t *testing.T, index string) int {
 	testIstioAwsCluster.SSHKeySet = sshKeysetID
 	testIstioAwsCluster.Name = testIstioAwsCluster.Name + index
 
-	cluster, err := c.CreateCluster(orgID, testIstioAwsCluster)
+	cluster, err := client.CreateCluster(orgID, testIstioAwsCluster)
 	fmt.Println(cluster.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
 	newSolution := Solution{
 		Solution: "istio",
 		State:    "draft",
 	}
 
-	solution, err := c.AddSolution(orgID, cluster.ID, newSolution)
+	solution, err := client.AddSolution(orgID, cluster.ID, newSolution)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = c.WaitSolutionInstalled(orgID, cluster.ID, solution.ID, timeout)
+	err = client.WaitSolutionInstalled(orgID, cluster.ID, solution.ID, timeout)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -144,11 +134,6 @@ func testIstioMeshCreateCluster(t *testing.T, index string) int {
 }
 
 func testIstioMeshCreateIstioMesh(t *testing.T, workspaceID, cluster1ID, cluster2ID int) int {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
@@ -170,11 +155,11 @@ func testIstioMeshCreateIstioMesh(t *testing.T, workspaceID, cluster1ID, cluster
 		},
 	}
 
-	mesh, err := c.CreateIstioMesh(orgID, workspaceID, newMesh)
+	mesh, err := client.CreateIstioMesh(orgID, workspaceID, newMesh)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = c.WaitIstioMeshCreated(orgID, workspaceID, mesh.ID, timeout)
+	err = client.WaitIstioMeshCreated(orgID, workspaceID, mesh.ID, timeout)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -183,17 +168,12 @@ func testIstioMeshCreateIstioMesh(t *testing.T, workspaceID, cluster1ID, cluster
 }
 
 func testIstioMeshList(t *testing.T, worspaceID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	list, err := c.GetIstioMeshes(orgID, worspaceID)
+	list, err := client.GetIstioMeshes(orgID, worspaceID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -201,18 +181,13 @@ func testIstioMeshList(t *testing.T, worspaceID int) {
 	assert.NotEqual(t, len(list), 0, "At least one istio mesh must exist")
 }
 
-func testIstioMeshGet(t *testing.T, worspaceID, meshId int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
+func testIstioMeshGet(t *testing.T, worspaceID, meshID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	mesh, err := c.GetIstioMesh(orgID, worspaceID, meshId)
+	mesh, err := client.GetIstioMesh(orgID, worspaceID, meshID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -221,23 +196,18 @@ func testIstioMeshGet(t *testing.T, worspaceID, meshId int) {
 }
 
 func testIstioMeshDeleteIstioMesh(t *testing.T, workspaceID, istioMeshID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = c.DeleteIstioMesh(orgID, workspaceID, istioMeshID)
+	err = client.DeleteIstioMesh(orgID, workspaceID, istioMeshID)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if testEnv != "mock" {
-		err = c.WaitIstioMeshDeleted(orgID, workspaceID, istioMeshID, timeout)
+		err = client.WaitIstioMeshDeleted(orgID, workspaceID, istioMeshID, timeout)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -246,22 +216,17 @@ func testIstioMeshDeleteIstioMesh(t *testing.T, workspaceID, istioMeshID int) {
 func testIstioMeshDeleteCluster(t *testing.T, clusterID int) {
 	t.Parallel()
 
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = c.DeleteCluster(orgID, clusterID)
+	err = client.DeleteCluster(orgID, clusterID)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if testEnv != "mock" {
-		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -44,11 +44,6 @@ func TestLiveBasicSolution(t *testing.T) {
 }
 
 func testSolutionCreateCluster(t *testing.T) int {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
@@ -67,22 +62,17 @@ func testSolutionCreateCluster(t *testing.T) int {
 	testSolutionAwsCluster.ProviderKey = awsKeysetID
 	testSolutionAwsCluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testSolutionAwsCluster)
+	cluster, err := client.CreateCluster(orgID, testSolutionAwsCluster)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
 	return cluster.ID
 }
 
 func testSolutionAdd(t *testing.T, clusterID int) int {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
@@ -93,12 +83,12 @@ func testSolutionAdd(t *testing.T, clusterID int) int {
 		State:    "draft",
 	}
 
-	solution, err := c.AddSolution(orgID, clusterID, newSolution)
+	solution, err := client.AddSolution(orgID, clusterID, newSolution)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.WaitSolutionInstalled(orgID, clusterID, solution.ID, timeout)
+	err = client.WaitSolutionInstalled(orgID, clusterID, solution.ID, timeout)
 	if err != nil {
 		t.Error(err)
 	}
@@ -107,17 +97,12 @@ func testSolutionAdd(t *testing.T, clusterID int) int {
 }
 
 func testSolutionList(t *testing.T, clusterID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	list, err := c.GetSolutions(orgID, clusterID)
+	list, err := client.GetSolutions(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -129,22 +114,17 @@ func testSolutionList(t *testing.T, clusterID int) {
 }
 
 func testSolutionGet(t *testing.T, clusterID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	solutionID, err := c.FindSolutionByName(orgID, clusterID, solutionName)
+	solutionID, err := client.FindSolutionByName(orgID, clusterID, solutionName)
 	if err != nil {
 		t.Error(err)
 	}
 
-	solution, err := c.GetSolution(orgID, clusterID, solutionID)
+	solution, err := client.GetSolution(orgID, clusterID, solutionID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -154,22 +134,17 @@ func testSolutionGet(t *testing.T, clusterID int) {
 }
 
 func testSolutionDelete(t *testing.T, clusterID int, solutionID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteSolution(orgID, clusterID, solutionID)
+	err = client.DeleteSolution(orgID, clusterID, solutionID)
 	if err != nil {
 		t.Error(err)
 	}
 	if testEnv != "mock" {
-		err = c.WaitSolutionDeleted(orgID, clusterID, solutionID, timeout)
+		err = client.WaitSolutionDeleted(orgID, clusterID, solutionID, timeout)
 		if err != nil {
 			t.Error(err)
 		}
@@ -177,22 +152,17 @@ func testSolutionDelete(t *testing.T, clusterID int, solutionID int) {
 }
 
 func testSolutionDeleteCluster(t *testing.T, clusterID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteCluster(orgID, clusterID)
+	err = client.DeleteCluster(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
 	if testEnv != "mock" {
-		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
 		if err != nil {
 			t.Error(err)
 		}
