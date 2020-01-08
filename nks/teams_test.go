@@ -1,51 +1,83 @@
 package nks
 
 import (
-	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestGetTeams(t *testing.T) {
-	fmt.Println("GetInstanceSpecs testing")
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
-	teams, err := c.GetTeams(orgID)
-	if err != nil {
-		t.Error(err)
-	}
-	if len(teams) == 0 {
-		fmt.Println("No teams found, but no error")
-	}
+var testTeamLiveID int
+var testTeam = Team{
+	Name:        "Test Go SDK" + GetTicks(),
+	Memberships: []Membership{},
 }
 
-func TestGetTeam(t *testing.T) {
-	fmt.Println("GetInstanceSpecs testing")
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
+func TestLiveBasicTeam(t *testing.T) {
+	testLiveTeamCreate(t)
+	testLiveTeamList(t)
+	testLiveTeamGet(t)
+	testLiveTeamDelete(t)
+}
+
+func testLiveTeamCreate(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
-	teams, err := c.GetTeams(orgID)
+
+	Team, err := client.CreateTeam(orgID, testTeam)
 	if err != nil {
 		t.Error(err)
 	}
-	if len(teams) > 0 {
-		teamID := teams[0].ID
-		team, err := c.GetTeam(orgID, teamID)
-		if err != nil {
-			t.Error(err)
+
+	testTeamLiveID = Team.ID
+
+	assert.Contains(t, testTeam.Name, Team.Name, "Name should be equal")
+}
+
+func testLiveTeamList(t *testing.T) {
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
+	if err != nil {
+		t.Error(err)
+	}
+
+	list, err := client.GetTeams(orgID)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var Team Team
+	for _, item := range list {
+		if item.ID == testTeamLiveID {
+			Team = item
 		}
-		if team == nil {
-			t.Errorf("Could not fetch key for team: %d", teamID)
-		}
+	}
+
+	assert.NotNil(t, Team)
+}
+
+func testLiveTeamGet(t *testing.T) {
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
+	if err != nil {
+		t.Error(err)
+	}
+
+	Team, err := client.GetTeam(orgID, testTeamLiveID)
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Contains(t, testTeam.Name, Team.Name, "Name should be equal")
+}
+
+func testLiveTeamDelete(t *testing.T) {
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = client.DeleteTeam(orgID, testTeamLiveID)
+	if err != nil {
+		t.Error(err)
 	}
 }

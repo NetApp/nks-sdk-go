@@ -1,28 +1,24 @@
 package nks
 
 import (
-	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestGetInstanceSpecs(t *testing.T) {
-	fmt.Println("GetInstanceSpecs testing")
-	c, err := NewClientFromEnv()
+func TestLiveBasicMachSpec(t *testing.T) {
+	testProvider(t, "aws")
+	testProvider(t, "gce")
+	testProvider(t, "azure")
+}
+
+func testProvider(t *testing.T, provider string) {
+	endpoint, err := GetValueFromEnv("NKS_BASE_API_URL")
 	if err != nil {
 		t.Error(err)
 	}
-	insts, err := c.GetInstanceSpecs("do", "")
-	if err != nil {
-		t.Error(err)
-	}
-	if len(insts) == 0 {
-		t.Errorf("No instances returned")
-	}
-	fl := GetFormattedInstanceList(insts)
-	if fl[0] == "" {
-		t.Errorf("No instances to format")
-	}
-	if !InstanceInList(insts, insts[0].Name) {
-		t.Errorf("Invalid data in instance list")
-	}
+
+	list, err := client.GetInstanceSpecs(provider, endpoint)
+
+	assert.NotEqual(t, len(list), 0, "Provider must have machine specification")
 }

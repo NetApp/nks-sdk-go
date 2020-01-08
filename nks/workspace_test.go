@@ -21,10 +21,6 @@ func TestLiveBasicWorkspace(t *testing.T) {
 }
 
 func testLiveWorkspaceCreate(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
@@ -32,28 +28,24 @@ func testLiveWorkspaceCreate(t *testing.T) {
 
 	testWorkspace.Org = orgID
 
-	workspace, err := c.CreateWorkspace(orgID, testWorkspace)
+	workspace, err := client.CreateWorkspace(orgID, testWorkspace)
 	if err != nil {
 		t.Error(err)
 	}
 
 	testWorkspaceLiveID = workspace.ID
 
-	assert.Equal(t, testWorkspace.Name, workspace.Name, "Name should be equal")
-	assert.Equal(t, testWorkspace.Name, workspace.Name, "Slug should be equal")
+	assert.Contains(t, testWorkspace.Name, workspace.Name, "Name should be equal")
 }
 
 func testLiveWorkspaceList(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
+
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	list, err := c.GetWorkspaces(orgID)
+	list, err := client.GetWorkspaces(orgID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -66,40 +58,32 @@ func testLiveWorkspaceList(t *testing.T) {
 	}
 
 	assert.NotNil(t, workspace)
-	assert.Equal(t, testWorkspace.Name, workspace.Name, "Name should be equal")
-	assert.Equal(t, testWorkspace.Name, workspace.Name, "Slug should be equal")
+	assert.Contains(t, testWorkspace.Name, workspace.Name, "Name should be equal")
 }
 
 func testLiveWorkspaceGet(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
+
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	workspace, err := c.GetWorkspace(orgID, testWorkspaceLiveID)
+	workspace, err := client.GetWorkspace(orgID, testWorkspaceLiveID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	assert.Equal(t, testWorkspace.Name, workspace.Name, "Name should be equal")
-	assert.Equal(t, testWorkspace.Name, workspace.Name, "Slug should be equal")
+	assert.Contains(t, testWorkspace.Name, workspace.Name, "Name should be equal")
 }
 
 func testLiveWorkspaceDelete(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
+
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteWorkspace(orgID, testWorkspaceLiveID)
+	err = client.DeleteWorkspace(orgID, testWorkspaceLiveID)
 	if err != nil {
 		t.Error(err)
 	}

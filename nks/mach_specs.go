@@ -6,23 +6,27 @@ import (
 	"strings"
 )
 
-// Provider instance structs
+// ProviderSpecs instance structs
 type ProviderSpecs struct {
 	Name    string      `json:"name"`
 	Filters interface{} `json:"filters"`
 	Config  interface{} `json:"config"`
 }
+
+// Instance name and specs
 type Instance struct {
 	Name  string
 	Specs MachineSpecs
 }
+
+// MachineSpecs machines specs details
 type MachineSpecs struct {
 	Memory int
 	CPU    int
 	Name   string
 }
 
-// GetMachSpecs returns list of machine types for cloud provider type
+// GetInstanceSpecs returns list of machine types for cloud provider type
 func (c *APIClient) GetInstanceSpecs(prov, endpoint string) ([]Instance, error) {
 	ps := []ProviderSpecs{}
 	req := &APIReq{

@@ -1,32 +1,35 @@
 package nks
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 var testNodeAwsCluster = Cluster{
-	Name:               "Test AWS Cluster Go SDK " + GetTicks(),
-	Provider:           "aws",
-	MasterCount:        1,
-	MasterSize:         "t2.medium",
-	WorkerCount:        2,
-	WorkerSize:         "t2.medium",
-	Region:             "us-east-1",
-	Zone:               "us-east-1a",
-	ProviderNetworkID:  "__new__",
-	ProviderNetworkCdr: "172.23.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "172.23.1.0/24",
-	KubernetesVersion:  "v1.13.1",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "coreos",
-	Channel:            "stable",
-	NetworkComponents:  []NetworkComponent{},
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
+	Name:                  "Test AWS Cluster Go SDK " + GetTicks(),
+	Provider:              "aws",
+	MasterCount:           1,
+	MasterSize:            "t2.medium",
+	WorkerCount:           2,
+	WorkerSize:            "t2.medium",
+	Region:                "eu-west-3",
+	Zone:                  "eu-west-3a",
+	ProviderNetworkID:     "__new__",
+	ProviderNetworkCdr:    "172.23.0.0/16",
+	ProviderSubnetID:      "__new__",
+	ProviderSubnetCidr:    "172.23.1.0/24",
+	KubernetesVersion:     "v1.15.5",
+	KubernetesPodCidr:     "10.2.0.0",
+	KubernetesServiceCidr: "10.3.0.0",
+	RbacEnabled:           true,
+	DashboardEnabled:      true,
+	EtcdType:              "classic",
+	Platform:              "coreos",
+	Channel:               "stable",
+	NetworkComponents:     []NetworkComponent{},
+	Solutions:             []Solution{Solution{Solution: "helm_tiller"}},
 }
 
 func TestLiveBasicNode(t *testing.T) {
@@ -39,45 +42,36 @@ func TestLiveBasicNode(t *testing.T) {
 }
 
 func testNodeClusterCreate(t *testing.T) int {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	awsKeysetID, err := GetIDFromEnv("NKS_AWS_KEYSET")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	testNodeAwsCluster.ProviderKey = awsKeysetID
 	testNodeAwsCluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testNodeAwsCluster)
+	cluster, err := client.CreateCluster(orgID, testNodeAwsCluster)
+	fmt.Println(cluster.ID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
 	return cluster.ID
 }
 
 func testNodeCreate(t *testing.T, clusterID int) int {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
@@ -87,20 +81,20 @@ func testNodeCreate(t *testing.T, clusterID int) int {
 		Count:              1,
 		Size:               "t2.medium",
 		Role:               "master",
-		Zone:               "us-east-1a",
+		Zone:               "eu-west-3a",
 		ProviderSubnetID:   "__new__",
 		ProviderSubnetCidr: "172.23.1.0/24",
 		RootDiskSize:       50,
 	}
 
-	nodes, err := c.AddNode(orgID, clusterID, nodeAdd)
+	nodes, err := client.AddNode(orgID, clusterID, nodeAdd)
 	if err != nil {
 		t.Error(err)
 	}
 
 	node := nodes[0]
 
-	err = c.WaitNodeProvisioned(orgID, clusterID, node.ID, timeout)
+	err = client.WaitNodeProvisioned(orgID, clusterID, node.ID, timeout)
 	if err != nil {
 		t.Error(err)
 	}
@@ -109,17 +103,12 @@ func testNodeCreate(t *testing.T, clusterID int) int {
 }
 
 func testNodeList(t *testing.T, clusterID int) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	list, err := c.GetNodes(orgID, clusterID)
+	list, err := client.GetNodes(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -128,17 +117,12 @@ func testNodeList(t *testing.T, clusterID int) {
 }
 
 func testNodeGet(t *testing.T, clusterID, nodeID int) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	node, err := c.GetNode(orgID, clusterID, nodeID)
+	node, err := client.GetNode(orgID, clusterID, nodeID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -148,45 +132,38 @@ func testNodeGet(t *testing.T, clusterID, nodeID int) {
 }
 
 func testNodeDelete(t *testing.T, clusterID, nodeID int) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteNode(orgID, clusterID, nodeID)
+	err = client.DeleteNode(orgID, clusterID, nodeID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.WaitNodeDeleted(orgID, clusterID, nodeID, timeout)
-	if err != nil {
-		t.Error(err)
+	if testEnv != "mock" {
+		err = client.WaitNodeDeleted(orgID, clusterID, nodeID, timeout)
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }
 
 func testNodeClusterDelete(t *testing.T, clusterID int) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteCluster(orgID, clusterID)
+	err = client.DeleteCluster(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
-
-	err = c.WaitClusterDeleted(orgID, clusterID, timeout)
-	if err != nil {
-		t.Error(err)
+	if testEnv != "mock" {
+		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }

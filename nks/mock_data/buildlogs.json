@@ -1,0 +1,123 @@
+[
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "solution",
+        "event_type": "solution_install",
+        "event_state": "started",
+        "message": "Installing helm tiller",
+        "details": "",
+        "reference": "helm_tiller",
+        "created": "2020-01-07T14:47:46.771662Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "kubernetes",
+        "event_type": "k8s_master_config",
+        "event_state": "success",
+        "message": "Successfully configured Kubernetes master",
+        "details": "",
+        "reference": "",
+        "created": "2020-01-07T14:45:55.869876Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "kubernetes",
+        "event_type": "k8s_master_config",
+        "event_state": "started",
+        "message": "Configuring Kubernetes master",
+        "details": "",
+        "reference": "",
+        "created": "2020-01-07T14:44:45.229735Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "kubernetes",
+        "event_type": "k8s_node_config",
+        "event_state": "success",
+        "message": "Successfully configured Kubernetes nodes",
+        "details": "",
+        "reference": "",
+        "created": "2020-01-07T14:44:43.744242Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "kubernetes",
+        "event_type": "k8s_node_config",
+        "event_state": "started",
+        "message": "Configuring Kubernetes nodes",
+        "details": "",
+        "reference": "",
+        "created": "2020-01-07T14:41:17.835235Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "provider",
+        "event_type": "provider_build",
+        "event_state": "success",
+        "message": "Successfully provisioned servers",
+        "details": "",
+        "reference": "aws",
+        "created": "2020-01-07T14:41:16.258392Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "provider",
+        "event_type": "provider_build",
+        "event_state": "started",
+        "message": "Provisioning servers",
+        "details": "",
+        "reference": "aws",
+        "created": "2020-01-07T14:39:35.567654Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "provider",
+        "event_type": "cloud_authorization",
+        "event_state": "success",
+        "message": "Finished checking AWS authorizations",
+        "details": "",
+        "reference": "VerifyAuthorization-337944-po8msl4bul",
+        "created": "2020-01-07T14:38:41.339529Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "provider",
+        "event_type": "cloud_authorization",
+        "event_state": "started",
+        "message": "Started checking AWS authorizations",
+        "details": "",
+        "reference": "VerifyAuthorization-337944-po8msl4bul",
+        "created": "2020-01-07T14:38:40.036049Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "provider",
+        "event_type": "cloud_network",
+        "event_state": "success",
+        "message": "Finished tagging resource",
+        "details": "",
+        "reference": "TagResource-337943-5itmpq9zzo",
+        "created": "2020-01-07T14:38:39.964638Z"
+    },
+    {
+        "pk": 1,
+        "cluster": 30635,
+        "event_category": "provider",
+        "event_type": "cloud_network",
+        "event_state": "started",
+        "message": "Started tagging resource 'subnet-065b60e89fb5acf33'",
+        "details": "",
+        "reference": "TagResource-337943-5itmpq9zzo",
+        "created": "2020-01-07T14:38:39.594358Z"
+    }
+]

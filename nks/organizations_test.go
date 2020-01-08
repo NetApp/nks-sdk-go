@@ -5,13 +5,17 @@ import (
 	"testing"
 )
 
-func TestGetOrganizations(t *testing.T) {
+func TestLiveOrganization(t *testing.T) {
+	t.Run("get clusters", func(t *testing.T) {
+		t.Run("list", testGetOrganizations)
+		t.Run("get", testGetOrganization)
+	})
+
+}
+
+func testGetOrganizations(t *testing.T) {
 	fmt.Println("GetOrganizations testing")
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-	orgs, err := c.GetOrganizations()
+	orgs, err := client.GetOrganizations()
 	if err != nil {
 		t.Error(err)
 	}
@@ -20,17 +24,13 @@ func TestGetOrganizations(t *testing.T) {
 	}
 }
 
-func TestGetOrganization(t *testing.T) {
+func testGetOrganization(t *testing.T) {
 	fmt.Println("GetOrganization testing")
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
-	org, err := c.GetOrganization(orgID)
+	org, err := client.GetOrganization(orgID)
 	if err != nil {
 		t.Error(err)
 	}
