@@ -1,0 +1,29 @@
+{
+  "pk": 1,
+  "cluster": 30667,
+  "name": "Default Worker Pool",
+  "instance_id": "netp2h4pg8-pool-1",
+  "instance_size": "m5.large",
+  "platform": "ubuntu",
+  "channel": "18.04-lts",
+  "root_disk_size": 50,
+  "zone": "us-west-2a",
+  "provider_subnet_id": "subnet-065b60e89fb5acf33",
+  "provider_subnet_cidr": "172.23.4.0/24",
+  "node_count": 2,
+  "autoscaled": false,
+  "min_count": 0,
+  "max_count": 0,
+  "network_components": [
+  ],
+  "gpu_instance_size": "",
+  "gpu_core_count": null,
+  "labels": "",
+  "role": "worker",
+  "state": "active",
+  "is_default": true,
+  "config": {
+  },
+  "created": "2020-01-08T11:39:53.871453Z",
+  "updated": "2020-01-08T11:39:53.930118Z"
+}

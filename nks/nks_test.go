@@ -58,6 +58,118 @@ func loadMockData() {
 }
 
 func setupMockServer() {
+	//nodes
+	gock.New("http://foo.bar").
+		Post("/orgs/1/clusters/1/add_node").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusCreated).
+		JSON(mockData["nodes"])
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/nodes/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["node"])
+
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/clusters/1/nodes/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/nodes").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["nodes"])
+
+	//nodepools
+	gock.New("http://foo.bar").
+		Post("/orgs/1/clusters/1/nodepools/1/add").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusCreated).
+		JSON(mockData["nodes"])
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/nodepools/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["nodepool"])
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/nodepools").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["nodepools"])
+
+	gock.New("http://foo.bar").
+		Post("/orgs/1/clusters/1/nodepools").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusAccepted).
+		JSON(mockData["nodepool"])
+
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/clusters/1/nodepools").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
+
+	//mach specs
+	gock.New("http://foo.bar").
+		Get("/meta/provider-instances").
+		MatchParam("provider", "aws").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["machinespecs"])
+
+	gock.New("http://foo.bar").
+		Get("/meta/provider-instances").
+		MatchParam("provider", "gce").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["machinespecs"])
+
+	gock.New("http://foo.bar").
+		Get("/meta/provider-instances").
+		MatchParam("provider", "azure").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["machinespecs"])
+
 	//solutions
 	gock.New("http://foo.bar").
 		Get("/orgs/1/clusters/1/solutions/1").
@@ -180,6 +292,43 @@ func setupMockServer() {
 		Persist().
 		Reply(http.StatusOK).
 		JSON(mockData["workspaces"])
+
+	//teams
+	gock.New("http://foo.bar").
+		Get("/orgs/1/teams/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["team"])
+
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/teams/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/teams").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["teams"])
+
+	gock.New("http://foo.bar").
+		Post("/orgs/1/teams").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		MatchHeader("Content-Type", "application/json").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusCreated).
+		JSON(mockData["team"])
 
 	//organization endpoints
 	gock.New("http://foo.bar").

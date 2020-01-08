@@ -1,0 +1,38 @@
+{
+  "pk": 1,
+  "name": "Test Go SDK",
+  "slug": "Test Go SDK1",
+  "org": 1,
+  "is_org_wide": true,
+  "created": "2018-10-09T05:43:48.656349Z",
+  "memberships": [
+    {
+      "pk": 1,
+      "user": {
+        "pk": 1,
+        "username": "test",
+        "email": "test@netapp.com",
+        "first_name": "test",
+        "last_name": "test",
+        "full_name": "test test",
+        "date_joined": "2018-10-26T20:02:22.808014Z"
+      },
+      "team": 1,
+      "created": "2019-12-09T22:47:51.580402Z"
+    },
+    {
+      "pk": 1,
+      "user": {
+        "pk": 11700,
+        "username": "test2-runar",
+        "email": "test2@netapp.com",
+        "first_name": "test2",
+        "last_name": "test2",
+        "full_name": "test2",
+        "date_joined": "2018-10-08T14:31:21.131137Z"
+      },
+      "team": 12164,
+      "created": "2019-12-09T22:47:51.546908Z"
+    }
+  ]
+}
