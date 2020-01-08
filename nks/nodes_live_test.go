@@ -42,7 +42,7 @@ func TestLiveBasicNode(t *testing.T) {
 }
 
 func testNodeClusterCreate(t *testing.T) int {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,7 +77,7 @@ func testNodeClusterCreate(t *testing.T) int {
 }
 
 func testNodeCreate(t *testing.T, clusterID int) int {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -113,7 +113,7 @@ func testNodeCreate(t *testing.T, clusterID int) int {
 }
 
 func testNodeList(t *testing.T, clusterID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -132,7 +132,7 @@ func testNodeList(t *testing.T, clusterID int) {
 }
 
 func testNodeGet(t *testing.T, clusterID, nodeID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -152,7 +152,7 @@ func testNodeGet(t *testing.T, clusterID, nodeID int) {
 }
 
 func testNodeDelete(t *testing.T, clusterID, nodeID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -167,14 +167,16 @@ func testNodeDelete(t *testing.T, clusterID, nodeID int) {
 		t.Error(err)
 	}
 
-	err = c.WaitNodeDeleted(orgID, clusterID, nodeID, timeout)
-	if err != nil {
-		t.Error(err)
+	if testEnv != "mock" {
+		err = c.WaitNodeDeleted(orgID, clusterID, nodeID, timeout)
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }
 
 func testNodeClusterDelete(t *testing.T, clusterID int) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
@@ -188,9 +190,10 @@ func testNodeClusterDelete(t *testing.T, clusterID int) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	err = c.WaitClusterDeleted(orgID, clusterID, timeout)
-	if err != nil {
-		t.Error(err)
+	if testEnv != "mock" {
+		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }

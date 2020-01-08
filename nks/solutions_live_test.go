@@ -46,17 +46,17 @@ func TestLiveBasicSolution(t *testing.T) {
 func testSolutionCreateCluster(t *testing.T) int {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	awsKeysetID, err := GetIDFromEnv("NKS_AWS_KEYSET")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	testSolutionAwsCluster.ProviderKey = awsKeysetID

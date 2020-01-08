@@ -8,15 +8,12 @@ import (
 
 func TestLiveBasicMachSpec(t *testing.T) {
 	testProvider(t, "aws")
-	testProvider(t, "eks")
 	testProvider(t, "gce")
-	testProvider(t, "gke")
-	testProvider(t, "aks")
 	testProvider(t, "azure")
 }
 
 func testProvider(t *testing.T, provider string) {
-	c, err := NewClientFromEnv()
+	c, err := NewTestClientFromEnv()
 	if err != nil {
 		t.Error(err)
 	}
