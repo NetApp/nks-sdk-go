@@ -1,0 +1,19 @@
+{
+    "pk": 1,
+    "name": "haproxy",
+    "instance_id": "solul8hytt",
+    "cluster": 30635,
+    "solution": "haproxy",
+    "installer": "ansible_helm",
+    "keyset": null,
+    "keyset_name": "",
+    "version": "latest",
+    "version_migrations": [],
+    "state": "installed",
+    "initial": false,
+    "config": {},
+    "extra_data": {},
+    "created": "2020-01-07T15:13:12.434024Z",
+    "updated": "2020-01-07T15:13:12.434049Z",
+    "is_deleteable": false
+}

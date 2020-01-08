@@ -1,0 +1,11 @@
+[
+    {
+        "pk": 1,
+        "name": "Holy Math",
+        "slug": "holy-math",
+        "logo": null,
+        "enable_experimental_features": false,
+        "created": "2019-12-05T20:01:06.784326Z",
+        "updated": "2019-12-05T20:01:06.784346Z"
+    }
+]

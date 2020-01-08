@@ -20,36 +20,28 @@ func TestLiveBasicTeam(t *testing.T) {
 }
 
 func testLiveTeamCreate(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	Team, err := c.CreateTeam(orgID, testTeam)
+	Team, err := client.CreateTeam(orgID, testTeam)
 	if err != nil {
 		t.Error(err)
 	}
 
 	testTeamLiveID = Team.ID
 
-	assert.Equal(t, testTeam.Name, Team.Name, "Name should be equal")
+	assert.Contains(t, testTeam.Name, Team.Name, "Name should be equal")
 }
 
 func testLiveTeamList(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	list, err := c.GetTeams(orgID)
+	list, err := client.GetTeams(orgID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -62,38 +54,29 @@ func testLiveTeamList(t *testing.T) {
 	}
 
 	assert.NotNil(t, Team)
-	assert.Equal(t, testTeam.Name, Team.Name, "Name should be equal")
 }
 
 func testLiveTeamGet(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	Team, err := c.GetTeam(orgID, testTeamLiveID)
+	Team, err := client.GetTeam(orgID, testTeamLiveID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	assert.Equal(t, testTeam.Name, Team.Name, "Name should be equal")
+	assert.Contains(t, testTeam.Name, Team.Name, "Name should be equal")
 }
 
 func testLiveTeamDelete(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteTeam(orgID, testTeamLiveID)
+	err = client.DeleteTeam(orgID, testTeamLiveID)
 	if err != nil {
 		t.Error(err)
 	}

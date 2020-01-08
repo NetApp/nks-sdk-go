@@ -7,12 +7,7 @@ import (
 )
 
 func TestLiveBasicUserprofile(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
-	up, err := c.GetUserProfile()
+	up, err := client.GetUserProfile()
 	if err != nil {
 		t.Error(err)
 	}

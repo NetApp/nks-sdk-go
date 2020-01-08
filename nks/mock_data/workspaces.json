@@ -1,0 +1,90 @@
+[
+    {
+        "pk": 1,
+        "name": "Test Go SDK",
+        "slug": "test-go-sdk-2",
+        "org": 11949,
+        "is_default": false,
+        "is_pinned": false,
+        "created": "2019-10-21T22:03:39.767164Z",
+        "clusters": [],
+        "federations": [],
+        "user_solutions": [],
+        "team_workspaces": [
+            {
+                "pk": 1,
+                "team": {
+                    "pk": 1,
+                    "name": "Everyone",
+                    "slug": "everyone",
+                    "org": 11949,
+                    "is_org_wide": true,
+                    "created": "2018-10-09T05:43:48.656349Z"
+                },
+                "workspace": 26010,
+                "created": "2019-10-21T22:03:51.049410Z"
+            }
+        ]
+    },
+    {
+        "pk": 1,
+        "name": "Test Go SDKSpace",
+        "slug": "test-space-2",
+        "org": 11949,
+        "is_default": false,
+        "is_pinned": false,
+        "created": "2019-07-11T23:51:23.087470Z",
+        "clusters": [],
+        "federations": [],
+        "user_solutions": [],
+        "team_workspaces": [
+            {
+                "pk": 1,
+                "team": {
+                    "pk": 1,
+                    "name": "Dev Team",
+                    "slug": "dev-team",
+                    "org": 11949,
+                    "is_org_wide": false,
+                    "created": "2019-07-11T23:51:13.452413Z"
+                },
+                "workspace": 20801,
+                "created": "2019-07-11T23:51:23.089504Z"
+            }
+        ]
+    },
+    {
+        "pk": 1,
+        "name": "Test Go SDK",
+        "slug": "test-10167",
+        "org": 11949,
+        "is_default": true,
+        "is_pinned": false,
+        "created": "2018-10-09T05:43:48.650889Z",
+        "clusters": [
+            {
+                "pk": 1,
+                "name": "SDK GO TEST",
+                "provider": "aws",
+                "state": "running"
+            }
+        ],
+        "federations": [],
+        "user_solutions": [],
+        "team_workspaces": [
+            {
+                "pk": 1,
+                "team": {
+                    "pk": 1,
+                    "name": "Everyone",
+                    "slug": "everyone",
+                    "org": 11949,
+                    "is_org_wide": true,
+                    "created": "2018-10-09T05:43:48.656349Z"
+                },
+                "workspace": 12265,
+                "created": "2018-10-09T05:43:48.671135Z"
+            }
+        ]
+    }
+]

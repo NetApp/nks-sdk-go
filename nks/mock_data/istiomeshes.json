@@ -1,0 +1,30 @@
+[
+    {
+        "pk": 1,
+        "name": "New Mesh",
+        "state": "active",
+        "mesh_type": "cross_cluster",
+        "workspace": {
+            "pk": 1,
+            "name": "Default",
+            "slug": "default",
+            "org": 4,
+            "is_default": true,
+            "created": "2016-12-03T04:42:29.612800Z"
+        },
+        "members": [
+            {
+                "cluster": {
+                    "pk": 1
+                },
+                "role": "host"
+            },
+            {
+                "cluster": {
+                    "pk": 1
+                },
+                "role": "guest"
+            }
+        ]
+    }
+]

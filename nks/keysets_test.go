@@ -24,10 +24,6 @@ func TestLiveBasicKeyset(t *testing.T) {
 }
 
 func testLiveKeysetCreate(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
@@ -42,10 +38,15 @@ func testLiveKeysetCreate(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	content := []byte{}
 
-	content, err := ioutil.ReadFile(idRsaPubPath)
-	if err != nil {
-		t.Fatal(err)
+	if testEnv != "mock" {
+		content, err = ioutil.ReadFile(idRsaPubPath)
+		if err != nil {
+			t.Fatal(err)
+		}
+	} else {
+		content = []byte{}
 	}
 
 	testKeyset.Keys = append(testKeyset.Keys, Key{
@@ -53,31 +54,27 @@ func testLiveKeysetCreate(t *testing.T) {
 		Value: string(content),
 	})
 
-	Keyset, err := c.CreateKeyset(orgID, testKeyset)
+	Keyset, err := client.CreateKeyset(orgID, testKeyset)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
 	testKeysetLiveID = Keyset.ID
 
-	assert.Equal(t, testKeyset.Name, Keyset.Name, "Name should be equal")
+	assert.Contains(t, testKeyset.Name, Keyset.Name, "Name should be equal")
 	assert.NotNil(t, len(testKeyset.Keys), 1, "One key should be present")
 	assert.Equal(t, testKeyset.Keys[0].Type, "pub", "A key should be pub")
 }
 
 func testLiveKeysetList(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
-	list, err := c.GetKeysets(orgID)
+	list, err := client.GetKeysets(orgID)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
 	var Keyset Keyset
@@ -88,39 +85,31 @@ func testLiveKeysetList(t *testing.T) {
 	}
 
 	assert.NotNil(t, Keyset)
-	assert.Equal(t, testKeyset.Name, Keyset.Name, "Name should be equal")
+	assert.Contains(t, testKeyset.Name, Keyset.Name, "Name should be equal")
 }
 
 func testLiveKeysetGet(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
-	Keyset, err := c.GetKeyset(orgID, testKeysetLiveID)
+	Keyset, err := client.GetKeyset(orgID, testKeysetLiveID)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
-	assert.Equal(t, testKeyset.Name, Keyset.Name, "Name should be equal")
+	assert.Contains(t, testKeyset.Name, Keyset.Name, "Name should be equal")
 }
 
 func testLiveKeysetDelete(t *testing.T) {
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
-	err = c.DeleteKeyset(orgID, testKeysetLiveID)
+	err = client.DeleteKeyset(orgID, testKeysetLiveID)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 }

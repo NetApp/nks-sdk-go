@@ -7,6 +7,9 @@ import (
 	"time"
 )
 
+//ClusterRunningStateString running state
+//ClusterBuildLogEventType event type
+//ClusterBuildLogEventFailed failed state
 const (
 	ClusterRunningStateString  = "running"
 	ClusterBuildLogEventType   = "provider_build"
@@ -16,7 +19,7 @@ const (
 // Config describes a cluster config in the NetApp Kubernetes Service system
 type Config struct {
 	IsServiceCluster     bool `json:"is_service_cluster"`
-	ExperimentalFeatures bool `json:"enable_experimental_features":`
+	ExperimentalFeatures bool `json:"enable_experimental_features"`
 }
 
 // Cluster describes a Kubernetes cluster in the NetApp Kubernetes Service system
@@ -57,8 +60,8 @@ type Cluster struct {
 	MasterSize                  string             `json:"master_size"`
 	WorkerSize                  string             `json:"worker_size"`
 	NodeCount                   int                `json:"node_count"`
-	MasterRootDiskSize          int                `json:"master_root_disk_size"`
-	WorkerRootDiskSize          int                `json:"worker_root_disk_size"`
+	MasterRootDiskSize          int                `json:"master_root_disk_size,omitempty"`
+	WorkerRootDiskSize          int                `json:"worker_root_disk_size,omitempty"`
 	MaxNodeCount                int                `json:"max_node_count"`
 	MinNodeCount                int                `json:"min_node_count"`
 	EtcdType                    string             `json:"etcd_type"`
@@ -184,7 +187,7 @@ func (c *APIClient) UpgradeClusterToVersion(cl Cluster, version string) (err err
 // UpgradeClusterToLatestVersion upgrades cluster to latest k8s version available
 func (c *APIClient) UpgradeClusterToLatestVersion(cl Cluster) error {
 	if len(cl.KubernetesMigrationVersions) < 1 {
-		return fmt.Errorf("No migration versions listed for UpgradeClusterToLatestVersion\n")
+		return fmt.Errorf("no migration versions listed for UpgradeClusterToLatestVersion")
 	}
 	majorV, minorV, patchV, err := convertVersionToInts(cl.KubernetesVersion)
 	if err != nil {
@@ -251,17 +254,17 @@ func (c *APIClient) WaitClusterRunning(orgID, clusterID int, isProvisioning bool
 			if err == nil {
 				bl := c.GetBuildLogEventState(bls, ClusterBuildLogEventType)
 				if bl != nil && bl.EventState == ClusterBuildLogEventFailed {
-					return fmt.Errorf("Cluster build failed, build log message for event %s was: %s\n",
+					return fmt.Errorf("cluster build failed, build log message for event %s was: %s",
 						ClusterBuildLogEventType, bl.Message)
 				}
 			}
 			if cl.IsFailed {
-				return fmt.Errorf("Cluster build failed, is_failed: %t\n", cl.IsFailed)
+				return fmt.Errorf("cluster build failed, is_failed: %t", cl.IsFailed)
 			}
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before cluster reached state (%s)\n",
+	return fmt.Errorf("timeout (%d seconds) reached before cluster reached state (%s)",
 		timeout, ClusterRunningStateString)
 }
 
@@ -276,5 +279,5 @@ func (c *APIClient) WaitClusterDeleted(orgID, clusterID, timeout int) error {
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before cluster deleted\n", timeout)
+	return fmt.Errorf("timeout (%d seconds) reached before cluster deleted", timeout)
 }

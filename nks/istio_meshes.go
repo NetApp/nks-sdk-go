@@ -112,7 +112,7 @@ func (c *APIClient) WaitIstioMeshDeleted(orgID, workspaceID, meshID, timeout int
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before isto mesh deleted\n", timeout)
+	return fmt.Errorf("timeout (%d seconds) reached before isto mesh deleted", timeout)
 }
 
 // WaitIstioMeshCreated waits until isto mesh state is active
@@ -124,5 +124,5 @@ func (c *APIClient) WaitIstioMeshCreated(orgID, workspaceID, meshID, timeout int
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before isto mesh created\n", timeout)
+	return fmt.Errorf("timeout (%d seconds) reached before isto mesh created", timeout)
 }
