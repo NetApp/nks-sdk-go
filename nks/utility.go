@@ -34,6 +34,9 @@ func GetIDFromEnv(name string) (int, error) {
 
 //GetValueFromEnv grabs string from environment
 func GetValueFromEnv(name string) (string, error) {
+	if os.Getenv("TEST_ENV") == "mock" {
+		return "", nil
+	}
 	content := os.Getenv(name)
 	if len(content) == 0 {
 		return "", errors.New("Empty content of env " + name)
