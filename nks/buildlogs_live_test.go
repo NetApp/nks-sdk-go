@@ -38,17 +38,13 @@ func TestLiveBasicBuildLogs(t *testing.T) {
 }
 
 func testBuildLogsGet(t *testing.T, clusterID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	logs, err := c.GetBuildLogs(orgID, clusterID)
+	logs, err := client.GetBuildLogs(orgID, clusterID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,11 +53,6 @@ func testBuildLogsGet(t *testing.T, clusterID int) {
 }
 
 func testBuildLogsCreateCluster(t *testing.T) int {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
@@ -80,33 +71,28 @@ func testBuildLogsCreateCluster(t *testing.T) int {
 	testBuildLogAwsCluster.ProviderKey = awsKeysetID
 	testBuildLogAwsCluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testBuildLogAwsCluster)
+	cluster, err := client.CreateCluster(orgID, testBuildLogAwsCluster)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
 	return cluster.ID
 }
 
 func testBuildLogsDeleteCluster(t *testing.T, clusterID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteCluster(orgID, clusterID)
+	err = client.DeleteCluster(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
 	if testEnv != "mock" {
-		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
 		if err != nil {
 			t.Fatal(err)
 		}

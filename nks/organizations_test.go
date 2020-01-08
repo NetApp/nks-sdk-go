@@ -17,11 +17,7 @@ func TestLiveOrganization(t *testing.T) {
 
 func testGetOrganizations(t *testing.T) {
 	fmt.Println("GetOrganizations testing")
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-	orgs, err := c.GetOrganizations()
+	orgs, err := client.GetOrganizations()
 	if err != nil {
 		t.Error(err)
 	}
@@ -32,15 +28,11 @@ func testGetOrganizations(t *testing.T) {
 
 func testGetOrganization(t *testing.T) {
 	fmt.Println("GetOrganization testing")
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
-	org, err := c.GetOrganization(orgID)
+	org, err := client.GetOrganization(orgID)
 	if err != nil {
 		t.Error(err)
 	}

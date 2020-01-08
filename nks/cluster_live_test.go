@@ -108,10 +108,6 @@ func TestLiveBasicCluster(t *testing.T) {
 func testClusterCreateAWS(t *testing.T) {
 	t.Parallel()
 
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
@@ -130,13 +126,13 @@ func testClusterCreateAWS(t *testing.T) {
 	testAwsCluster.ProviderKey = awsKeysetID
 	testAwsCluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testAwsCluster)
+	cluster, err := client.CreateCluster(orgID, testAwsCluster)
 	fmt.Println("aws", cluster.ID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
 	}
@@ -146,11 +142,6 @@ func testClusterCreateAWS(t *testing.T) {
 
 func testClusterCreateAzure(t *testing.T) {
 	t.Parallel()
-
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
@@ -169,13 +160,13 @@ func testClusterCreateAzure(t *testing.T) {
 	testAzureCluster.ProviderKey = azureKeysetID
 	testAzureCluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testAzureCluster)
+	cluster, err := client.CreateCluster(orgID, testAzureCluster)
 	fmt.Println("AZR", cluster.ID)
 	if err != nil {
 		t.Errorf("failed to create azure cluster with error %d", err)
 	}
 
-	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
 	}
@@ -185,11 +176,6 @@ func testClusterCreateAzure(t *testing.T) {
 
 func testClusterCreateGCE(t *testing.T) {
 	t.Parallel()
-
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
@@ -208,13 +194,13 @@ func testClusterCreateGCE(t *testing.T) {
 	testGCECluster.ProviderKey = gceKeysetID
 	testGCECluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testGCECluster)
+	cluster, err := client.CreateCluster(orgID, testGCECluster)
 	fmt.Println("GKE", cluster.ID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
 		t.Error(err)
 	}
@@ -223,16 +209,12 @@ func testClusterCreateGCE(t *testing.T) {
 }
 
 func testClusterList(t *testing.T) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	clusters, err := c.GetClusters(orgID)
+	clusters, err := client.GetClusters(orgID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -241,10 +223,6 @@ func testClusterList(t *testing.T) {
 }
 
 func testClusterGet(t *testing.T) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
@@ -254,7 +232,7 @@ func testClusterGet(t *testing.T) {
 		t.Error("no clusters where created to get")
 	}
 
-	cluster, err := c.GetCluster(orgID, clusterIds[0])
+	cluster, err := client.GetCluster(orgID, clusterIds[0])
 	if err != nil {
 		t.Error(err)
 	}
@@ -272,23 +250,17 @@ func testClusterDelete(t *testing.T) {
 
 func clusterDelete(t *testing.T, clusterID int) {
 	t.Parallel()
-
-	c, err := NewTestClientFromEnv()
-
-	if err != nil {
-		t.Error(err)
-	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteCluster(orgID, clusterID)
+	err = client.DeleteCluster(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
 	if testEnv != "mock" {
-		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
 		if err != nil {
 			t.Error(err)
 		}

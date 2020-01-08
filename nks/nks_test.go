@@ -1,32 +1,202 @@
 package nks
 
 import (
+	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
+	"os"
 	"testing"
+
+	"gopkg.in/h2non/gock.v1"
 )
 
 var (
-	mux    *http.ServeMux
-	client *APIClient
-	server *httptest.Server
+	mux          *http.ServeMux
+	client       *APIClient
+	server       *httptest.Server
+	mockServer   = "http://foo.bar"
+	mockData     map[string]string
+	mockDataPath = "mock_data/"
 )
 
-func setup() {
-	mux = http.NewServeMux()
-	server = httptest.NewServer(mux)
-
-	url, _ := url.Parse(server.URL)
-	client = NewClient("", url.String())
-}
-
-func teardown() {
-	server.Close()
-}
-
-func testMethod(t *testing.T, r *http.Request, expected string) {
-	if expected != r.Method {
-		t.Errorf("Request method = %v, expected %v", r.Method, expected)
+func TestMain(m *testing.M) {
+	testEnv := os.Getenv("NKS_TEST_ENV")
+	if testEnv == "live" {
+		token := os.Getenv("NKS_API_TOKEN")
+		endpoint := os.Getenv("NKS_API_URL")
+		if endpoint == "" {
+			endpoint = defaultNKSApiURL
+		}
+		client = NewClient(token, endpoint)
+	} else {
+		fmt.Println("Starting mock client")
+		client = NewClient("MOCK_TOKEN", mockServer)
+		loadMockData()
+		setupMockServer()
 	}
+
+	os.Exit(m.Run())
+
+}
+
+func loadMockData() {
+	fmt.Println("Loading mock data")
+	mockData = make(map[string]string)
+	root := "mock_data/"
+	files, err := ioutil.ReadDir(root)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, f := range files {
+		fName := f.Name()
+		dat, _ := ioutil.ReadFile(fmt.Sprintf("%s%s", root, fName))
+
+		mockData[fName[:len(fName)-5]] = string(dat)
+	}
+}
+
+func setupMockServer() {
+	//solutions
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/solutions/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["solution"])
+
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/clusters/1/solutions/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusAccepted)
+
+	gock.New("http://foo.bar").
+		Post("/orgs/1/clusters/1/solutions").
+		MatchType("json").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		MatchHeader("Content-Type", "application/json").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusCreated).
+		JSON(mockData["solution"])
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/solutions").
+		MatchType("json").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["solutions"])
+
+	//istio mesh
+	gock.New("http://foo.bar").
+		Get("/orgs/1/workspaces/1/istio-meshes").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["istiomeshes"])
+
+	gock.New("http://foo.bar").
+		Post("/orgs/1/workspaces/1/istio-meshes").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(201).
+		JSON(mockData["istiomeshe"])
+
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/istio-meshes/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
+
+	//build logs
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1/logs").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["buildlogs"])
+
+	//cluster endpoints
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["cluster"])
+
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/clusters/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
+
+	gock.New("http://foo.bar").
+		Post("/orgs/1/clusters").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		MatchHeader("Content-Type", "application/json").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["cluster"])
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/clusters").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["clusters"])
+
+	// workspace
+	gock.New("http://foo.bar").
+		Get("orgs/1/workspaces").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["workspaces"])
+
+	//organization endpoints
+	gock.New("http://foo.bar").
+		Get("/orgs/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["organization"])
+
+	gock.New("http://foo.bar").
+		Get("/orgs").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["organizations"])
 }

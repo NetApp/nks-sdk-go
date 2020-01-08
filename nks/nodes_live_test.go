@@ -42,11 +42,6 @@ func TestLiveBasicNode(t *testing.T) {
 }
 
 func testNodeClusterCreate(t *testing.T) int {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
@@ -65,23 +60,18 @@ func testNodeClusterCreate(t *testing.T) int {
 	testNodeAwsCluster.ProviderKey = awsKeysetID
 	testNodeAwsCluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testNodeAwsCluster)
+	cluster, err := client.CreateCluster(orgID, testNodeAwsCluster)
 	fmt.Println(cluster.ID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
 	return cluster.ID
 }
 
 func testNodeCreate(t *testing.T, clusterID int) int {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
@@ -97,14 +87,14 @@ func testNodeCreate(t *testing.T, clusterID int) int {
 		RootDiskSize:       50,
 	}
 
-	nodes, err := c.AddNode(orgID, clusterID, nodeAdd)
+	nodes, err := client.AddNode(orgID, clusterID, nodeAdd)
 	if err != nil {
 		t.Error(err)
 	}
 
 	node := nodes[0]
 
-	err = c.WaitNodeProvisioned(orgID, clusterID, node.ID, timeout)
+	err = client.WaitNodeProvisioned(orgID, clusterID, node.ID, timeout)
 	if err != nil {
 		t.Error(err)
 	}
@@ -113,17 +103,12 @@ func testNodeCreate(t *testing.T, clusterID int) int {
 }
 
 func testNodeList(t *testing.T, clusterID int) {
-	c, err := NewTestClientFromEnv()
+orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
-
-	list, err := c.GetNodes(orgID, clusterID)
+	list, err := client.GetNodes(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -132,17 +117,12 @@ func testNodeList(t *testing.T, clusterID int) {
 }
 
 func testNodeGet(t *testing.T, clusterID, nodeID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	node, err := c.GetNode(orgID, clusterID, nodeID)
+	node, err := client.GetNode(orgID, clusterID, nodeID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -152,23 +132,18 @@ func testNodeGet(t *testing.T, clusterID, nodeID int) {
 }
 
 func testNodeDelete(t *testing.T, clusterID, nodeID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteNode(orgID, clusterID, nodeID)
+	err = client.DeleteNode(orgID, clusterID, nodeID)
 	if err != nil {
 		t.Error(err)
 	}
 
 	if testEnv != "mock" {
-		err = c.WaitNodeDeleted(orgID, clusterID, nodeID, timeout)
+		err = client.WaitNodeDeleted(orgID, clusterID, nodeID, timeout)
 		if err != nil {
 			t.Error(err)
 		}
@@ -176,22 +151,17 @@ func testNodeDelete(t *testing.T, clusterID, nodeID int) {
 }
 
 func testNodeClusterDelete(t *testing.T, clusterID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteCluster(orgID, clusterID)
+	err = client.DeleteCluster(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
 	if testEnv != "mock" {
-		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
 		if err != nil {
 			t.Error(err)
 		}

@@ -1,0 +1,35 @@
+{
+    "pk": 1,
+    "instance_id": "spcbsk7u4u",
+    "name": "My Cluster",
+    "org": 4,
+    "provider": "do",
+    "workspace": {
+        "pk": 1,
+        "name": "Default",
+        "slug": "default",
+        "org": 4,
+        "is_default": true,
+        "created": "2016-12-03T04:42:29.612800Z"
+    },
+    "k8s_version": "v1.8.3",
+    "node_count": 3,
+    "etcd_type": "self_hosted",
+    "platform": "coreos",
+    "channel": "stable",
+    "region": "nyc1",
+    "zone": "",
+    "state": "running",
+    "solutions": [
+        {
+            "pk": 1,
+            "name": "Helm Tiller",
+            "solution": "helm_tiller",
+            "state": "draft"
+        }
+    ],
+    "is_failed": false,
+    "federation_role": null,
+    "version_migrations": [],
+    "k8s_rbac_enabled": true
+}
