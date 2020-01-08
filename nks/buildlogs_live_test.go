@@ -82,7 +82,7 @@ func testBuildLogsCreateCluster(t *testing.T) int {
 
 	cluster, err := c.CreateCluster(orgID, testBuildLogAwsCluster)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
 	err = c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
@@ -93,17 +93,17 @@ func testBuildLogsCreateCluster(t *testing.T) int {
 func testBuildLogsDeleteCluster(t *testing.T, clusterID int) {
 	c, err := NewTestClientFromEnv()
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
 	err = c.DeleteCluster(orgID, clusterID)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 	if testEnv != "mock" {
 		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
