@@ -5,7 +5,9 @@ import (
 	"strings"
 	"time"
 )
-
+//SolutionInstalledStateString healthy solutions state
+//HelmTillerInstallWaitTimeout max time to wait for helm to get installed
+//HelmTillerSolutionName name of the helm solution required
 const (
 	SolutionInstalledStateString = "installed"
 	HelmTillerInstallWaitTimeout = 240
@@ -105,7 +107,7 @@ func (c *APIClient) FindSolutionByName(orgID, clusterID int, solutionName string
 			return sol.ID, nil
 		}
 	}
-	return 0, fmt.Errorf("No solution by by the name: %s\n", solutionName)
+	return 0, fmt.Errorf("no solution by by the name: %s", solutionName)
 }
 
 // WaitHelmTillerInstalled waits until Tiller is installed, or errors if Tiller is not installed or not going to install,
@@ -125,7 +127,7 @@ func (c *APIClient) WaitHelmTillerInstalled(orgID, clusterID, timeout int) error
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before Tiller reached state (%s)\n",
+	return fmt.Errorf("timeout (%d seconds) reached before Tiller reached state (%s)",
 		timeout, SolutionInstalledStateString)
 }
 
@@ -141,7 +143,7 @@ func (c *APIClient) WaitSolutionInstalled(orgID, clusterID, solutionID, timeout 
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before solution reached state (%s)\n",
+	return fmt.Errorf("timeout (%d seconds) reached before solution reached state (%s)",
 		timeout, SolutionInstalledStateString)
 }
 
@@ -156,7 +158,7 @@ func (c *APIClient) WaitSolutionDeleted(orgID, clusterID, solutionID, timeout in
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before solution deleted\n", timeout)
+	return fmt.Errorf("timeout (%d seconds) reached before solution deleted", timeout)
 }
 
 // WaitSolutionInstalledByName waits until solution is installed, or errors if solution is not installed or not going to install
@@ -175,6 +177,6 @@ func (c *APIClient) WaitSolutionInstalledByName(orgID, clusterID, timeout int, s
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before solution %s reached state (%s)\n",
+	return fmt.Errorf("timeout (%d seconds) reached before solution %s reached state (%s)",
 		timeout, solutionName, SolutionInstalledStateString)
 }

@@ -13,9 +13,9 @@ import (
 	"os"
 	"strings"
 )
-
+// Debug set debug to false
 var Debug = "false"
-
+//ClientUserAgentString set the string to the name required
 const ClientUserAgentString = "NetApp Kubernetes Service Go SDK v2.0.10"
 const defaultNKSApiURL = "https://api.nks.netapp.io"
 
@@ -23,7 +23,7 @@ const defaultNKSApiURL = "https://api.nks.netapp.io"
 type APIClient struct {
 	Token      string
 	Endpoint   string
-	HttpClient *http.Client
+	HTTPClient *http.Client
 }
 
 // APIReq struct holds data for runRequest method to operate http request on
@@ -44,7 +44,7 @@ func NewClient(token, endpoint string) *APIClient {
 	c := &APIClient{
 		Token:      token,
 		Endpoint:   strings.TrimRight(endpoint, "/"),
-		HttpClient: http.DefaultClient,
+		HTTPClient: http.DefaultClient,
 	}
 	return c
 }
@@ -90,7 +90,7 @@ func (c *APIClient) runRequest(req *APIReq) error {
 	httpReq.Header.Set("Content-Type", "application/json")
 
 	// Run HTTP request, catching response
-	resp, err := c.HttpClient.Do(httpReq)
+	resp, err := c.HTTPClient.Do(httpReq)
 	debug(httputil.DumpResponse(resp, true))
 	if err != nil {
 		return err

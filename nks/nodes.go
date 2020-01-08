@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 )
-
+//NodeRunningStateString state of a healthy node is running
 const NodeRunningStateString = "running"
 
 // Node describes a node in a cluster.  The string field Size is provider-specific
@@ -78,7 +78,7 @@ func (c *APIClient) DeleteNode(orgID, clusterID, nodeID int) (err error) {
 	return
 }
 
-// AddNodes sends a request to add master nodes to a cluster, returns list of Node objects created
+// AddNode sends a request to add master nodes to a cluster, returns list of Node objects created
 func (c *APIClient) AddNode(orgID, clusterID int, newNode NodeAdd) (ns []Node, err error) {
 	req := &APIReq{
 		Method:       "POST",
@@ -103,7 +103,7 @@ func (c *APIClient) WaitNodeProvisioned(orgID, clusterID, nodeID, timeout int) e
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before node reached state (%s)\n",
+	return fmt.Errorf("timeout (%d seconds) reached before node reached state (%s)",
 		timeout, NodeRunningStateString)
 }
 
@@ -118,5 +118,5 @@ func (c *APIClient) WaitNodeDeleted(orgID, clusterID, nodeID, timeout int) error
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before node deleted\n", timeout)
+	return fmt.Errorf("timeout (%d seconds) reached before node deleted", timeout)
 }

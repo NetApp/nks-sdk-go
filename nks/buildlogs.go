@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+//BuildLogEventStateSuccess state success
 const BuildLogEventStateSuccess = "success"
 
 // BuildLog struct to hold buildlog entry
@@ -34,18 +35,18 @@ func (c *APIClient) GetBuildLogs(orgID, clusterID int) (bls []BuildLog, err erro
 
 // GetBuildLog retrieves buildlog entry for buildlog ID, or error if not found
 func (c *APIClient) GetBuildLog(bls []BuildLog, buildlogID int) (*BuildLog, error) {
-	for i, _ := range bls {
+	for i := range bls {
 		if bls[i].ID == buildlogID {
 			return &bls[i], nil
 		}
 	}
-	return nil, fmt.Errorf("No build log found by the ID: %d\n", buildlogID)
+	return nil, fmt.Errorf("no build log found by the ID: %d", buildlogID)
 }
 
 // GetBuildLogEventState takes a list of buildlogs, returns most recent build log
 // entry that matches eventType string, or returns nil if not found
 func (c *APIClient) GetBuildLogEventState(bls []BuildLog, eventType string) *BuildLog {
-	for i, _ := range bls {
+	for i := range bls {
 		if bls[i].EventType == eventType {
 			return &bls[i]
 		}
@@ -53,7 +54,7 @@ func (c *APIClient) GetBuildLogEventState(bls []BuildLog, eventType string) *Bui
 	return nil
 }
 
-// WaitEventSuccess waits until event type has success state
+// WaitBuildLogEventSuccess waits until event type has success state
 func (c *APIClient) WaitBuildLogEventSuccess(orgID, clusterID, timeout int, eventType string) error {
 	for i := 1; i < timeout; i++ {
 		bls, err := c.GetBuildLogs(orgID, clusterID)
@@ -66,6 +67,6 @@ func (c *APIClient) WaitBuildLogEventSuccess(orgID, clusterID, timeout int, even
 		}
 		time.Sleep(time.Second)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before eventType (%s) reached state (%s)\n",
+	return fmt.Errorf("timeout (%d seconds) reached before eventType (%s) reached state (%s)",
 		timeout, eventType, BuildLogEventStateSuccess)
 }

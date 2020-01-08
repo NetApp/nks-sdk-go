@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 )
-
+//NodePoolRunningStateString state of a running node pool is active
 const NodePoolRunningStateString = "active"
 
 // NodePool defines the characteristics of a grouping of nodes
@@ -142,6 +142,6 @@ func (c *APIClient) WaitNodePoolProvisioned(orgID, clusterID, nodepoolID, timeou
 	for _, node := range nodes {
 		c.WaitNodeProvisioned(orgID, clusterID, node.ID, 60)
 	}
-	return fmt.Errorf("Timeout (%d seconds) reached before nodepool reached state (%s)\n",
+	return fmt.Errorf("timeout (%d seconds) reached before nodepool reached state (%s)",
 		timeout, NodePoolRunningStateString)
 }
