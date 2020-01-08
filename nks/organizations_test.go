@@ -5,7 +5,16 @@ import (
 	"testing"
 )
 
-func TestGetOrganizations(t *testing.T) {
+func TestLiveOrganization(t *testing.T) {
+	t.Run("get clusters", func(t *testing.T) {
+		t.Run("list", testGetOrganizations)
+		t.Run("get", testGetOrganization)
+	})
+
+}
+
+
+func testGetOrganizations(t *testing.T) {
 	fmt.Println("GetOrganizations testing")
 	c, err := NewClientFromEnv()
 	if err != nil {
@@ -20,7 +29,7 @@ func TestGetOrganizations(t *testing.T) {
 	}
 }
 
-func TestGetOrganization(t *testing.T) {
+func testGetOrganization(t *testing.T) {
 	fmt.Println("GetOrganization testing")
 	c, err := NewClientFromEnv()
 	if err != nil {

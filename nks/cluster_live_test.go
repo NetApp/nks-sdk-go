@@ -1,157 +1,84 @@
 package nks
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 var testAwsCluster = Cluster{
-	Name:               "Test AWS Cluster Go SDK " + GetTicks(),
-	Provider:           "aws",
-	MasterCount:        1,
-	MasterSize:         "t2.medium",
-	WorkerCount:        2,
-	WorkerSize:         "t2.medium",
-	Region:             "us-east-1",
-	Zone:               "us-east-1a",
-	ProviderNetworkID:  "__new__",
-	ProviderNetworkCdr: "172.23.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "172.23.1.0/24",
-	KubernetesVersion:  "v1.13.1",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "coreos",
-	Channel:            "stable",
-	NetworkComponents:  []NetworkComponent{},
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
-}
-
-var testEKSCluster = Cluster{
-	Name:               "Test EKS Cluster Go SDK " + GetTicks(),
-	Provider:           "eks",
-	NodeCount:          2,
-	MinNodeCount:       2,
-	MaxNodeCount:       3,
-	WorkerSize:         "t2.medium",
-	Region:             "us-east-1",
-	ProviderNetworkID:  "vpc-1179c777",
-	ProviderNetworkCdr: "172.23.0.0/16",
-	KubernetesVersion:  "v1.10",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "amazon-linux",
-	Channel:            "v2",
-	NetworkComponents: []NetworkComponent{
-		NetworkComponent{
-			Cidr:          "172.23.12.0/24",
-			ComponentType: "provider_subnet",
-			ID:            "__new__",
-			VpcID:         "vpc-1179c777",
-			Zone:          "us-east-1a",
-			ProviderID:    "__new__",
-		},
-		NetworkComponent{
-			Cidr:          "172.23.15.0/24",
-			ComponentType: "provider_subnet",
-			ID:            "__new__",
-			VpcID:         "vpc-1179c777",
-			Zone:          "us-east-1b",
-			ProviderID:    "__new__",
-		},
-	},
-	Solutions: []Solution{Solution{Solution: "helm_tiller"}},
+	Name:                  "Test AWS Cluster Go SDK " + GetTicks(),
+	Provider:              "aws",
+	MasterCount:           1,
+	MasterSize:            "t2.medium",
+	WorkerCount:           2,
+	WorkerSize:            "t2.medium",
+	Region:                "eu-west-3",
+	Zone:                  "eu-west-3a",
+	ProviderNetworkID:     "__new__",
+	ProviderNetworkCdr:    "172.23.0.0/16",
+	ProviderSubnetID:      "__new__",
+	ProviderSubnetCidr:    "172.23.1.0/24",
+	KubernetesVersion:     "v1.15.5",
+	KubernetesPodCidr:     "10.2.0.0",
+	KubernetesServiceCidr: "10.3.0.0",
+	RbacEnabled:           true,
+	DashboardEnabled:      true,
+	EtcdType:              "classic",
+	Platform:              "coreos",
+	Channel:               "stable",
+	NetworkComponents:     []NetworkComponent{},
+	Solutions:             []Solution{Solution{Solution: "helm_tiller"}},
 }
 
 var testAzureCluster = Cluster{
-	Name:               "Test Azure Cluster Go SDK " + GetTicks(),
-	Provider:           "azure",
-	MasterCount:        1,
-	MasterSize:         "standard_d2",
-	WorkerCount:        2,
-	WorkerSize:         "standard_d2",
-	Region:             "eastus",
-	ProviderResourceGp: "__new__",
-	ProviderNetworkID:  "__new__",
-	ProviderNetworkCdr: "10.0.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "10.0.0.0/24",
-	KubernetesVersion:  "v1.13.1",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "coreos",
-	Channel:            "stable",
-	NetworkComponents:  []NetworkComponent{},
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
-}
-
-var testAKSCluster = Cluster{
-	Name:               "Test AKS Cluster Go SDK " + GetTicks(),
-	Provider:           "aks",
-	WorkerCount:        2,
-	WorkerSize:         "Standard_F4s",
-	Region:             "eastus",
-	ProviderResourceGp: "__new__",
-	ProviderNetworkID:  "__new__",
-	ProviderNetworkCdr: "10.0.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "10.0.0.0/24",
-	KubernetesVersion:  "v1.11.5",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "ubuntu",
-	Channel:            "16.04-lts",
-	NetworkComponents:  []NetworkComponent{},
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
-}
-
-var testGKECluster = Cluster{
-	Name:               "Test GKE Cluster Go SDK " + GetTicks(),
-	Provider:           "gke",
-	MasterCount:        1,
-	MasterSize:         "n1-standard-1",
-	WorkerCount:        2,
-	WorkerSize:         "n1-standard-1",
-	Region:             "us-east1-c",
-	ProviderNetworkID:  "__new__",
-	ProviderNetworkCdr: "172.23.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "172.23.1.0/24",
-	KubernetesVersion:  "latest",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "gci",
-	Channel:            "stable",
-	NetworkComponents:  []NetworkComponent{},
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
+	Name:                  "Test Azure Cluster Go SDK " + GetTicks(),
+	Provider:              "azure",
+	MasterCount:           1,
+	MasterSize:            "standard_d2s_v3",
+	WorkerCount:           2,
+	WorkerSize:            "standard_d2s_v3",
+	Region:                "eastus",
+	ProviderResourceGp:    "__new__",
+	ProviderNetworkID:     "__new__",
+	ProviderNetworkCdr:    "10.0.0.0/16",
+	ProviderSubnetID:      "__new__",
+	ProviderSubnetCidr:    "10.0.0.0/24",
+	KubernetesVersion:     "v1.15.5",
+	KubernetesPodCidr:     "10.2.0.0",
+	KubernetesServiceCidr: "10.3.0.0",
+	RbacEnabled:           true,
+	DashboardEnabled:      true,
+	EtcdType:              "classic",
+	Platform:              "coreos",
+	Channel:               "stable",
+	NetworkComponents:     []NetworkComponent{},
+	Solutions:             []Solution{Solution{Solution: "helm_tiller"}},
 }
 
 var testGCECluster = Cluster{
-	Name:               "Test GCE Cluster Go SDK " + GetTicks(),
-	Provider:           "gce",
-	MasterCount:        1,
-	MasterSize:         "n1-standard-1",
-	WorkerCount:        2,
-	WorkerSize:         "n1-standard-1",
-	Region:             "us-east1-c",
-	ProviderNetworkID:  "__new__",
-	ProviderNetworkCdr: "172.23.0.0/16",
-	ProviderSubnetID:   "__new__",
-	ProviderSubnetCidr: "172.23.1.0/24",
-	KubernetesVersion:  "v1.13.1",
-	RbacEnabled:        true,
-	DashboardEnabled:   true,
-	EtcdType:           "classic",
-	Platform:           "coreos",
-	Channel:            "stable",
-	NetworkComponents:  []NetworkComponent{},
-	Solutions:          []Solution{Solution{Solution: "helm_tiller"}},
+	Name:                  "Test GCE Cluster Go SDK " + GetTicks(),
+	Provider:              "gce",
+	MasterCount:           1,
+	MasterSize:            "n1-standard-1",
+	WorkerCount:           2,
+	WorkerSize:            "n1-standard-1",
+	Region:                "us-east1-c",
+	ProviderNetworkID:     "__new__",
+	ProviderNetworkCdr:    "172.23.0.0/16",
+	ProviderSubnetID:      "__new__",
+	ProviderSubnetCidr:    "172.23.1.0/24",
+	KubernetesVersion:     "v1.15.5",
+	KubernetesPodCidr:     "10.2.0.0",
+	KubernetesServiceCidr: "10.3.0.0",
+	RbacEnabled:           true,
+	DashboardEnabled:      true,
+	EtcdType:              "classic",
+	Platform:              "coreos",
+	Channel:               "stable",
+	NetworkComponents:     []NetworkComponent{},
+	Solutions:             []Solution{Solution{Solution: "helm_tiller"}},
 }
 
 var clusterIds = make([]int, 0)
@@ -161,11 +88,8 @@ var timeout = 3600
 func TestLiveBasicCluster(t *testing.T) {
 	t.Run("create clusters", func(t *testing.T) {
 		t.Run("aws", testClusterCreateAWS)
-		t.Run("eks", testClusterCreateEKS)
 		t.Run("azure", testClusterCreateAzure)
-		t.Run("aks", testClusterCreateAKS)
 		t.Run("gce", testClusterCreateGCE)
-		t.Run("gke", testClusterCreateGKE)
 	})
 
 	t.Run("get clusters", func(t *testing.T) {
@@ -205,45 +129,7 @@ func testClusterCreateAWS(t *testing.T) {
 
 	cluster, err := c.CreateCluster(orgID, testAwsCluster)
 	if err != nil {
-		t.Error(err)
-	}
-
-	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
-	if err != nil {
-		t.Error(err)
-	}
-
-	clusterIds = append(clusterIds, cluster.ID)
-}
-
-func testClusterCreateEKS(t *testing.T) {
-	t.Parallel()
-
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
-
-	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
-	if err != nil {
-		t.Error(err)
-	}
-
-	eksKeysetID, err := GetIDFromEnv("NKS_EKS_KEYSET")
-	if err != nil {
-		t.Error(err)
-	}
-
-	testEKSCluster.ProviderKey = eksKeysetID
-	testEKSCluster.SSHKeySet = sshKeysetID
-
-	cluster, err := c.CreateCluster(orgID, testEKSCluster)
-	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
@@ -259,67 +145,31 @@ func testClusterCreateAzure(t *testing.T) {
 
 	c, err := NewClientFromEnv()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	azureKeysetID, err := GetIDFromEnv("NKS_AZR_KEYSET")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	testAzureCluster.ProviderKey = azureKeysetID
 	testAzureCluster.SSHKeySet = sshKeysetID
 
 	cluster, err := c.CreateCluster(orgID, testAzureCluster)
+	fmt.Println("No orgs found, but no error", err)
+	fmt.Println("AZR", cluster.ID, err)
 	if err != nil {
-		t.Error(err)
-	}
-
-	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
-	if err != nil {
-		t.Error(err)
-	}
-
-	clusterIds = append(clusterIds, cluster.ID)
-}
-
-func testClusterCreateAKS(t *testing.T) {
-	t.Parallel()
-
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
-
-	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
-	if err != nil {
-		t.Error(err)
-	}
-
-	aksKeysetID, err := GetIDFromEnv("NKS_AKS_KEYSET")
-	if err != nil {
-		t.Error(err)
-	}
-
-	testAKSCluster.ProviderKey = aksKeysetID
-	testAKSCluster.SSHKeySet = sshKeysetID
-
-	cluster, err := c.CreateCluster(orgID, testAKSCluster)
-	if err != nil {
-		t.Error(err)
+		t.Fatalf("failed to create azure cluster with error %d", err)
 	}
 
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
@@ -335,76 +185,40 @@ func testClusterCreateGCE(t *testing.T) {
 
 	c, err := NewClientFromEnv()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	gceKeysetID, err := GetIDFromEnv("NKS_GCE_KEYSET")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	testGCECluster.ProviderKey = gceKeysetID
 	testGCECluster.SSHKeySet = sshKeysetID
 
 	cluster, err := c.CreateCluster(orgID, testGCECluster)
+	fmt.Println("GKE", cluster.ID)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	clusterIds = append(clusterIds, cluster.ID)
 }
 
-func testClusterCreateGKE(t *testing.T) {
-	t.Parallel()
-
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
-
-	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
-	if err != nil {
-		t.Error(err)
-	}
-
-	gkeKeysetID, err := GetIDFromEnv("NKS_GKE_KEYSET")
-	if err != nil {
-		t.Error(err)
-	}
-
-	testGKECluster.ProviderKey = gkeKeysetID
-	testGKECluster.SSHKeySet = sshKeysetID
-
-	cluster, err := c.CreateCluster(orgID, testGKECluster)
-	if err != nil {
-		t.Error(err)
-	}
-
-	c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
-	if err != nil {
-		t.Error(err)
-	}
-
-	clusterIds = append(clusterIds, cluster.ID)
-}
 func testClusterList(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
@@ -412,12 +226,13 @@ func testClusterList(t *testing.T) {
 	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	clusters, err := c.GetClusters(orgID)
+	fmt.Println(clusters)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	assert.True(t, len(clusters) > 0, "There should be at lease one cluster")
@@ -426,16 +241,20 @@ func testClusterList(t *testing.T) {
 func testClusterGet(t *testing.T) {
 	c, err := NewClientFromEnv()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
+	}
+
+	if len(clusterIds) == 0 {
+		t.Fatal("no clusters where created to get")
 	}
 
 	cluster, err := c.GetCluster(orgID, clusterIds[0])
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	assert.NotNil(t, cluster, "Cluster does not exists")
@@ -455,20 +274,20 @@ func clusterDelete(t *testing.T, clusterID int) {
 	c, err := NewClientFromEnv()
 
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = c.DeleteCluster(orgID, clusterID)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = c.WaitClusterDeleted(orgID, clusterID, timeout)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }

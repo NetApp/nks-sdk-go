@@ -15,7 +15,8 @@ const (
 
 // Config describes a cluster config in the NetApp Kubernetes Service system
 type Config struct {
-	IsServiceCluster bool `json:"is_service_cluster"`
+	IsServiceCluster     bool `json:"is_service_cluster"`
+	ExperimentalFeatures bool `json:"enable_experimental_features":`
 }
 
 // Cluster describes a Kubernetes cluster in the NetApp Kubernetes Service system
@@ -56,6 +57,8 @@ type Cluster struct {
 	MasterSize                  string             `json:"master_size"`
 	WorkerSize                  string             `json:"worker_size"`
 	NodeCount                   int                `json:"node_count"`
+	MasterRootDiskSize          int                `json:"master_root_disk_size"`
+	WorkerRootDiskSize          int                `json:"worker_root_disk_size"`
 	MaxNodeCount                int                `json:"max_node_count"`
 	MinNodeCount                int                `json:"min_node_count"`
 	EtcdType                    string             `json:"etcd_type"`
