@@ -39,7 +39,7 @@ func testLiveWorkspaceCreate(t *testing.T) {
 }
 
 func testLiveWorkspaceList(t *testing.T) {
-	
+
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
@@ -62,7 +62,7 @@ func testLiveWorkspaceList(t *testing.T) {
 }
 
 func testLiveWorkspaceGet(t *testing.T) {
-	
+
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
@@ -77,7 +77,7 @@ func testLiveWorkspaceGet(t *testing.T) {
 }
 
 func testLiveWorkspaceDelete(t *testing.T) {
-	
+
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)

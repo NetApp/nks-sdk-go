@@ -12,11 +12,13 @@ type ProviderSpecs struct {
 	Filters interface{} `json:"filters"`
 	Config  interface{} `json:"config"`
 }
+
 // Instance name and specs
 type Instance struct {
 	Name  string
 	Specs MachineSpecs
 }
+
 // MachineSpecs machines specs details
 type MachineSpecs struct {
 	Memory int

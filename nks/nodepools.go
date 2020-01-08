@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 )
+
 //NodePoolRunningStateString state of a running node pool is active
 const NodePoolRunningStateString = "active"
 

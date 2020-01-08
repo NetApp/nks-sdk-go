@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 )
+
 //SolutionInstalledStateString healthy solutions state
 //HelmTillerInstallWaitTimeout max time to wait for helm to get installed
 //HelmTillerSolutionName name of the helm solution required

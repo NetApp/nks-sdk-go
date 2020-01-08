@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 )
+
 //NodeRunningStateString state of a healthy node is running
 const NodeRunningStateString = "running"
 

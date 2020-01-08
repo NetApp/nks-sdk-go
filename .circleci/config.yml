@@ -14,6 +14,7 @@ jobs:
       - run: go get -v -u golang.org/x/lint/golint
       - run: golint ./...
       - run: make ci 
+      - run: make test
 
       - save_cache:
           key: go-mod-v1-{{ checksum "go.sum" }}

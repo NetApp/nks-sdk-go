@@ -69,7 +69,6 @@ func testNodePoolClusterCreate(t *testing.T) (int, int) {
 
 	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
-
 	newNodePool := NodePool{
 		Name:               "test sdk np",
 		Platform:           "coreos",

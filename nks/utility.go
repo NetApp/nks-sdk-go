@@ -58,6 +58,7 @@ func StringInSlice(s string, list []string) bool {
 func GetTicks() string {
 	return strconv.FormatInt(time.Now().Unix(), 10)
 }
+
 //GetAbsPath gets the absolute path
 func GetAbsPath(path string) (string, error) {
 	usr, _ := user.Current()

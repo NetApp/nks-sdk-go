@@ -22,8 +22,10 @@ var (
 )
 
 func TestMain(m *testing.M) {
+	fmt.Println("Starting NKS Tests")
 	testEnv := os.Getenv("NKS_TEST_ENV")
 	if testEnv == "live" {
+		fmt.Println("Configuring live tests")
 		token := os.Getenv("NKS_API_TOKEN")
 		endpoint := os.Getenv("NKS_API_URL")
 		if endpoint == "" {
@@ -36,9 +38,7 @@ func TestMain(m *testing.M) {
 		loadMockData()
 		setupMockServer()
 	}
-
 	os.Exit(m.Run())
-
 }
 
 func loadMockData() {

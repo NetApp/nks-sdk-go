@@ -9,3 +9,6 @@ vet:
 
 fmt:
 	@go fmt $(MODULES)
+
+test:
+	cd nks && NKS_TEST_ENV=mock go test ./... -v

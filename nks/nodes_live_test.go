@@ -103,7 +103,7 @@ func testNodeCreate(t *testing.T, clusterID int) int {
 }
 
 func testNodeList(t *testing.T, clusterID int) {
-orgID, err := GetIDFromEnv("NKS_ORG_ID")
+	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}

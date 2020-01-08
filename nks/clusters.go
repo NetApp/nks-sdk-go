@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 )
+
 //ClusterRunningStateString running state
 //ClusterBuildLogEventType event type
 //ClusterBuildLogEventFailed failed state
@@ -18,7 +19,7 @@ const (
 // Config describes a cluster config in the NetApp Kubernetes Service system
 type Config struct {
 	IsServiceCluster     bool `json:"is_service_cluster"`
-	ExperimentalFeatures bool `json:"enable_experimental_features":`
+	ExperimentalFeatures bool `json:"enable_experimental_features"`
 }
 
 // Cluster describes a Kubernetes cluster in the NetApp Kubernetes Service system
