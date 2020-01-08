@@ -43,11 +43,6 @@ func TestLiveBasicNodePool(t *testing.T) {
 }
 
 func testNodePoolClusterCreate(t *testing.T) (int, int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Fatal(err)
@@ -66,13 +61,13 @@ func testNodePoolClusterCreate(t *testing.T) (int, int) {
 	testNodePoolAwsCluster.ProviderKey = awsKeysetID
 	testNodePoolAwsCluster.SSHKeySet = sshKeysetID
 
-	cluster, err := c.CreateCluster(orgID, testNodePoolAwsCluster)
+	cluster, err := client.CreateCluster(orgID, testNodePoolAwsCluster)
 	fmt.Println(cluster.ID, err)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.WaitClusterRunning(orgID, cluster.ID, true, timeout)
+	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
 
 	newNodePool := NodePool{
@@ -85,14 +80,14 @@ func testNodePoolClusterCreate(t *testing.T) (int, int) {
 		ProviderSubnetCidr: "172.23.4.0/24",
 	}
 
-	nodePool, err := c.CreateNodePool(orgID, cluster.ID, newNodePool)
+	nodePool, err := client.CreateNodePool(orgID, cluster.ID, newNodePool)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.WaitNodePoolProvisioned(orgID, cluster.ID, nodePool.ID, timeout)
+	err = client.WaitNodePoolProvisioned(orgID, cluster.ID, nodePool.ID, timeout)
 
-	pools, err := c.GetNodePools(orgID, cluster.ID)
+	pools, err := client.GetNodePools(orgID, cluster.ID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -102,11 +97,6 @@ func testNodePoolClusterCreate(t *testing.T) (int, int) {
 }
 
 func testAddNodeToNodePool(t *testing.T, clusterID, nodePoolID int) int {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
@@ -117,14 +107,14 @@ func testAddNodeToNodePool(t *testing.T, clusterID, nodePoolID int) int {
 		Role:  "worker",
 	}
 
-	nodes, err := c.AddNodesToNodePool(orgID, clusterID, nodePoolID, nodeAdd)
+	nodes, err := client.AddNodesToNodePool(orgID, clusterID, nodePoolID, nodeAdd)
 	if err != nil {
 		t.Error(err)
 	}
 
 	node := nodes[0]
 
-	err = c.WaitNodeProvisioned(orgID, clusterID, node.ID, timeout)
+	err = client.WaitNodeProvisioned(orgID, clusterID, node.ID, timeout)
 	if err != nil {
 		t.Error(err)
 	}
@@ -133,17 +123,12 @@ func testAddNodeToNodePool(t *testing.T, clusterID, nodePoolID int) int {
 }
 
 func testNodePoolList(t *testing.T, clusterID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	list, err := c.GetNodePools(orgID, clusterID)
+	list, err := client.GetNodePools(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -152,17 +137,12 @@ func testNodePoolList(t *testing.T, clusterID int) {
 }
 
 func testNodePoolGet(t *testing.T, clusterID int, nodePoolID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	nodePool, err := c.GetNodePool(orgID, clusterID, nodePoolID)
+	nodePool, err := client.GetNodePool(orgID, clusterID, nodePoolID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -172,30 +152,25 @@ func testNodePoolGet(t *testing.T, clusterID int, nodePoolID int) {
 }
 
 func testNodePoolDelete(t *testing.T, clusterID, nodepoolID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
 	//delete all nodes before deleting node pool
-	nodesInNodePool, err := c.GetNodesInPool(orgID, clusterID, nodepoolID)
+	nodesInNodePool, err := client.GetNodesInPool(orgID, clusterID, nodepoolID)
 
 	for _, node := range nodesInNodePool {
-		err = c.DeleteNode(orgID, clusterID, node.ID)
+		err = client.DeleteNode(orgID, clusterID, node.ID)
 
 	}
 	for _, node := range nodesInNodePool {
 		if testEnv != "mock" {
-			err = c.WaitNodeDeleted(orgID, clusterID, node.ID, timeout)
+			err = client.WaitNodeDeleted(orgID, clusterID, node.ID, timeout)
 		}
 	}
 
-	err = c.DeleteNodePool(orgID, clusterID, nodepoolID)
+	err = client.DeleteNodePool(orgID, clusterID, nodepoolID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -203,23 +178,18 @@ func testNodePoolDelete(t *testing.T, clusterID, nodepoolID int) {
 }
 
 func testNodePoolClusterDelete(t *testing.T, clusterID int) {
-	c, err := NewTestClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = c.DeleteCluster(orgID, clusterID)
+	err = client.DeleteCluster(orgID, clusterID)
 	if err != nil {
 		t.Error(err)
 	}
 
 	if testEnv != "mock" {
-		err = c.WaitClusterDeleted(orgID, clusterID, timeout)
+		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
 		if err != nil {
 			t.Error(err)
 		}
