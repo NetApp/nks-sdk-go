@@ -2,12 +2,10 @@ package nks
 
 import (
 	"fmt"
-	"gopkg.in/h2non/gock.v1"
 	"testing"
 )
 
 func TestLiveOrganization(t *testing.T) {
-	defer gock.Off()
 	t.Run("get clusters", func(t *testing.T) {
 		t.Run("list", testGetOrganizations)
 		t.Run("get", testGetOrganization)

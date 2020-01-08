@@ -1,7 +1,6 @@
 package nks
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -107,7 +106,6 @@ func testSolutionList(t *testing.T, clusterID int) {
 		t.Error(err)
 	}
 
-	fmt.Println(list)
 
 	assert.Equal(t, len(list), 2, "Two solutins have to be installed")
 	assert.Equal(t, list[0].Solution, solutionName, solutionName+" solution has to be installed")

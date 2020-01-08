@@ -1,0 +1,27 @@
+{
+  "pk": 1,
+  "name": "Test Go SDK",
+  "slug": "test-go-sdk-2",
+  "org": 11949,
+  "is_default": false,
+  "is_pinned": false,
+  "created": "2019-10-21T22:03:39.767164Z",
+  "clusters": [],
+  "federations": [],
+  "user_solutions": [],
+  "team_workspaces": [
+    {
+      "pk": 1,
+      "team": {
+        "pk": 1,
+        "name": "Everyone",
+        "slug": "everyone",
+        "org": 11949,
+        "is_org_wide": true,
+        "created": "2018-10-09T05:43:48.656349Z"
+      },
+      "workspace": 26010,
+      "created": "2019-10-21T22:03:51.049410Z"
+    }
+  ]
+}

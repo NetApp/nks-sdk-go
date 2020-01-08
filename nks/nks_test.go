@@ -226,7 +226,7 @@ func setupMockServer() {
 		HeaderPresent("Content-Type").
 		Persist().
 		Reply(201).
-		JSON(mockData["istiomeshe"])
+		JSON(mockData["istiomesh"])
 
 	gock.New("http://foo.bar").
 		Delete("/orgs/1/istio-meshes/1").
@@ -285,6 +285,69 @@ func setupMockServer() {
 
 	// workspace
 	gock.New("http://foo.bar").
+		Delete("orgs/1/workspaces/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
+
+	gock.New("http://foo.bar").
+		Get("orgs/1/workspaces/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["workspace"])
+
+	gock.New("http://foo.bar").
+		Post("orgs/1/workspaces").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		MatchHeader("Content-Type", "application/json").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusCreated).
+		JSON(mockData["workspace"])
+
+	//keyset endpoints
+	gock.New("http://foo.bar").
+		Get("/orgs/1/keysets/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["keyset"])
+	gock.New("http://foo.bar").
+		Delete("/orgs/1/keysets/1").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusNoContent)
+
+	gock.New("http://foo.bar").
+		Post("/orgs/1/keysets").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		MatchHeader("Content-Type", "application/json").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusCreated).
+		JSON(mockData["keyset"])
+
+	gock.New("http://foo.bar").
+		Get("/orgs/1/keysets").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["keysets"])
+
+	gock.New("http://foo.bar").
 		Get("orgs/1/workspaces").
 		MatchHeader("Authorization", "MOCK_TOKEN").
 		HeaderPresent("User-Agent").
@@ -329,6 +392,16 @@ func setupMockServer() {
 		Persist().
 		Reply(http.StatusCreated).
 		JSON(mockData["team"])
+
+	//userprofiles
+	gock.New("http://foo.bar").
+		Get("/userprofile").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["userprofile"])
 
 	//organization endpoints
 	gock.New("http://foo.bar").

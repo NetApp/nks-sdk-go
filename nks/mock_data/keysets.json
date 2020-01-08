@@ -1,0 +1,29 @@
+[
+  {
+    "pk": 1,
+    "name": "Test Go SDK",
+    "category": "provider",
+    "entity": "aws",
+    "org": 2,
+    "workspaces": [],
+    "user": 1,
+    "is_default": false,
+    "keys": [
+      {
+        "pk": 2,
+        "keyset": 1,
+        "key_type": "pub",
+        "fingerprint": "",
+        "user": 1
+      },
+      {
+        "pk": 3,
+        "keyset": 2,
+        "key_type": "pvt",
+        "fingerprint": "",
+        "user": 1
+      }
+    ],
+    "created": "2018-11-14T22:03:02.892559Z"
+  }
+]

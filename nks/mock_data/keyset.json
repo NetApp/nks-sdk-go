@@ -1,0 +1,12 @@
+{
+  "pk": 1,
+  "name": "Test Go SDK",
+  "category": "provider",
+  "entity": "",
+  "org": 2,
+  "workspaces": [],
+  "user": 3,
+  "is_default": false,
+  "keys": [],
+  "created": "2019-02-06T17:32:05.802960Z"
+}

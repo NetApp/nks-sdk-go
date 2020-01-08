@@ -1,8 +1,8 @@
 [
     {
         "pk": 1,
-        "name": "Demo Space",
-        "slug": "demo-space-2",
+        "name": "Test Go SDK",
+        "slug": "test-go-sdk-2",
         "org": 11949,
         "is_default": false,
         "is_pinned": false,
@@ -28,8 +28,8 @@
     },
     {
         "pk": 1,
-        "name": "Dev Space",
-        "slug": "dev-space-2",
+        "name": "Test Go SDKSpace",
+        "slug": "test-space-2",
         "org": 11949,
         "is_default": false,
         "is_pinned": false,
@@ -55,8 +55,8 @@
     },
     {
         "pk": 1,
-        "name": "Default",
-        "slug": "default-10167",
+        "name": "Test Go SDK",
+        "slug": "test-10167",
         "org": 11949,
         "is_default": true,
         "is_pinned": false,
