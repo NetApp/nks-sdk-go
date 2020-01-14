@@ -15,7 +15,7 @@ import (
 )
 
 // Debug set debug to false
-var Debug = "false"
+var debug = "false"
 
 //ClientUserAgentString set the string to the name required
 const ClientUserAgentString = "NetApp Kubernetes Service Go SDK v2.0.11"
@@ -42,7 +42,7 @@ type APIReq struct {
 
 // NewClient returns a new api client
 func NewClient(token, endpoint string) *APIClient {
-	Debug = os.Getenv("DEBUG")
+	debug = os.Getenv("DEBUG")
 	c := &APIClient{
 		Token:      token,
 		Endpoint:   strings.TrimRight(endpoint, "/"),
@@ -82,7 +82,10 @@ func (c *APIClient) runRequest(req *APIReq) error {
 
 	// Set up new HTTP request
 	httpReq, err := http.NewRequest(req.Method, req.Path, req.Payload)
-	debug(httputil.DumpRequestOut(httpReq, true))
+	if debug == "true" || debug == "1" {
+		printDebug(httputil.DumpRequestOut(httpReq, true))
+	}
+
 	if err != nil {
 		return err
 	}
@@ -93,7 +96,10 @@ func (c *APIClient) runRequest(req *APIReq) error {
 
 	// Run HTTP request, catching response
 	resp, err := c.HTTPClient.Do(httpReq)
-	debug(httputil.DumpResponse(resp, true))
+	if debug == "true" || debug == "1" {
+		printDebug(httputil.DumpResponse(resp, true))
+	}
+
 	if err != nil {
 		return err
 	}
@@ -125,12 +131,10 @@ func (c *APIClient) runRequest(req *APIReq) error {
 	return json.Unmarshal(body, req.ResponseObj)
 }
 
-func debug(data []byte, err error) {
-	if Debug == "true" || Debug == "1" {
-		if err == nil {
-			fmt.Printf("%s\n\n", data)
-		} else {
-			log.Fatalf("%s\n\n", err)
-		}
+func printDebug(data []byte, err error) {
+	if err == nil {
+		fmt.Printf("%s\n\n", data)
+	} else {
+		log.Fatalf("%s\n\n", err)
 	}
 }
