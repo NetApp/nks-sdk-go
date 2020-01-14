@@ -7,19 +7,25 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"strings"
 )
 
-const ClientUserAgentString = "NetApp Kubernetes Service Go SDK v2.0.10"
-const defaultNKSApiURL = "https://api-netapp.stackpoint.io"
+// Debug set debug to false
+var debug = "false"
+
+//ClientUserAgentString set the string to the name required
+const ClientUserAgentString = "NetApp Kubernetes Service Go SDK v2.0.11"
+const defaultNKSApiURL = "https://api.nks.netapp.io"
 
 // APIClient references an api token and an http endpoint
 type APIClient struct {
 	Token      string
 	Endpoint   string
-	HttpClient *http.Client
+	HTTPClient *http.Client
 }
 
 // APIReq struct holds data for runRequest method to operate http request on
@@ -36,10 +42,11 @@ type APIReq struct {
 
 // NewClient returns a new api client
 func NewClient(token, endpoint string) *APIClient {
+	debug = os.Getenv("DEBUG")
 	c := &APIClient{
 		Token:      token,
 		Endpoint:   strings.TrimRight(endpoint, "/"),
-		HttpClient: http.DefaultClient,
+		HTTPClient: http.DefaultClient,
 	}
 	return c
 }
@@ -75,15 +82,24 @@ func (c *APIClient) runRequest(req *APIReq) error {
 
 	// Set up new HTTP request
 	httpReq, err := http.NewRequest(req.Method, req.Path, req.Payload)
+	if debug == "true" || debug == "1" {
+		printDebug(httputil.DumpRequestOut(httpReq, true))
+	}
+
 	if err != nil {
 		return err
 	}
+
 	httpReq.Header.Set("Authorization", "Bearer "+c.Token)
 	httpReq.Header.Set("User-Agent", ClientUserAgentString)
 	httpReq.Header.Set("Content-Type", "application/json")
 
 	// Run HTTP request, catching response
-	resp, err := c.HttpClient.Do(httpReq)
+	resp, err := c.HTTPClient.Do(httpReq)
+	if debug == "true" || debug == "1" {
+		printDebug(httputil.DumpResponse(resp, true))
+	}
+
 	if err != nil {
 		return err
 	}
@@ -113,4 +129,12 @@ func (c *APIClient) runRequest(req *APIReq) error {
 
 	// Unmarshal response into ResponseObj struct, return ResponseObj and error, if there is one
 	return json.Unmarshal(body, req.ResponseObj)
+}
+
+func printDebug(data []byte, err error) {
+	if err == nil {
+		fmt.Printf("%s\n\n", data)
+	} else {
+		log.Fatalf("%s\n\n", err)
+	}
 }

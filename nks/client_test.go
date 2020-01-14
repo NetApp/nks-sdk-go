@@ -1,40 +1,15 @@
 package nks
 
 import (
-	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func TestNewClientFromEnv(t *testing.T) {
-	fmt.Println("NewClientFromEnv testing")
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-	if c == nil {
-		t.Error(err)
-	}
-}
+func TestLiveBasicClient(t *testing.T) {
+	list, err := client.GetOrganizations()
+	require.NoError(t, err)
 
-func TestRunRequest(t *testing.T) {
-	fmt.Println("runRequest testing")
-	c, err := NewClientFromEnv()
-	if err != nil {
-		t.Error(err)
-	}
-	if c == nil {
-		t.Error(err)
-	}
-	orgs := []Organization{}
-	req := &APIReq{
-		Method:       "GET",
-		Path:         "/orgs",
-		ResponseObj:  &orgs,
-		WantedStatus: 200,
-	}
-	err = c.runRequest(req)
-	if err != nil {
-		t.Error(err)
-	}
-
+	assert.NotEqual(t, len(list), 0, "Result can not be empty")
 }

@@ -18,8 +18,12 @@ func PrettyPrint(v interface{}) {
 	println(string(b))
 }
 
-// GetEnvID grabs string from environment and converts to integer
+// GetIDFromEnv grabs string from environment and converts to integer
 func GetIDFromEnv(name string) (int, error) {
+	isMock := os.Getenv("NKS_TEST_ENV") == "mock"
+	if isMock {
+		return 1, nil
+	}
 	var id int
 	fmt.Sscanf(os.Getenv(name), "%d", &id)
 	if id == 0 {
@@ -30,6 +34,9 @@ func GetIDFromEnv(name string) (int, error) {
 
 //GetValueFromEnv grabs string from environment
 func GetValueFromEnv(name string) (string, error) {
+	if os.Getenv("NKS_TEST_ENV") == "mock" {
+		return "", nil
+	}
 	content := os.Getenv(name)
 	if len(content) == 0 {
 		return "", errors.New("Empty content of env " + name)
@@ -52,6 +59,7 @@ func GetTicks() string {
 	return strconv.FormatInt(time.Now().Unix(), 10)
 }
 
+//GetAbsPath gets the absolute path
 func GetAbsPath(path string) (string, error) {
 	usr, _ := user.Current()
 	dir := usr.HomeDir

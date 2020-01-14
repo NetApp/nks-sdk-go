@@ -1,0 +1,131 @@
+[
+  {
+    "pk": 1,
+    "username": "test",
+    "email": "test@antcolony.io",
+    "first_name": "test",
+    "last_name": "test",
+    "full_name": "test",
+    "org_memberships": [
+      {
+        "pk": 28489,
+        "user": 36386,
+        "org": {
+          "pk": 27414,
+          "name": "Holy test",
+          "slug": "holy-test",
+          "logo": null,
+          "enable_experimental_features": false,
+          "created": "2019-12-05T20:01:06.784326Z",
+          "updated": "2019-12-05T20:01:06.784346Z"
+        },
+        "role": "owner",
+        "is_owner": true,
+        "is_manager": true,
+        "is_billing_manager": false,
+        "subscription": {
+          "pk": 26930,
+          "internal_id": "test",
+          "user": 36386,
+          "state": "active",
+          "access_plan": "metered-monthly",
+          "support_plan": "",
+          "is_metered": true,
+          "is_active": true,
+          "is_exempt": true,
+          "account_balance": {
+            "total_due": 0.0,
+            "payment_required": false
+          },
+          "netapp_serial_number": "1"
+        },
+        "is_default": true,
+        "created": "2019-12-05T20:01:06.814627Z"
+      },
+      {
+        "pk": 28490,
+        "user": 36386,
+        "org": {
+          "pk": 11949,
+          "name": "NKS test test",
+          "slug": "nks-test-test",
+          "logo": "https://stackpoint_production.s3.amazonaws.com/organization_logos/nks-ninja-dojo_golang.jpg",
+          "enable_experimental_features": true,
+          "created": "2018-10-09T05:43:20.563878Z",
+          "updated": "2019-07-11T19:40:53.687106Z"
+        },
+        "role": "admin",
+        "is_owner": false,
+        "is_manager": true,
+        "is_billing_manager": false,
+        "subscription": {
+          "pk": 11703,
+          "internal_id": "SPC-test",
+          "user": 11717,
+          "state": "active",
+          "access_plan": "metered-monthly",
+          "support_plan": "",
+          "is_metered": true,
+          "is_active": true,
+          "is_exempt": true,
+          "account_balance": {
+            "total_due": 0.0,
+            "payment_required": false
+          },
+          "netapp_serial_number": "1"
+        },
+        "is_default": false,
+        "created": "2019-12-05T20:23:34.956301Z"
+      }
+    ],
+    "keysets": [
+      {
+        "pk": 1,
+        "name": "Default test SSH Keypair",
+        "category": "user_ssh",
+        "entity": "",
+        "org": 1,
+        "workspaces": [],
+        "metadata": {},
+        "user": 1,
+        "is_default": true,
+        "keys": [
+          {
+            "pk": 1,
+            "keyset": 1,
+            "key_type": "pvt",
+            "fingerprint": "",
+            "user": 1
+          },
+          {
+            "pk": 1,
+            "keyset": 1,
+            "key_type": "pub",
+            "fingerprint": "1",
+            "user": 1
+          }
+        ],
+        "created": "2019-12-05T20:01:14.409093Z"
+      }
+    ],
+    "date_joined": "2019-12-05T20:01:06.770149Z",
+    "subscription": {
+      "pk": 1,
+      "internal_id": "SPC-test",
+      "user": 1,
+      "state": "active",
+      "access_plan": "metered-monthly",
+      "support_plan": "",
+      "is_metered": true,
+      "is_active": true,
+      "is_exempt": true,
+      "account_balance": {
+        "total_due": 0.0,
+        "payment_required": false
+      },
+      "netapp_serial_number": "1"
+    },
+    "is_oem_manager": null,
+    "lifetime_cluster_count": 1
+  }
+]

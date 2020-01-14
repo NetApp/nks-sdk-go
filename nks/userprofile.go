@@ -15,6 +15,7 @@ type UserProfile struct {
 	Subscription Subscription    `json:"subscription"`
 }
 
+//OrgMembership membership details
 type OrgMembership struct {
 	ID           int          `json:"pk"`
 	User         int          `json:"user"`
@@ -26,6 +27,7 @@ type OrgMembership struct {
 	Subscription Subscription `json:"subscription"`
 }
 
+//Subscription  details
 type Subscription struct {
 	ID       int    `json:"pk"`
 	State    string `json:"state"`
@@ -57,7 +59,7 @@ func (c *APIClient) GetUserProfileDefaultOrg(up *UserProfile) (int, error) {
 	return 0, fmt.Errorf("no default org found in userprofile")
 }
 
-// GetUserProfileKeyset returns first keyset matching provider string
+// GetUserProfileKeysetID returns first keyset matching provider string
 func (c *APIClient) GetUserProfileKeysetID(up *UserProfile, prov string) (int, error) {
 	if up == nil {
 		return 0, fmt.Errorf("userprofile object is nil")
