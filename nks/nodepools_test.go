@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var awsZone = "eu-west-2a"
@@ -44,28 +45,20 @@ func TestLiveBasicNodePool(t *testing.T) {
 
 func testNodePoolClusterCreate(t *testing.T) (int, int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	awsKeysetID, err := GetIDFromEnv("NKS_AWS_KEYSET")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	testNodePoolAwsCluster.ProviderKey = awsKeysetID
 	testNodePoolAwsCluster.SSHKeySet = sshKeysetID
 
 	cluster, err := client.CreateCluster(orgID, testNodePoolAwsCluster)
 	fmt.Println(cluster.ID, err)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
@@ -80,16 +73,12 @@ func testNodePoolClusterCreate(t *testing.T) (int, int) {
 	}
 
 	nodePool, err := client.CreateNodePool(orgID, cluster.ID, newNodePool)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.WaitNodePoolProvisioned(orgID, cluster.ID, nodePool.ID, timeout)
 
 	pools, err := client.GetNodePools(orgID, cluster.ID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	assert.Equal(t, 2, len(pools), "Cluster must have a node pool")
 	return cluster.ID, nodePool.ID
@@ -97,9 +86,7 @@ func testNodePoolClusterCreate(t *testing.T) (int, int) {
 
 func testAddNodeToNodePool(t *testing.T, clusterID, nodePoolID int) int {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	nodeAdd := NodeAddToPool{
 		Count: 1,
@@ -107,44 +94,33 @@ func testAddNodeToNodePool(t *testing.T, clusterID, nodePoolID int) int {
 	}
 
 	nodes, err := client.AddNodesToNodePool(orgID, clusterID, nodePoolID, nodeAdd)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	node := nodes[0]
 
 	err = client.WaitNodeProvisioned(orgID, clusterID, node.ID, timeout)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	return node.ID
 }
 
 func testNodePoolList(t *testing.T, clusterID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	list, err := client.GetNodePools(orgID, clusterID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
+
 	assert.Equal(t, 2, len(list), "There should be 2 nodepool")
 
 }
 
 func testNodePoolGet(t *testing.T, clusterID int, nodePoolID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	nodePool, err := client.GetNodePool(orgID, clusterID, nodePoolID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	assert.NotNil(t, nodePool)
 	assert.Equal(t, nodePool.ID, nodePoolID, "different node pool ID")
@@ -152,9 +128,7 @@ func testNodePoolGet(t *testing.T, clusterID int, nodePoolID int) {
 
 func testNodePoolDelete(t *testing.T, clusterID, nodepoolID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	//delete all nodes before deleting node pool
 	nodesInNodePool, err := client.GetNodesInPool(orgID, clusterID, nodepoolID)
@@ -170,27 +144,18 @@ func testNodePoolDelete(t *testing.T, clusterID, nodepoolID int) {
 	}
 
 	err = client.DeleteNodePool(orgID, clusterID, nodepoolID)
-	if err != nil {
-		t.Error(err)
-	}
-
+	require.NoError(t, err)
 }
 
 func testNodePoolClusterDelete(t *testing.T, clusterID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.DeleteCluster(orgID, clusterID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	if testEnv != "mock" {
 		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 	}
 }

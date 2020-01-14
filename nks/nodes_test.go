@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var testNodeAwsCluster = Cluster{
@@ -43,28 +44,20 @@ func TestLiveBasicNode(t *testing.T) {
 
 func testNodeClusterCreate(t *testing.T) int {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	awsKeysetID, err := GetIDFromEnv("NKS_AWS_KEYSET")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	testNodeAwsCluster.ProviderKey = awsKeysetID
 	testNodeAwsCluster.SSHKeySet = sshKeysetID
 
 	cluster, err := client.CreateCluster(orgID, testNodeAwsCluster)
 	fmt.Println(cluster.ID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
@@ -73,9 +66,7 @@ func testNodeClusterCreate(t *testing.T) int {
 
 func testNodeCreate(t *testing.T, clusterID int) int {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	nodeAdd := NodeAdd{
 		Count:              1,
@@ -88,44 +79,32 @@ func testNodeCreate(t *testing.T, clusterID int) int {
 	}
 
 	nodes, err := client.AddNode(orgID, clusterID, nodeAdd)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	node := nodes[0]
 
 	err = client.WaitNodeProvisioned(orgID, clusterID, node.ID, timeout)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	return node.ID
 }
 
 func testNodeList(t *testing.T, clusterID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	list, err := client.GetNodes(orgID, clusterID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	assert.Equal(t, len(list), 4, "There should be 4 nodes")
 }
 
 func testNodeGet(t *testing.T, clusterID, nodeID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	node, err := client.GetNode(orgID, clusterID, nodeID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	assert.NotNil(t, node)
 	assert.Equal(t, node.ID, nodeID, "Master node must exist")
@@ -133,37 +112,25 @@ func testNodeGet(t *testing.T, clusterID, nodeID int) {
 
 func testNodeDelete(t *testing.T, clusterID, nodeID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.DeleteNode(orgID, clusterID, nodeID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	if testEnv != "mock" {
 		err = client.WaitNodeDeleted(orgID, clusterID, nodeID, timeout)
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 	}
 }
 
 func testNodeClusterDelete(t *testing.T, clusterID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.DeleteCluster(orgID, clusterID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 	if testEnv != "mock" {
 		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 	}
 }

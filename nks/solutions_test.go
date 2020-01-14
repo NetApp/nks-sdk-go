@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var solutionName = "haproxy"
@@ -44,27 +45,19 @@ func TestLiveBasicSolution(t *testing.T) {
 
 func testSolutionCreateCluster(t *testing.T) int {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	awsKeysetID, err := GetIDFromEnv("NKS_AWS_KEYSET")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	testSolutionAwsCluster.ProviderKey = awsKeysetID
 	testSolutionAwsCluster.SSHKeySet = sshKeysetID
 
 	cluster, err := client.CreateCluster(orgID, testSolutionAwsCluster)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
@@ -73,9 +66,7 @@ func testSolutionCreateCluster(t *testing.T) int {
 
 func testSolutionAdd(t *testing.T, clusterID int) int {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	newSolution := Solution{
 		Solution: solutionName,
@@ -83,28 +74,20 @@ func testSolutionAdd(t *testing.T, clusterID int) int {
 	}
 
 	solution, err := client.AddSolution(orgID, clusterID, newSolution)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.WaitSolutionInstalled(orgID, clusterID, solution.ID, timeout)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	return solution.ID
 }
 
 func testSolutionList(t *testing.T, clusterID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	list, err := client.GetSolutions(orgID, clusterID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	assert.Equal(t, len(list), 2, "Two solutins have to be installed")
 	assert.Equal(t, list[0].Solution, solutionName, solutionName+" solution has to be installed")
@@ -112,19 +95,13 @@ func testSolutionList(t *testing.T, clusterID int) {
 
 func testSolutionGet(t *testing.T, clusterID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	solutionID, err := client.FindSolutionByName(orgID, clusterID, solutionName)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	solution, err := client.GetSolution(orgID, clusterID, solutionID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	assert.Equal(t, solution.Solution, solutionName, solutionName+"solution has to be installed")
 	assert.Equal(t, solution.State, SolutionInstalledStateString, solutionName+"solution has to be installed")
@@ -132,36 +109,26 @@ func testSolutionGet(t *testing.T, clusterID int) {
 
 func testSolutionDelete(t *testing.T, clusterID int, solutionID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.DeleteSolution(orgID, clusterID, solutionID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
+
 	if testEnv != "mock" {
 		err = client.WaitSolutionDeleted(orgID, clusterID, solutionID, timeout)
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 	}
 }
 
 func testSolutionDeleteCluster(t *testing.T, clusterID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.DeleteCluster(orgID, clusterID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
+
 	if testEnv != "mock" {
 		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 	}
 }

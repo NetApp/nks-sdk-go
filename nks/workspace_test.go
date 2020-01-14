@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var testWorkspaceLiveID int
@@ -22,16 +23,12 @@ func TestLiveBasicWorkspace(t *testing.T) {
 
 func testLiveWorkspaceCreate(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	testWorkspace.Org = orgID
 
 	workspace, err := client.CreateWorkspace(orgID, testWorkspace)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	testWorkspaceLiveID = workspace.ID
 
@@ -41,14 +38,10 @@ func testLiveWorkspaceCreate(t *testing.T) {
 func testLiveWorkspaceList(t *testing.T) {
 
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	list, err := client.GetWorkspaces(orgID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	var workspace Workspace
 	for _, item := range list {
@@ -62,16 +55,11 @@ func testLiveWorkspaceList(t *testing.T) {
 }
 
 func testLiveWorkspaceGet(t *testing.T) {
-
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	workspace, err := client.GetWorkspace(orgID, testWorkspaceLiveID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	assert.Contains(t, testWorkspace.Name, workspace.Name, "Name should be equal")
 }
@@ -79,12 +67,8 @@ func testLiveWorkspaceGet(t *testing.T) {
 func testLiveWorkspaceDelete(t *testing.T) {
 
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.DeleteWorkspace(orgID, testWorkspaceLiveID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 }

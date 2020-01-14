@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestLiveBasicMachSpec(t *testing.T) {
@@ -14,9 +15,7 @@ func TestLiveBasicMachSpec(t *testing.T) {
 
 func testProvider(t *testing.T, provider string) {
 	endpoint, err := GetValueFromEnv("NKS_BASE_API_URL")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	list, err := client.GetInstanceSpecs(provider, endpoint)
 

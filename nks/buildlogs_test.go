@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var testBuildLogAwsCluster = Cluster{
@@ -40,41 +41,29 @@ func TestLiveBasicBuildLogs(t *testing.T) {
 func testBuildLogsGet(t *testing.T, clusterID int) {
 
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	logs, err := client.GetBuildLogs(orgID, clusterID)
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	assert.NotEqual(t, 0, len(logs), "Logs should be present when a cluster is created")
 }
 
 func testBuildLogsCreateCluster(t *testing.T) int {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	sshKeysetID, err := GetIDFromEnv("NKS_SSH_KEYSET")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	awsKeysetID, err := GetIDFromEnv("NKS_AWS_KEYSET")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	testBuildLogAwsCluster.ProviderKey = awsKeysetID
 	testBuildLogAwsCluster.SSHKeySet = sshKeysetID
 
 	cluster, err := client.CreateCluster(orgID, testBuildLogAwsCluster)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.WaitClusterRunning(orgID, cluster.ID, true, timeout)
 
@@ -83,18 +72,13 @@ func testBuildLogsCreateCluster(t *testing.T) int {
 
 func testBuildLogsDeleteCluster(t *testing.T, clusterID int) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.DeleteCluster(orgID, clusterID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
+
 	if testEnv != "mock" {
 		err = client.WaitClusterDeleted(orgID, clusterID, timeout)
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.NoError(t, err)
 	}
 }
