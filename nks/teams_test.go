@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var testTeamLiveID int
@@ -21,14 +22,10 @@ func TestLiveBasicTeam(t *testing.T) {
 
 func testLiveTeamCreate(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	Team, err := client.CreateTeam(orgID, testTeam)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	testTeamLiveID = Team.ID
 
@@ -37,14 +34,10 @@ func testLiveTeamCreate(t *testing.T) {
 
 func testLiveTeamList(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	list, err := client.GetTeams(orgID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	var Team Team
 	for _, item := range list {
@@ -58,26 +51,19 @@ func testLiveTeamList(t *testing.T) {
 
 func testLiveTeamGet(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	Team, err := client.GetTeam(orgID, testTeamLiveID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	assert.Contains(t, testTeam.Name, Team.Name, "Name should be equal")
 }
 
 func testLiveTeamDelete(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.DeleteTeam(orgID, testTeamLiveID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
+
 }

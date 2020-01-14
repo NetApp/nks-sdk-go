@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var testKeysetLiveID int
@@ -25,26 +26,18 @@ func TestLiveBasicKeyset(t *testing.T) {
 
 func testLiveKeysetCreate(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	idRsaPubPath, err := GetValueFromEnv("NKS_ID_RSA_PUB_PATH")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	idRsaPubPath, err = GetAbsPath(idRsaPubPath)
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 	content := []byte{}
 
 	if testEnv != "mock" {
 		content, err = ioutil.ReadFile(idRsaPubPath)
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.NoError(t, err)
 	} else {
 		content = []byte{}
 	}
@@ -55,9 +48,7 @@ func testLiveKeysetCreate(t *testing.T) {
 	})
 
 	Keyset, err := client.CreateKeyset(orgID, testKeyset)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	testKeysetLiveID = Keyset.ID
 
@@ -68,14 +59,10 @@ func testLiveKeysetCreate(t *testing.T) {
 
 func testLiveKeysetList(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	list, err := client.GetKeysets(orgID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	var Keyset Keyset
 	for _, item := range list {
@@ -90,26 +77,18 @@ func testLiveKeysetList(t *testing.T) {
 
 func testLiveKeysetGet(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	Keyset, err := client.GetKeyset(orgID, testKeysetLiveID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	assert.Contains(t, testKeyset.Name, Keyset.Name, "Name should be equal")
 }
 
 func testLiveKeysetDelete(t *testing.T) {
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	err = client.DeleteKeyset(orgID, testKeysetLiveID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 }

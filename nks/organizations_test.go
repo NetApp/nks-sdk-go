@@ -3,6 +3,8 @@ package nks
 import (
 	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestLiveOrganization(t *testing.T) {
@@ -16,9 +18,7 @@ func TestLiveOrganization(t *testing.T) {
 func testGetOrganizations(t *testing.T) {
 	fmt.Println("GetOrganizations testing")
 	orgs, err := client.GetOrganizations()
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 	if len(orgs) == 0 {
 		fmt.Println("No orgs found, but no error")
 	}
@@ -27,13 +27,9 @@ func testGetOrganizations(t *testing.T) {
 func testGetOrganization(t *testing.T) {
 	fmt.Println("GetOrganization testing")
 	orgID, err := GetIDFromEnv("NKS_ORG_ID")
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 	org, err := client.GetOrganization(orgID)
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 	if org == nil {
 		fmt.Println("No org found, but no error")
 	}
