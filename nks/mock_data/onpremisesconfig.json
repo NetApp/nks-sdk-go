@@ -1,0 +1,80 @@
+{
+		"Provider": "hci",
+		"VCenterURL": "",
+		"VCenterUser": "",
+		"VCenterPassword": "",
+		"DatacenterID": "",
+		"ResourcePoolID": "",
+		"DatastoreID": "",
+		"ManagementNetworkID": "",
+		"WorkloadNetworkID": "",
+		"StorageNetworkID": "",
+		"RegionName": "",
+		"OrganizationID": "",
+		"CloudCentralKey": "",
+		"Solidfire": {
+		"Enable": false,
+		"MVIP": "",
+		"SVIP": "",
+		"User": "",
+		"Password": ""
+		},
+		"IPAM": {
+		"Provider": "DHCP",
+		"MNodeIPService": {
+		"IP": "",
+		"Path": "ip",
+		"Version": "v1",
+		"AuthHostURL": "",
+		"AuthSecret": "",
+		"TLSInsecure": false
+		},
+		"InfobloxIPService": {
+		"Host": "",
+		"Port": "",
+		"User": "",
+		"Password": "",
+		"Version": "",
+		"NetworkCIDR": "",
+		"Gateway": "",
+		"DNSServer": "",
+		"DNSSuffix": ""
+		}
+		},
+		"Configuration": {
+		"NKSAPIEndpoint": "https://api.nks.netapp.io",
+		"Cluster": {
+		"Name": "",
+		"MasterCount": 3,
+		"MasterSize": "M",
+		"WorkerCount": 3,
+		"WorkerSize": "L",
+		"KubernetesVersion": "1.14.3",
+		"KubernetesPodCidr": "192.168.0.0/16",
+		"KubernetesServiceCidr": "10.96.0.0/12"
+		},
+		"Components": {
+		"NKSHelmChart": "nks-on-prem-deploy-1.6.1-643f7e8",
+		"NKSBootstrapAgent": "nks-bootstrap-agent-1.1.2-d843717",
+		"ChandlerImage": "gcr.io/nks-images/chandler:1.5.3-ed7fc83",
+		"XDSImage": "gcr.io/nks-images/k8s-proxy-xds:0.1.0-17df13d",
+		"VSphereManagerImage": "gcr.io/nks-images/vsphere-manager:1.3.0-5fbd8ae",
+		"CAPIImage": "gcr.io/nks-images/cluster-api:netapp-2b50165a6",
+		"CABPKImage": "gcr.io/nks-images/cluster-api-bootstrap-provider-kubeadm:netapp-92a4bad",
+		"CAPVImage": "gcr.io/nks-images/cluster-api-provider-vsphere:netapp-fb04835a"
+		},
+		"OVA": {
+		"NodeTemplate": "NKS-Template-Node-1.0",
+		"LoadbalancerTemplate": "NKS-Template-Loadbalancer-1.0",
+		"LoadbalancerTemplateVersion": "1.0"
+		},
+		"Bintray": {
+		"Subject": "nks-on-prem-setup",
+		"BasePath": "https://netapp-downloads.bintray.com",
+		"Target": "netapp-downloads",
+		"User": "nks-read@netapp-downloads",
+		"Token": "f5c51846052afca9386b2fd985ae8670a6fda156"
+		}
+	}
+}
+
