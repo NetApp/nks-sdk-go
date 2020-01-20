@@ -421,4 +421,23 @@ func setupMockServer() {
 		Persist().
 		Reply(http.StatusOK).
 		JSON(mockData["organizations"])
+
+	//onpremisesconfig endpoints
+	gock.New("http://foo.bar").
+		Get("/meta/on-premises-config").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["onpremisesconfigs"])
+
+	gock.New("http://foo.bar").
+		Get("/meta/on-premises-config?version=v1.2").
+		MatchHeader("Authorization", "MOCK_TOKEN").
+		HeaderPresent("User-Agent").
+		HeaderPresent("Content-Type").
+		Persist().
+		Reply(http.StatusOK).
+		JSON(mockData["onpremisesconfig"])
 }
